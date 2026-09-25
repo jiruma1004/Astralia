@@ -28,12 +28,12 @@ document.querySelector('#adventure-restart').onclick=()=>{document.querySelector
 document.addEventListener('visibilitychange',()=>{keys.clear();mission.tick();});
 setInterval(()=>mission.tick(),250);
 new ResizeObserver(entries=>{const r=entries[0].contentRect;if(r.width&&r.height){canvas.width=960;canvas.height=Math.round(960*r.height/r.width);}}).observe(canvas);
-const roulette=new ProblemRoulette(()=>{if(!rooms[index].roulette)return;opened=rooms[index].canUnlock({problemSolved:true});document.querySelector('#door-status').textContent='SELLO ABIERTO';message.textContent='Desafío resuelto. Rodea la mesa y cruza la puerta del fondo.';});
+const roulette=new ProblemRoulette(()=>{if(!rooms[index].roulette)return;opened=rooms[index].canUnlock({problemSolved:true});document.querySelector('#door-status').textContent='SELLO ABIERTO';message.textContent='¡Sello roto! Rodea la mesa y atraviesa el portal luminoso.';});
 rooms.forEach((room,i)=>{const button=document.createElement('button');button.innerHTML=`<b>${['I','II','III','IV','V','VI'][i]}</b><span>${room.name}<small>${room.challenge.implemented?room.challenge.title:'Por descubrir'}</small></span>`;button.onclick=()=>load(i);nav.append(button);});
 function load(i){clearDeath();Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
  document.querySelector('#room-title').textContent=`UMBRAL ${['I','II','III','IV','V','VI'][i]} / ${room.name.toUpperCase()}`;
  document.querySelector('#door-status').textContent=room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':'PUERTA BLOQUEADA';
- message.textContent=room.physics?'Elige una bala del estante y cárgala en el cañón.':room.roulette?'Pulsa el botón de la mesa para hacer girar la rueda.':'Apunta al núcleo dorado de la puerta.';
+ message.textContent=room.physics?'Elige una bala del estante y cárgala en el cañón.':room.roulette?'Resuelve el desafío de la rueda para activar el portal del castillo.':'Apunta al núcleo dorado de la puerta.';
  document.querySelector('#lab').hidden=document.querySelector('#station').hidden=document.querySelector('#trajectory-toggle').hidden=!room.physics;lab.hologram.hide();document.querySelector('#roulette-panel').hidden=document.querySelector('#table-interact').hidden=!room.roulette;
  document.querySelector('.scene-layout').classList.toggle('has-station',!!room.physics);document.querySelector('#equipment').textContent=room.physics?'CAÑÓN ASTRAL':room.roulette?'MESA DEL DESTINO':'CAÑÓN DE IMPULSO';
  document.querySelector('#fire').textContent=room.roulette?'✦ Pulsar mesa':'✧ Disparar';document.querySelector('#fire').disabled=false;

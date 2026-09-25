@@ -8,6 +8,12 @@ Abre `index.html` en un navegador moderno. No requiere instalación ni conexión
 
 ## El castillo del Dr. Eric
 
+La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **Galería de los inadores** (III), **Gabinete de la tormenta** (IV), **Cripta cuántica** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. Desde la sala III hay techo de piedra con vigas, sin cielo.
+
+La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. Los retos III–VI siguen reservados para futuras actividades.
+
+Resolver la ruleta rompe el sello violeta y activa un portal turquesa atravesable. La mesa está ligeramente desplazada para que se vea la entrada detrás.
+
 Al entrar aparece una introducción: el Dr. Eric se oculta en un castillo abandonado y prepara la divergencia, un experimento que unirá la gravedad y el espacio. Las paredes son de ladrillo antiguo con juntas alternadas, grietas y humedad; se conservan los cuadros, grafitis y estandartes.
 
 Pulsa **Entrar al castillo** para iniciar una aventura de **30 minutos**. El reloj permanece en la esquina inferior derecha: verde al principio, naranja cuando quedan **10 minutos** y rojo en los últimos **3 minutos**. El texto también indica la urgencia.

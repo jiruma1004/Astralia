@@ -29,6 +29,12 @@ La mesa y el cañón tienen colisión en main.js. La ruleta se detiene con el se
 
 ## Cámara, salto y decoración
 
+Cada sala declara `environment`: `kind` (`forest`, `gateway` o `interior`), `label`, `tint`, `portraits` y `portal`. `scenery.js` genera vegetación, las dos fases del portal y cinco retratos ilustrados. No necesita imágenes remotas. El bosque sustituye el material y eleva visualmente sus límites a 2.6 celdas, conservando las colisiones y la física del reto.
+
+Los interiores proyectan suelo y techo en coordenadas del mundo, incluidos los movimientos de cámara y el salto. Cada habitación utiliza un tinte y una pareja de retratos distintos; los retratos ajustan su ancho visual al formato del canvas para conservar sus proporciones.
+
+El portal de la sala II ocupa la puerta existente (x=7, y entre 3 y 4). Cerrado se dibuja sobre el muro bloqueante; abierto conserva su aura, respeta las oclusiones y deja pasar al jugador. El sello usa la condición de victoria de la ruleta. Si cambia la puerta de lugar, hay que adaptar `drawPortal`. La mesa se sitúa en (4.5, 2.9) para mostrar el portal desde la entrada.
+
 Arrastrar sobre el canvas modifica `player.angle` y `player.pitch`; el giro vertical está limitado para conservar una vista útil. Pointer capture permite terminar el gesto aunque el mouse salga del canvas. Un desplazamiento mayor de 5 píxeles suprime el clic de interacción. Se mantiene la alternativa de flechas para girar y no se cambia la puntería de la torreta.
 
 Espacio activa un salto de velocidad inicial 2.1 celdas/s y gravedad 4.905 celdas/s² (9.81 m/s² con 2 m/celda). `jumpHeight` eleva la cámara y cambia la proyección de paredes, objetos y suelo. No se permite saltar en el aire ni desde el vacío. Las colisiones laterales continúan activas; aterrizar sin apoyo inicia la derrota. Reaparecer restablece altura y orientación. El alcance de este salto es mucho menor que el abismo de Galileo.

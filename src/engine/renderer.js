@@ -1,12 +1,15 @@
 /* Motor visual compartido: raycasting de una cuadrícula, sin dependencias. */
 window.EscapeRenderer = class {
-  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art=makeWallArt(); }
-  decorate(hit,x,top,height){
+  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art={...makeWallArt(),...makeScenery()}; }
+  decorate(room,hit,x,top,height){
+    if(room.environment?.kind==='forest')return;
     if(hit.tile!==1)return;
     const south=hit.axis==='y'&&hit.cy===6,north=hit.axis==='y'&&hit.cy===0;
     if(!south&&!north)return;
     let art,start,end;
-    if(south&&hit.px>=5.1&&hit.px<=6.5){art=this.art.portrait;start=5.1;end=6.5;}
+    const portraitWidth=(320/380)*.76*this.canvas.height*1.32/this.canvas.width;
+    if(room.environment?.portraits?.length&&Math.abs(hit.px-4.5)<=portraitWidth/2){art=this.art[room.environment.portraits[south?0:1]];start=4.5-portraitWidth/2;end=4.5+portraitWidth/2;}
+    else if(south&&room.environment?.kind!=='gateway'&&Math.abs(hit.px-5.9)<=portraitWidth/2){art=this.art.portrait;start=5.9-portraitWidth/2;end=5.9+portraitWidth/2;}
     else if(north&&hit.px>=4.2&&hit.px<=7.4){art=this.art.equations;start=4.2;end=7.4;}
     else if(hit.px%4>1.65&&hit.px%4<2.15){art=this.art.crest;start=Math.floor(hit.px/4)*4+1.65;end=start+.5;}
     if(!art)return;
@@ -28,16 +31,18 @@ window.EscapeRenderer = class {
   draw(room,player,opened,flash,time,lab,roulette){
     this.tableButton=null;this.cannonBounds=null;
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height,horizon=h*(.5+(player.pitch||0)),eye=.5+(player.jumpHeight||0);
-    const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,horizon);for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(horizon*.86),1.8,1.8);}
+    const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,horizon);if(room.environment?.kind!=='interior')for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(horizon*.86),1.8,1.8);}
     const floor=c.createLinearGradient(0,horizon,0,h);floor.addColorStop(0,'#17213f');floor.addColorStop(1,'#465477');c.fillStyle=floor;c.fillRect(0,horizon,w,h-horizon);
-    if(room.physics){
+    if(room.environment?.kind==='interior')this.drawCeiling(room,player,horizon,eye);
+    if(room.physics||room.environment?.kind==='interior'){
       // Proyección del suelo: el abismo y el puente ocupan las mismas casillas que las colisiones.
       for(let sy=Math.max(0,horizon+2);sy<h;sy+=4){const depth=(h*eye)/(sy-horizon);
         for(let sx=0;sx<w;sx+=6){const lateral=(sx/w*2-1)*.66;
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.map[Math.floor(wy)]?.[Math.floor(wx)];
           if(tile===3){const bridge=opened&&Math.floor(wy)===3;c.fillStyle=bridge?(wx%1<.08?'#a6d6f8':'#4b6586'):'#04090d';}
-          else c.fillStyle=(Math.floor(wx)+Math.floor(wy))%2?'#3b3c40':'#303339';
+          else if(room.environment?.kind==='forest'){const noise=Math.sin(Math.floor(wx*9)*12.9898+Math.floor(wy*9)*78.233)*43758.5453,grain=noise-Math.floor(noise);c.fillStyle=grain>.85?'#405435':grain>.4?'#344a30':'#293f2c';}
+          else {const seam=wx%1<.035||wy%1<.035;c.fillStyle=seam?'#151b25':(Math.floor(wx)+Math.floor(wy))%2?'#3b3c40':'#303339';}
           c.fillRect(sx,sy,6,4);
         }
       }
@@ -49,10 +54,13 @@ window.EscapeRenderer = class {
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       if(hit.tile===1){
-        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=this.art.brick;
-        c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,top,3,height);
-        c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,top,3,height);this.decorate(hit,x,top,height);continue;
+        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'?this.art.forest:this.art.brick;
+        const forest=room.environment?.kind==='forest',wallTop=forest?horizon-(2.6-eye)*height:top,wallHeight=forest?height*2.6:height;
+        c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,wallTop,3,wallHeight);
+        if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,top,3,height);c.globalAlpha=1;}
+        c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
       }
+      if(hit.tile===2&&room.environment?.portal){const u=hit.py-Math.floor(hit.py);c.drawImage(this.art.portalSealed,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}
       const base=hit.tile===2?[174,105,54]:room.color;
       c.fillStyle=`rgb(${base.map(v=>Math.round(v*shade)).join(',')})`;c.fillRect(x,top,3,height);
       const u=Math.max(Math.abs(hit.px-Math.round(hit.px)),Math.abs(hit.py-Math.round(hit.py)));
@@ -60,8 +68,9 @@ window.EscapeRenderer = class {
       for(let k=1;k<5;k++)c.fillRect(x,top+height*k/5,3,Math.max(1,height*.009));
       if(u<.025)c.fillRect(x,top,3,height);
       if(hit.tile===2 && u>.28){c.fillStyle='#ffcb78';c.fillRect(x,top+height*.43,3,height*.14);}
-      this.decorate(hit,x,top,height);
+      this.decorate(room,hit,x,top,height);
     }
+    if(room.environment?.portal&&opened)this.drawPortal(room,player,time,horizon,eye);
     if(room.physics){
       const p=room.physics;
       const project=(x,y,z)=>{const dx=x-player.x,dy=y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.15)return null;
@@ -107,6 +116,26 @@ window.EscapeRenderer = class {
     c.save();c.translate(w/2,h+recoil);c.fillStyle='#101713';c.beginPath();c.moveTo(-95,0);c.lineTo(-46,-120);c.lineTo(-31,-166);c.lineTo(31,-166);c.lineTo(46,-120);c.lineTo(95,0);c.fill();c.fillStyle='#657061';c.fillRect(-26,-157,52,127);c.fillStyle='#303e32';c.fillRect(-17,-149,34,112);c.fillStyle='#d0e690';c.fillRect(-12,-76,24,8);
     if(flash>0){c.fillStyle='#ffe2a1';c.beginPath();c.moveTo(-32,-166);c.lineTo(-46,-220);c.lineTo(-12,-203);c.lineTo(0,-264);c.lineTo(15,-201);c.lineTo(44,-225);c.lineTo(28,-166);c.fill();}c.restore();
     c.fillStyle='rgba(0,0,0,.10)';for(let y=0;y<h;y+=4)c.fillRect(0,y,w,1);
+  }
+  drawCeiling(room,player,horizon,eye){
+    const c=this.ctx,w=this.canvas.width,h=this.canvas.height;
+    c.fillStyle='#151922';c.fillRect(0,0,w,horizon);
+    for(let sy=0;sy<horizon-1;sy+=5){const depth=h*(1-eye)/(horizon-sy);
+      for(let sx=0;sx<w;sx+=7){const lateral=(sx/w*2-1)*.66,wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
+        const beam=((wx%2)+2)%2<.16||((wy%2)+2)%2<.12;
+        c.fillStyle=beam?'#161b23':(Math.floor(wx*2)+Math.floor(wy*2))%2?'#30333c':'#2a2c34';c.fillRect(sx,sy,7,5);
+      }
+    }
+    c.fillStyle=room.environment.tint;c.globalAlpha=.13;c.fillRect(0,0,w,horizon);c.globalAlpha=1;
+  }
+  drawPortal(room,player,time,horizon,eye){
+    const c=this.ctx,w=this.canvas.width,h=this.canvas.height;
+    // El mismo plano que la puerta física: visible desde ambos lados y atravesable.
+    for(let x=0;x<w;x+=3){const angle=player.angle+Math.atan((x/w*2-1)*.66),dx=Math.cos(angle);if(Math.abs(dx)<1e-7)continue;
+      const distance=(7-player.x)/dx;if(distance<=.03)continue;const y=player.y+Math.sin(angle)*distance;if(y<3||y>=4)continue;
+      const hit=this.cast(room,player.x,player.y,angle,true);if(hit.distance<distance-.01)continue;
+      const height=h/(distance*Math.cos(angle-player.angle)),top=horizon-(1-eye)*height;c.globalAlpha=.88+.12*Math.sin(time/650);c.drawImage(this.art.portalOpen,Math.floor((y-3)*512),0,1,512,x,top,3,height);c.globalAlpha=1;
+    }
   }
   drawTable(room,player,opened,roulette,time){
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height,dx=room.table.x-player.x,dy=room.table.y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.25)return;
