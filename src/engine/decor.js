@@ -26,5 +26,20 @@ window.makeWallArt=()=>{
     c.fillStyle='#1b2b48';c.beginPath();c.moveTo(10,0);c.lineTo(90,0);c.lineTo(90,250);c.lineTo(50,294);c.lineTo(10,250);c.closePath();c.fill();c.strokeStyle='#b7a476';c.lineWidth=3;c.stroke();
     c.strokeStyle='#a9d6ec';c.beginPath();c.moveTo(50,60);c.lineTo(72,120);c.lineTo(50,180);c.lineTo(28,120);c.closePath();c.stroke();c.beginPath();c.arc(50,120,33,0,Math.PI*2);c.stroke();
   });
-  return {portrait,equations,crest};
+  const brick=make(512,512,(c,w,h)=>{
+    let seed=7301;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+    c.fillStyle='#292a28';c.fillRect(0,0,w,h);
+    // Hiladas alternadas, juntas hundidas, cantos gastados y humedad.
+    for(let row=0;row<8;row++)for(let col=-1;col<5;col++){
+      const x=col*128+(row%2)*64,y=row*64,tone=Math.floor(random()*30),warm=random()>.5;
+      const gradient=c.createLinearGradient(x,y,x+35,y+64);gradient.addColorStop(0,`rgb(${140+tone},${warm?112+tone:122+tone},${98+tone})`);gradient.addColorStop(1,`rgb(${99+tone},${warm?78+tone:89+tone},${70+tone})`);
+      c.fillStyle=gradient;c.beginPath();c.moveTo(x+7,y+4);c.lineTo(x+120,y+3);c.lineTo(x+125,y+9);c.lineTo(x+124,y+55);c.lineTo(x+118,y+60);c.lineTo(x+6,y+59);c.lineTo(x+3,y+52);c.lineTo(x+3,y+10);c.closePath();c.fill();
+      c.strokeStyle='#d5c9a944';c.lineWidth=2;c.beginPath();c.moveTo(x+7,y+7);c.lineTo(x+120,y+6);c.moveTo(x+6,y+9);c.lineTo(x+6,y+50);c.stroke();
+      c.strokeStyle='#171d2480';c.beginPath();c.moveTo(x+8,y+57);c.lineTo(x+120,y+57);c.lineTo(x+122,y+11);c.stroke();
+      if(random()>.58){const cx=x+15+random()*90;c.strokeStyle='#2c302b99';c.lineWidth=1.5;c.beginPath();c.moveTo(cx,y+5);c.lineTo(cx-7,y+17);c.lineTo(cx+2,y+27);c.lineTo(cx-3,y+37);c.stroke();}
+      for(let i=0;i<30;i++){c.fillStyle=i%2?'#e3d6b618':'#19211f25';c.fillRect(x+8+random()*109,y+9+random()*43,1+random()*4,1+random()*2);}
+      if(random()>.63){c.fillStyle='#45503c66';for(let i=0;i<18;i++){const mx=x+random()*125,my=y+55+random()*7;c.beginPath();c.ellipse(mx,my,3+random()*9,1+random()*3,0,0,Math.PI*2);c.fill();}}
+    }
+  });
+  return {portrait,equations,crest,brick};
 };

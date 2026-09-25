@@ -25,7 +25,7 @@ Recorrer manualmente: cargar y disparar en la primera sala, rodear el cañón, c
 
 El cañón permanece en el origen físico. Su elevación y giro se dibujan y actualizan desde ProjectileLab. La recámara muestra el color cargado. El renderizador publica áreas de clic para cañón y cristal de mesa; los botones HTML ofrecen las mismas acciones por teclado y móvil.
 
-La mesa y el cañón tienen colisión en main.js. La ruleta se detiene con el sector elegido bajo su indicador; todas las animaciones avanzan con el bucle principal y dejan de actualizarse al cambiar de sala. No hay temporizadores de juego pendientes entre salas.
+La mesa y el cañón tienen colisión en main.js. La ruleta se detiene con el sector elegido bajo su indicador; todas las animaciones avanzan con el bucle principal y dejan de actualizarse al cambiar de sala. El único intervalo global actualiza el reloj de la aventura.
 
 ## Cámara, salto y decoración
 
@@ -37,7 +37,19 @@ Shift multiplica la velocidad de 2.3 celdas/s por 1.55. Se aplica antes de norma
 
 `TrajectoryHologram` usa `Projectile.sample`, los parámetros del lanzamiento y `shot.t`; no ejecuta otra simulación. Se abre después de un disparo válido y conserva su traza. La predicción opcional usa los ajustes actuales y comparte estado con la casilla del cuaderno. La escala se calcula con el recorrido y la altura máxima del tiro, no con su posición instantánea, para evitar saltos de escala en vuelo. El panel se oculta al morir o cambiar de habitación.
 
-`decor.js` construye tres texturas de canvas sin descargas externas. `renderer.decorate` las proyecta por columnas sobre las caras interiores norte y sur del mapa, respetando la oclusión de los muros. Las ubicaciones asumen la planta actual de siete filas; si cambia, adapta sus coordenadas.
+`decor.js` construye cuatro texturas de canvas sin descargas externas: ladrillos, retrato, ecuaciones y estandartes. Los ladrillos tienen ocho hiladas alternadas y una semilla fija para las grietas, manchas y variaciones de color. Se generan una vez, no en cada fotograma. El raycasting DDA devuelve la cara exacta y la casilla del muro; la coordenada de impacto fija la columna de textura. Las puertas conservan su identificación dorada.
+
+`renderer.decorate` proyecta retrato, ecuaciones y estandartes sobre las caras interiores norte y sur del mapa, respetando la oclusión de los muros. Las ubicaciones asumen la planta actual de siete filas; si cambia, adapta sus coordenadas.
+
+## Aventura y cuenta atrás
+
+`AdventureClock` usa una fecha límite absoluta de `Date.now()`. El reloj comienza al cerrar la introducción con **Entrar al castillo** (también Escape). Se consulta desde el bucle, cada 250 ms y al cambiar la visibilidad. No depende de la tasa de cuadros ni se pausa al ocultar la pestaña; si el navegador suspende los temporizadores, al volver recupera el tiempo real transcurrido.
+
+Estados: `ready`, `running`, `expired`, `complete`. `canPlay()` permite movimiento e interacción solo durante la partida. Caducar cancela el proyectil, cierra un diálogo de caída si lo había y abre el desenlace; reiniciar vuelve a la sala I. Morir o cambiar de habitación conserva la fecha límite. Completar la salida congela el tiempo restante. No hay persistencia entre recargas.
+
+`ADVENTURE_CONFIG` define duración (1800 s), aviso (600 s), peligro (180 s) y reservas de música. `astralia:urgency` se emite una vez por cambio de fase con `phase`, `remainingSeconds` y `musicCue`. Consulta `assets/audio/tension/README.md` para conectar pistas futuras al mezclador. El contador usa `role="timer"` sin anunciar cada segundo; un mensaje separado anuncia los umbrales y los diálogos describen los desenlaces. La animación roja respeta movimiento reducido.
+
+`node tests/adventure.cjs` comprueba los límites exactos, el tiempo transcurrido fuera del bucle, la expiración única, el reinicio, la finalización y los cruces del raycasting.
 
 ## Derrota y audio
 

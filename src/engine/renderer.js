@@ -3,7 +3,7 @@ window.EscapeRenderer = class {
   constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art=makeWallArt(); }
   decorate(hit,x,top,height){
     if(hit.tile!==1)return;
-    const south=hit.py>=6&&hit.py<6.04,north=hit.py>.96&&hit.py<1;
+    const south=hit.axis==='y'&&hit.cy===6,north=hit.axis==='y'&&hit.cy===0;
     if(!south&&!north)return;
     let art,start,end;
     if(south&&hit.px>=5.1&&hit.px<=6.5){art=this.art.portrait;start=5.1;end=6.5;}
@@ -14,11 +14,14 @@ window.EscapeRenderer = class {
     this.ctx.save();this.ctx.globalAlpha=Math.max(.35,1/(1+hit.distance*.055));this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top+height*.12,3,height*.76);this.ctx.restore();
   }
   cast(room,x,y,angle,opened) {
-    const dx=Math.cos(angle),dy=Math.sin(angle);
-    for(let distance=.02;distance<40;distance+=.025){
-      const px=x+dx*distance,py=y+dy*distance,cx=Math.floor(px),cy=Math.floor(py);
-      const tile=room.map[cy]?.[cx]??1;
-      if(tile===1 || (tile===2&&!opened)) return {distance,tile,px,py};
+    // Cruces exactos de cuadrícula: las juntas permanecen fijas al mirar alrededor.
+    const dx=Math.cos(angle),dy=Math.sin(angle),stepX=dx<0?-1:1,stepY=dy<0?-1:1;
+    const deltaX=Math.abs(dx)>1e-10?Math.abs(1/dx):Infinity,deltaY=Math.abs(dy)>1e-10?Math.abs(1/dy):Infinity;
+    let cx=Math.floor(x),cy=Math.floor(y),sideX=deltaX===Infinity?Infinity:(dx<0?x-cx:cx+1-x)*deltaX,sideY=deltaY===Infinity?Infinity:(dy<0?y-cy:cy+1-y)*deltaY;
+    for(let step=0;step<128;step++){
+      let distance,axis;if(sideX<sideY){distance=sideX;sideX+=deltaX;cx+=stepX;axis='x';}else{distance=sideY;sideY+=deltaY;cy+=stepY;axis='y';}
+      if(distance>40)break;const tile=room.map[cy]?.[cx]??1;
+      if(tile===1||(tile===2&&!opened))return {distance,tile,px:x+dx*distance,py:y+dy*distance,cx,cy,axis};
     }
     return {distance:40,tile:0,px:0,py:0};
   }
@@ -34,7 +37,7 @@ window.EscapeRenderer = class {
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.map[Math.floor(wy)]?.[Math.floor(wx)];
           if(tile===3){const bridge=opened&&Math.floor(wy)===3;c.fillStyle=bridge?(wx%1<.08?'#a6d6f8':'#4b6586'):'#04090d';}
-          else c.fillStyle=(Math.floor(wx)+Math.floor(wy))%2?'#353e60':'#2d3855';
+          else c.fillStyle=(Math.floor(wx)+Math.floor(wy))%2?'#3b3c40':'#303339';
           c.fillRect(sx,sy,6,4);
         }
       }
@@ -43,8 +46,13 @@ window.EscapeRenderer = class {
       const angle=player.angle+Math.atan((x/w*2-1)*.66);
       const hit=this.cast(room,player.x,player.y,angle,opened);
       const d=Math.max(.02,hit.distance*Math.cos(angle-player.angle)),height=h/d,top=horizon-(1-eye)*height;
-      const side=Math.min(hit.px%1,1-hit.px%1)<.035;
+      const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
+      if(hit.tile===1){
+        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=this.art.brick;
+        c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,top,3,height);
+        c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,top,3,height);this.decorate(hit,x,top,height);continue;
+      }
       const base=hit.tile===2?[174,105,54]:room.color;
       c.fillStyle=`rgb(${base.map(v=>Math.round(v*shade)).join(',')})`;c.fillRect(x,top,3,height);
       const u=Math.max(Math.abs(hit.px-Math.round(hit.px)),Math.abs(hit.py-Math.round(hit.py)));

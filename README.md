@@ -6,6 +6,16 @@ Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azu
 
 Abre `index.html` en un navegador moderno. No requiere instalación ni conexión. Opcionalmente: `python3 -m http.server 8000` desde esta carpeta.
 
+## El castillo del Dr. Eric
+
+Al entrar aparece una introducción: el Dr. Eric se oculta en un castillo abandonado y prepara la divergencia, un experimento que unirá la gravedad y el espacio. Las paredes son de ladrillo antiguo con juntas alternadas, grietas y humedad; se conservan los cuadros, grafitis y estandartes.
+
+Pulsa **Entrar al castillo** para iniciar una aventura de **30 minutos**. El reloj permanece en la esquina inferior derecha: verde al principio, naranja cuando quedan **10 minutos** y rojo en los últimos **3 minutos**. El texto también indica la urgencia.
+
+El tiempo es global: sigue corriendo al cambiar de habitación, reiniciar un reto, caer, reaparecer o cambiar de pestaña. Al llegar a cero, el Dr. Eric completa la divergencia, se detiene la partida y puedes **Volver a intentarlo** desde la primera sala con otros 30 minutos. Salir por el sexto umbral detiene el reloj. Recargar la página inicia una sesión nueva, con su introducción y sin progreso guardado.
+
+La música futura de tensión tiene su espacio reservado en `assets/audio/tension/README.md` y sus eventos en `src/engine/adventure.js`; todavía no se añaden pistas ni se cambia la música según la fase.
+
 ## Primera sala · El puente de Galileo
 
 1. Elige una bala en el estante: Saphir (0.5 kg), Ambre (1 kg), Rubis (2 kg) o Améthyste (4 kg).
@@ -44,7 +54,8 @@ Los enunciados son originales, inspirados temáticamente en la cinemática unive
 - `src/rooms/room-02/`: configuración, banco de problemas y controlador de ruleta.
 - `src/rooms/room-03/` a `room-06/`: espacios para futuros retos.
 - `src/engine/renderer.js`: raycasting, cámara con altura e inclinación, cañón, pantalla y mesa/ruleta.
-- `src/engine/decor.js`: retrato, grafitis y estandartes originales dibujados en canvas; proyección sobre las paredes.
+- `src/engine/decor.js`: ladrillos envejecidos, retrato, grafitis y estandartes originales dibujados en canvas; proyección sobre las paredes.
+- `src/engine/adventure.js`: contador global, umbrales y eventos para futura música de tensión.
 - `src/audio/sound.js`: mezclador y reproducción de los MP3 locales aportados por el usuario; clics y disparos sintetizados.
 - `assets/audio/ambiente.mp3`, `victoria.mp3`, `explosion.mp3`: copias de los tres archivos facilitados. Los originales de Descargas no se modifican.
 - `src/main.js`: navegación, interacción y colisiones.
@@ -52,5 +63,6 @@ Los enunciados son originales, inspirados temáticamente en la cinemática unive
 - `src/ui/trajectory-hologram.js`: proyección del tiro dentro de la escena, sincronizada con la física del orbe.
 - `assets/`: carpetas reservadas para futuros recursos.
 - `tests/physics.cjs`: comprobación de física y respuestas; ejecutar `node tests/physics.cjs`.
+- `tests/adventure.cjs`: reloj, estados de tiempo y cruces de muros; ejecutar `node tests/adventure.cjs`.
 
 Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. Las salas 03–06 mantienen puertas de boceto que se abren con un disparo.
