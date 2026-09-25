@@ -29,10 +29,13 @@ Los enunciados son originales, inspirados temáticamente en la cinemática unive
 ## Controles y audio
 
 - WASD: caminar; flechas izquierda/derecha: girar la cámara. Arrastra el mouse dentro de la escena (o el dedo en pantalla táctil) para mirar horizontal y verticalmente. Un clic breve conserva la interacción con la torreta o el cristal.
+- Mantén **Shift** mientras caminas para esprintar: 55 % más rápido. Soltarlo devuelve la velocidad normal; el movimiento diagonal conserva la misma rapidez y las colisiones siguen activas.
 - Espacio o botón **Saltar**: salto corto, sin doble salto. Puedes caer si aterrizas en el abismo; necesitas activar el puente para cruzar la primera sala.
 - F: disparar; en la segunda sala, acciona la mesa. E: interactuar con la mesa. En móvil hay botones de movimiento y pasos laterales junto a la escena.
 - El **Cuaderno de física** reúne gráfica, fórmulas y pistas. **Sobre la torreta** explica la puntería, la masa y la capacidad del equipo. Ambos se despliegan cuando los necesitas.
-- **Activar sonido**: reproduce `assets/audio/ambiente.mp3` en bucle. También se activa al primer disparo con bala cargada o al pulsar la mesa. El mezclador incluye volumen general, música de fondo, victoria y efectos, con silencio independiente. La victoria baja el fondo al 18 % de su volumen mientras suena. El audio se pausa al ocultar la pestaña.
+- **Trayectoria** abre una pequeña proyección verde dentro de la escena. Se abre automáticamente al disparar, anima el recorrido real y conserva el último intento. **Predecir próximo tiro** superpone una curva punteada que responde a tus ajustes; la vista es lateral y el texto informa del desvío lateral. Puedes cerrarla con ×. No necesitas desplegar el cuaderno.
+- El ambiente intenta sonar al entrar al mundo, con una entrada suave. Si el navegador bloquea la reproducción automática, comienza con el primer clic o tecla. **Activar sonido** permite reintentar o desactivar el audio; una desactivación explícita se respeta durante la sesión.
+- El mezclador incluye volumen general, fondo, victoria y efectos, con silencio independiente. La victoria reduce gradualmente el fondo al 18 %. En sus últimos 2.2 segundos se desvanece mientras el ambiente recupera su volumen de forma progresiva. El audio se pausa al ocultar la pestaña.
 - El menú permite probar cualquiera de las seis habitaciones. Cambiar de sala restablece su reto.
 
 ## Estructura
@@ -46,6 +49,7 @@ Los enunciados son originales, inspirados temáticamente en la cinemática unive
 - `assets/audio/ambiente.mp3`, `victoria.mp3`, `explosion.mp3`: copias de los tres archivos facilitados. Los originales de Descargas no se modifican.
 - `src/main.js`: navegación, interacción y colisiones.
 - `src/ui/styles.css` y `src/ui/rpg.css`: tema base y menús de RPG adaptables.
+- `src/ui/trajectory-hologram.js`: proyección del tiro dentro de la escena, sincronizada con la física del orbe.
 - `assets/`: carpetas reservadas para futuros recursos.
 - `tests/physics.cjs`: comprobación de física y respuestas; ejecutar `node tests/physics.cjs`.
 

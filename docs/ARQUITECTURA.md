@@ -33,10 +33,16 @@ Arrastrar sobre el canvas modifica `player.angle` y `player.pitch`; el giro vert
 
 Espacio activa un salto de velocidad inicial 2.1 celdas/s y gravedad 4.905 celdas/s² (9.81 m/s² con 2 m/celda). `jumpHeight` eleva la cámara y cambia la proyección de paredes, objetos y suelo. No se permite saltar en el aire ni desde el vacío. Las colisiones laterales continúan activas; aterrizar sin apoyo inicia la derrota. Reaparecer restablece altura y orientación. El alcance de este salto es mucho menor que el abismo de Galileo.
 
+Shift multiplica la velocidad de 2.3 celdas/s por 1.55. Se aplica antes de normalizar el desplazamiento diagonal y utiliza las mismas colisiones. Las teclas se limpian al perder el foco, morir o cambiar de habitación.
+
+`TrajectoryHologram` usa `Projectile.sample`, los parámetros del lanzamiento y `shot.t`; no ejecuta otra simulación. Se abre después de un disparo válido y conserva su traza. La predicción opcional usa los ajustes actuales y comparte estado con la casilla del cuaderno. La escala se calcula con el recorrido y la altura máxima del tiro, no con su posición instantánea, para evitar saltos de escala en vuelo. El panel se oculta al morir o cambiar de habitación.
+
 `decor.js` construye tres texturas de canvas sin descargas externas. `renderer.decorate` las proyecta por columnas sobre las caras interiores norte y sur del mapa, respetando la oclusión de los muros. Las ubicaciones asumen la planta actual de siete filas; si cambia, adapta sus coordenadas.
 
 ## Derrota y audio
 
 `death` pausa controles y lógica del reto. `die` cancela el disparo activo; `animateDeath` muestra la caída o fragmentos de explosión y abre un diálogo. `respawn` restablece la posición sin cerrar un puente ganado ni borrar intentos. Cambiar de sala restablece el reto como antes.
 
-Sound usa HTMLAudioElement para MP3, de modo que index.html continúa funcionando mediante file:// sin fetch/CORS. Los efectos sintetizados pasan por Web Audio. Cada canal multiplica su volumen por el general. La victoria atenúa el fondo y se puede mantener al cambiar de habitación. La derrota detiene fondo/victoria; reaparecer recupera el fondo. Los navegadores requieren un gesto del usuario para iniciar audio.
+Sound usa HTMLAudioElement para MP3, de modo que index.html continúa funcionando mediante file:// sin fetch/CORS. Los efectos sintetizados pasan por Web Audio. Cada canal multiplica su volumen por el general. Al entrar se intenta reproducir el ambiente; si el navegador devuelve NotAllowedError, se reintenta con un gesto. AudioContext se crea al interactuar y no se espera a resume() para continuar el juego. Desactivar el sonido cancela el inicio automático durante la sesión.
+
+`Sound.mix(dt)` se actualiza desde el bucle principal: aplica una entrada de ambiente de 1.2 s, atenúa gradualmente durante la victoria y cruza las pistas durante los últimos 2.2 s del MP3. El volumen general y los silencios se aplican después de las envolventes, de modo que silenciar es inmediato. La victoria puede mantenerse al cambiar de habitación. La derrota detiene fondo/victoria; reaparecer recupera el fondo con una entrada gradual. Ocultar la pestaña pausa el audio y conserva el progreso de las pistas.
