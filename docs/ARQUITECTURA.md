@@ -27,6 +27,14 @@ El cañón permanece en el origen físico. Su elevación y giro se dibujan y act
 
 La mesa y el cañón tienen colisión en main.js. La ruleta se detiene con el sector elegido bajo su indicador; todas las animaciones avanzan con el bucle principal y dejan de actualizarse al cambiar de sala. No hay temporizadores de juego pendientes entre salas.
 
+## Cámara, salto y decoración
+
+Arrastrar sobre el canvas modifica `player.angle` y `player.pitch`; el giro vertical está limitado para conservar una vista útil. Pointer capture permite terminar el gesto aunque el mouse salga del canvas. Un desplazamiento mayor de 5 píxeles suprime el clic de interacción. Se mantiene la alternativa de flechas para girar y no se cambia la puntería de la torreta.
+
+Espacio activa un salto de velocidad inicial 2.1 celdas/s y gravedad 4.905 celdas/s² (9.81 m/s² con 2 m/celda). `jumpHeight` eleva la cámara y cambia la proyección de paredes, objetos y suelo. No se permite saltar en el aire ni desde el vacío. Las colisiones laterales continúan activas; aterrizar sin apoyo inicia la derrota. Reaparecer restablece altura y orientación. El alcance de este salto es mucho menor que el abismo de Galileo.
+
+`decor.js` construye tres texturas de canvas sin descargas externas. `renderer.decorate` las proyecta por columnas sobre las caras interiores norte y sur del mapa, respetando la oclusión de los muros. Las ubicaciones asumen la planta actual de siete filas; si cambia, adapta sus coordenadas.
+
 ## Derrota y audio
 
 `death` pausa controles y lógica del reto. `die` cancela el disparo activo; `animateDeath` muestra la caída o fragmentos de explosión y abre un diálogo. `respawn` restablece la posición sin cerrar un puente ganado ni borrar intentos. Cambiar de sala restablece el reto como antes.

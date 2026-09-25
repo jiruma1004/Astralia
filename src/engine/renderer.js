@@ -1,6 +1,18 @@
 /* Motor visual compartido: raycasting de una cuadrícula, sin dependencias. */
 window.EscapeRenderer = class {
-  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); }
+  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art=makeWallArt(); }
+  decorate(hit,x,top,height){
+    if(hit.tile!==1)return;
+    const south=hit.py>=6&&hit.py<6.04,north=hit.py>.96&&hit.py<1;
+    if(!south&&!north)return;
+    let art,start,end;
+    if(south&&hit.px>=5.1&&hit.px<=6.5){art=this.art.portrait;start=5.1;end=6.5;}
+    else if(north&&hit.px>=4.2&&hit.px<=7.4){art=this.art.equations;start=4.2;end=7.4;}
+    else if(hit.px%4>1.65&&hit.px%4<2.15){art=this.art.crest;start=Math.floor(hit.px/4)*4+1.65;end=start+.5;}
+    if(!art)return;
+    const u=south?(end-hit.px)/(end-start):(hit.px-start)/(end-start);
+    this.ctx.save();this.ctx.globalAlpha=Math.max(.35,1/(1+hit.distance*.055));this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top+height*.12,3,height*.76);this.ctx.restore();
+  }
   cast(room,x,y,angle,opened) {
     const dx=Math.cos(angle),dy=Math.sin(angle);
     for(let distance=.02;distance<40;distance+=.025){
@@ -12,12 +24,12 @@ window.EscapeRenderer = class {
   }
   draw(room,player,opened,flash,time,lab,roulette){
     this.tableButton=null;this.cannonBounds=null;
-    const c=this.ctx,w=this.canvas.width,h=this.canvas.height;
-    const sky=c.createLinearGradient(0,0,0,h/2);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,h/2);for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(h*.43),1.8,1.8);}
-    const floor=c.createLinearGradient(0,h/2,0,h);floor.addColorStop(0,'#17213f');floor.addColorStop(1,'#465477');c.fillStyle=floor;c.fillRect(0,h/2,w,h/2);
+    const c=this.ctx,w=this.canvas.width,h=this.canvas.height,horizon=h*(.5+(player.pitch||0)),eye=.5+(player.jumpHeight||0);
+    const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,horizon);for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(horizon*.86),1.8,1.8);}
+    const floor=c.createLinearGradient(0,horizon,0,h);floor.addColorStop(0,'#17213f');floor.addColorStop(1,'#465477');c.fillStyle=floor;c.fillRect(0,horizon,w,h-horizon);
     if(room.physics){
       // Proyección del suelo: el abismo y el puente ocupan las mismas casillas que las colisiones.
-      for(let sy=h/2+2;sy<h;sy+=4){const depth=(h*.5)/(sy-h/2);
+      for(let sy=Math.max(0,horizon+2);sy<h;sy+=4){const depth=(h*eye)/(sy-horizon);
         for(let sx=0;sx<w;sx+=6){const lateral=(sx/w*2-1)*.66;
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.map[Math.floor(wy)]?.[Math.floor(wx)];
@@ -30,7 +42,7 @@ window.EscapeRenderer = class {
     for(let x=0;x<w;x+=3){
       const angle=player.angle+Math.atan((x/w*2-1)*.66);
       const hit=this.cast(room,player.x,player.y,angle,opened);
-      const d=hit.distance*Math.cos(angle-player.angle),height=Math.min(h*3,h/d),top=(h-height)/2;
+      const d=Math.max(.02,hit.distance*Math.cos(angle-player.angle)),height=h/d,top=horizon-(1-eye)*height;
       const side=Math.min(hit.px%1,1-hit.px%1)<.035;
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       const base=hit.tile===2?[174,105,54]:room.color;
@@ -40,13 +52,14 @@ window.EscapeRenderer = class {
       for(let k=1;k<5;k++)c.fillRect(x,top+height*k/5,3,Math.max(1,height*.009));
       if(u<.025)c.fillRect(x,top,3,height);
       if(hit.tile===2 && u>.28){c.fillStyle='#ffcb78';c.fillRect(x,top+height*.43,3,height*.14);}
+      this.decorate(hit,x,top,height);
     }
     if(room.physics){
       const p=room.physics;
       const project=(x,y,z)=>{const dx=x-player.x,dy=y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.15)return null;
         const obstruction=this.cast(room,player.x,player.y,Math.atan2(dy,dx),opened);
         if(obstruction.distance+.1<Math.hypot(dx,dy))return null;
-        return {x:w/2+side/depth*w/1.32,y:h/2-(z-.5)*h/depth,scale:h/depth};};
+        return {x:w/2+side/depth*w/1.32,y:horizon-(z-eye)*h/depth,scale:h/depth};};
       const target=project(p.targetX,p.originY,p.targetHeight/p.metersPerCell);
       if(target){const r=Math.max(6,target.scale*p.tolerance/p.metersPerCell);c.fillStyle=opened?'#c2ee86':'#ffa95a';c.shadowColor=c.fillStyle;c.shadowBlur=18;c.beginPath();c.arc(target.x,target.y,r,0,Math.PI*2);c.fill();c.shadowBlur=0;c.strokeStyle='#f7edca';c.lineWidth=2;c.strokeRect(target.x-r-5,target.y-r-5,2*r+10,2*r+10);c.fillStyle='#eef3d8';c.font='12px Arial';c.textAlign='center';c.fillText(opened?'PUENTE ACTIVO':'BOTÓN SUSPENDIDO',target.x,target.y-r-18);c.textAlign='left';}
       if(lab?.shot){const shot=lab.shot;const q=Projectile.sample(shot.v,shot.angle,shot.t,p,shot.azimuth),pos=project(p.originX+q.x/p.metersPerCell,p.originY+q.z/p.metersPerCell,q.y/p.metersPerCell);if(pos&&q.y>=0){c.fillStyle=shot.ammo.color;c.beginPath();c.arc(pos.x,pos.y,Math.max(3,pos.scale*.07),0,Math.PI*2);c.fill();}}
@@ -90,7 +103,7 @@ window.EscapeRenderer = class {
   drawTable(room,player,opened,roulette,time){
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height,dx=room.table.x-player.x,dy=room.table.y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.25)return;
     const obstruction=this.cast(room,player.x,player.y,Math.atan2(dy,dx),opened);if(obstruction.distance+.1<Math.hypot(dx,dy))return;
-    const x=w/2+side/depth*w/1.32,scale=Math.min(1.7,2/depth),y=h/2+50*scale;
+    const x=w/2+side/depth*w/1.32,scale=Math.min(1.7,2/depth),y=h*(.5+(player.pitch||0))+(player.jumpHeight||0)*h/depth+50*scale;
     c.save();c.translate(x,y);c.scale(scale,scale);c.fillStyle='#101936';c.strokeStyle='#b4a071';c.lineWidth=3;c.fillRect(-105,18,22,130);c.strokeRect(-105,18,22,130);c.fillRect(83,18,22,130);c.strokeRect(83,18,22,130);c.fillStyle='#273654';c.beginPath();c.ellipse(0,10,147,49,0,0,Math.PI*2);c.fill();c.stroke();
     c.save();c.translate(0,-96);c.shadowColor='#8ab9ff';c.shadowBlur=20;for(let i=0;i<10;i++){const start=roulette.angle+i*Math.PI/5,end=start+Math.PI/5;c.fillStyle=i>=8?'#7c314c':(i%2?'#293c79':'#435595');c.beginPath();c.moveTo(0,0);c.arc(0,0,94,start,end);c.closePath();c.fill();c.strokeStyle='#b0bfe5';c.lineWidth=1;c.stroke();const a=(start+end)/2;c.save();c.translate(Math.cos(a)*67,Math.sin(a)*67);c.rotate(a+Math.PI/2);c.fillStyle='#fff1d0';c.font='bold 19px Georgia';c.textAlign='center';c.fillText(String(i+1).padStart(2,'0'),0,6);c.restore();}c.shadowBlur=0;c.fillStyle='#c9eaff';c.beginPath();c.arc(0,0,20,0,Math.PI*2);c.fill();c.fillStyle='#e2cc92';c.beginPath();c.moveTo(-12,-112);c.lineTo(12,-112);c.lineTo(0,-86);c.fill();c.restore();
     c.fillStyle=roulette.spinning?'#786882':'#a9e8ff';c.shadowColor='#96daff';c.shadowBlur=15;c.beginPath();c.ellipse(0,31,27,12,0,0,Math.PI*2);c.fill();c.shadowBlur=0;c.fillStyle='#ece1b9';c.font='14px Georgia';c.textAlign='center';c.fillText(roulette.spinning?'EL DESTINO GIRA…':'PULSA EL CRISTAL',0,81);c.restore();this.tableButton={x,y:y+31*scale,r:30*scale};
