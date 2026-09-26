@@ -3,7 +3,7 @@ window.RoomCompanions=class {
  constructor(){
   const view=document.querySelector('.scene-view');
   view.insertAdjacentHTML('beforeend',`<aside id="question-bubble" class="world-bubble" hidden aria-label="Pregunta de la habitación"><button id="question-fold" class="bubble-fold" aria-expanded="true">−</button><p class="eyebrow" id="question-owner">LA RUEDA PREGUNTA</p><div id="question-content"></div></aside>
-  <section id="answer-console" class="world-console" hidden aria-label="Panel de respuestas"><button id="console-close" class="bubble-fold" aria-label="Cerrar panel">×</button><p class="eyebrow">MESA DE RESPUESTAS</p><h2>Tu propuesta</h2><p class="console-note">Usa g = 9.81 m/s². Escribe números sin unidades.</p></section>
+  <section id="answer-console" class="world-console" hidden aria-label="Panel de respuestas"><button id="console-close" class="bubble-fold" aria-label="Cerrar panel">×</button><p class="eyebrow">SELLO DE LA PUERTA</p><h2>Tu propuesta</h2><p class="console-note">Usa g = 9.81 m/s². Escribe números sin unidades.</p></section>
   <aside id="paola-dialog" class="paola-dialog" hidden aria-label="Ayuda de Epi Paola"><button id="paola-close" class="bubble-fold" aria-label="Cerrar ayuda">×</button><canvas id="paola-portrait" width="128" height="128" aria-label="Epi Paola hablando"></canvas><div class="paola-words"><p class="eyebrow">EPI PAOLA · TU GUÍA</p><p id="paola-text" aria-hidden="true"></p><span id="paola-announcement" class="sr-only" role="status"></span><button id="paola-skip">Mostrar todo</button></div></aside>
   <aside id="maze-notice" class="maze-notice" hidden role="status"><strong>El laberinto de los ecos</strong><p>Al cruzar el umbral sientes una presencia. El eco de tus pasos parece llegar un instante tarde…</p><p>Cuatro tramos, tres puertas en cada uno. Abre una puerta con clic o E cuando estés cerca. Elegir una puerta equivocada te envía inmediatamente a un calabozo: resuelve otra pregunta para regresar al inicio, conservando las puertas abiertas. No te detengas más de lo necesario. Cada puerta correcta que cruces guarda un punto seguro.</p><button id="maze-understood">Entendido · A explorar</button></aside>
   <div id="chase-indicator" class="chase-indicator" hidden>CUIDADO, ALGUIEN TE PERSIGUE</div><p id="world-toast" class="world-toast" role="status" hidden></p><p id="interaction-hint" class="interaction-hint" hidden></p><small id="camera-hint">Clic en el mundo para mirar · Esc libera · H ayuda</small>`);
@@ -30,12 +30,12 @@ window.RoomCompanions=class {
   this.room=room;this.roulette=roulette;this.maze=maze;this.consoleOpen=false;this.nearConsole=false;this.toastTime=0;this.lastProblem=null;
   room.guide=null;this.closeHelp();
   for(const id of ['answer-console','paola-dialog','world-toast','chase-indicator'])document.getElementById(id).hidden=true;
-  document.querySelector('.scene-view').classList.toggle('has-world-question',!!(room.roulette||room.conceptual));
+  document.querySelector('.scene-view').classList.toggle('has-world-question',!!(room.roulette||room.conceptual||room.boss));
   document.querySelector('#question-bubble').hidden=!(room.roulette||room.conceptual);
   document.querySelector('#question-owner').textContent=room.conceptual?'EL LABERINTO PREGUNTA':'LA RUEDA PREGUNTA';
   document.querySelector('#roulette-status').hidden=!room.roulette;document.querySelector('#problem-card').hidden=true;
   document.querySelector('#concept-question').hidden=!room.conceptual;document.querySelector('#maze-notice').hidden=!room.conceptual;
-  document.querySelector('#ask-paola').hidden=!(room.physics||room.roulette||room.conceptual);
+  document.querySelector('#ask-paola').hidden=!(room.physics||room.roulette||room.conceptual||room.boss);
   document.querySelector('#question-content').hidden=false;document.querySelector('#question-fold').textContent='−';document.querySelector('#question-fold').setAttribute('aria-expanded','true');
   this.updateConcept();
  }
@@ -46,20 +46,20 @@ window.RoomCompanions=class {
   this.tickDialogue(dt);
   document.querySelector('#roulette-status').hidden=!this.room.roulette||!!this.roulette.current;
   if(this.room.roulette&&this.roulette.current!==this.lastProblem){this.lastProblem=this.roulette.current;this.revealQuestion();}
-  this.nearConsole=!!(playing&&this.room.answerDesk&&this.facing(player,this.room.answerDesk,renderer,opened));
+  this.nearConsole=!!(playing&&this.room.answerSeal&&this.facing(player,this.room.answerSeal,renderer,opened));
   if(this.consoleOpen&&(!this.nearConsole||!this.roulette.current))this.closeConsole();
   this.activeDoor=null;
   if(this.maze&&playing){const hit=renderer.cast(this.room,player.x,player.y,player.angle,false);if(hit.tile===2&&hit.distance<1.8){const d=this.maze.doorAt(hit.cx,hit.cy);if(d?.stage===this.maze.stage)this.activeDoor=d;}}
   const hint=document.querySelector('#interaction-hint');hint.hidden=!playing||!(this.room.roulette||this.room.conceptual||(!this.room.physics));
-  hint.textContent=this.room.conceptual?(this.maze.finished?'Clic o E junto a la puerta de roble':this.activeDoor?`Clic o E · Abrir ${this.activeDoor.letter}: ${this.activeDoor.text}`:'Acércate a una puerta'):this.room.roulette?(this.nearConsole?(this.roulette.current?'Clic o E · Panel de respuestas':'Primero gira la rueda'):'Clic o E junto a la mesa · Girar la ruleta'):'Clic o E cerca de la puerta · Abrir';
+  hint.textContent=this.room.conceptual?(this.maze.finished?'Clic o E junto a la puerta de roble':this.activeDoor?`Clic o E · Abrir ${this.activeDoor.letter}: ${this.activeDoor.text}`:'Acércate a una puerta'):this.room.roulette?(this.nearConsole?(this.roulette.current?'Clic o E · Responder al sello':'Primero gira la rueda'):'Clic o E junto a la mesa · Girar la ruleta'):'Clic o E cerca de la puerta · Abrir';
   const chase=document.querySelector('#chase-indicator');chase.hidden=!this.maze?.chasing||this.maze.finished;chase.textContent=this.maze?.returnGrace&&this.maze.grace>0?`IVÁN ESPERA · ${Math.ceil(this.maze.grace)} s PARA ALEJARTE`:'CUIDADO, ALGUIEN TE PERSIGUE';
   if(this.toastTime>0){this.toastTime-=dt;if(this.toastTime<=0)document.querySelector('#world-toast').hidden=true;}
  }
  openConsole(){if(!this.nearConsole||!this.roulette.current)return false;window.dispatchEvent(new Event('astralia:ui-open'));this.consoleOpen=true;document.querySelector('#answer-console').hidden=false;document.querySelector('#answer-fields input')?.focus({preventScroll:true});return true;}
  closeConsole(){this.consoleOpen=false;const panel=document.querySelector('#answer-console');if(panel.contains(document.activeElement)){document.activeElement.blur();document.querySelector('#game').focus({preventScroll:true});}panel.hidden=true;}
  help(){
-  if(!this.room||!(this.room.physics||this.room.roulette||this.room.conceptual))return;
-  const q=this.roulette?.current,text=this.room.physics?'Tal vez podrías mirar atrás… quizá ahí tengas la respuesta. En el muro hay ecuaciones escritas con tiza. Elige las que relacionen el movimiento horizontal y el vertical.':this.room.roulette?(q?`${q.hint} Cuando tengas tu resultado, busca la otra mesa: su panel verde te permite escribirlo. Mira hacia él y pulsa E.`:'Pulsa el cristal de la mesa central para elegir un problema. Luego separa los datos de lo que te piden. La segunda mesa, a la derecha del portal, guarda el panel de respuestas.'):this.maze.question.hint+(this.maze.returnGrace&&this.maze.grace>0?' Iván está esperando unos segundos. Aprovecha para alejarte. ':this.maze.chasing?' Cuidado, alguien te persigue. ':' ')+(this.maze.dungeon?'Resuelve el sello y elige una de las dos puertas para volver al inicio del laberinto. Tus puertas abiertas se conservarán.':'Elegir una puerta equivocada te teletransporta de inmediato al calabozo: allí tendrás otra pregunta antes de volver al inicio.');
+  if(!this.room||!(this.room.physics||this.room.roulette||this.room.conceptual||this.room.boss))return;
+  const q=this.roulette?.current,text=this.room.boss?'Iguala la parábola y la recta. Multiplica por cuatro para quitar las fracciones, lleva todo a un lado y factoriza. Obtendrás dos valores de x; sustituye cada uno en la recta para encontrar y. El láser izquierdo usa la raíz negativa y el derecho la positiva.':this.room.physics?'Tal vez podrías mirar atrás… quizá ahí tengas la respuesta. En el muro hay ecuaciones escritas con tiza. Elige las que relacionen el movimiento horizontal y el vertical.':this.room.roulette?(q?`${q.hint} Cuando tengas tu resultado, mira el sello de la puerta y pulsa E para escribir tu respuesta.`:'Pulsa el cristal de la mesa central para elegir un problema. Luego separa los datos de lo que te piden. La respuesta se escribe directamente en el sello de la puerta.'):this.maze.question.hint+(this.maze.returnGrace&&this.maze.grace>0?' Iván está esperando unos segundos. Aprovecha para alejarte. ':this.maze.chasing?' Cuidado, alguien te persigue. ':' ')+(this.maze.dungeon?'Resuelve el sello y elige una de las dos puertas para volver al inicio del laberinto. Tus puertas abiertas se conservarán.':'Elegir una puerta equivocada te teletransporta de inmediato al calabozo: allí tendrás otra pregunta antes de volver al inicio.');
   window.dispatchEvent(new Event('astralia:ui-open'));this.dialogue={text,chars:[...text],index:0,clock:0,elapsed:0,speaking:true};
   document.querySelector('#paola-text').textContent='';document.querySelector('#paola-announcement').textContent=text;document.querySelector('#paola-skip').textContent='Mostrar todo';document.querySelector('#paola-dialog').hidden=false;document.querySelector('#ask-paola').setAttribute('aria-expanded','true');Sound.tone(420,.08,'triangle',.09);
  }

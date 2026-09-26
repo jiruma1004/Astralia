@@ -1,6 +1,6 @@
 # Astralia · Academia de los seis umbrales
 
-Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azul nocturno, cristal, detalles dorados y letras más grandes. Seis habitaciones; las cuatro primeras tienen actividades y las dos últimas reservan futuros desafíos. Vista 2.5D por raycasting con objetos dibujados en canvas, sin dependencias externas. Las paredes incluyen estandartes, un retrato ilustrado original de Einstein y ecuaciones grafiteadas.
+Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azul nocturno, cristal, detalles dorados y letras más grandes. Seis habitaciones; las cinco primeras tienen actividades y la última reserva un futuro desafío. Vista 2.5D por raycasting con objetos dibujados en canvas, sin dependencias externas. Las paredes incluyen estandartes, un retrato ilustrado original de Einstein y ecuaciones grafiteadas.
 
 ## Abrir
 
@@ -8,9 +8,9 @@ Abre `index.html` en un navegador moderno. No requiere instalación ni conexión
 
 ## El castillo del Dr. Eric
 
-La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **corredor de las ideas** (IV), **Cripta cuántica** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. Desde la sala III hay techo de piedra con vigas, sin cielo.
+La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **corredor de las ideas** (IV), **parábola de Eric** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. La sala III tiene techo de piedra; IV y V son patios abiertos bajo el cielo.
 
-La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. Los retos V–VI siguen reservados para futuras actividades.
+La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. El reto VI sigue reservado para una futura actividad.
 
 Resolver la ruleta rompe el sello violeta y activa un portal turquesa atravesable. La mesa está ligeramente desplazada para que se vea la entrada detrás.
 
@@ -38,7 +38,7 @@ En **rapidez fijada**, la masa cambia la energía, pero no la trayectoria ideal.
 
 Acércate a la mesa y pulsa su cristal o la tecla **E**. Suena una campanada y la rueda gira durante 3.8 segundos. Selecciona sin repetir uno de diez problemas de MRUA, caída libre y tiro parabólico. Dos sectores rojos contienen retos avanzados de intercepción y optimización.
 
-El enunciado aparece en un globo a la derecha de la vista, que puedes minimizar. Busca la **segunda mesa, con panel verde**, a la derecha del portal: acércate, mira hacia él y pulsa **E** o haz clic en la pantalla. Solo así se abre el formulario; al apartar la mirada o alejarte se cierra. Introduce las dos respuestas numéricas en las unidades indicadas. Se acepta punto o coma decimal. Resolver un problema abre la puerta; puedes seguir girando para practicar el resto. Cada problema incluye pista y desarrollo. Reiniciar cierra la puerta y restablece la rueda.
+El enunciado aparece en un globo a la derecha de la vista, que puedes minimizar. Acércate al **sello de la puerta**, míralo y pulsa **E** o haz clic. Solo así se abre el formulario; al apartar la mirada o alejarte se cierra. Introduce las dos respuestas numéricas en las unidades indicadas. Se acepta punto o coma decimal. Resolver un problema abre la puerta; puedes seguir girando para practicar el resto. Cada problema incluye pista y desarrollo. Reiniciar cierra la puerta y restablece la rueda.
 
 Los enunciados son originales, inspirados temáticamente en la cinemática universitaria de Serway y Jewett; no son transcripciones ni números de ejercicios de una edición concreta. Consulta `docs/FUENTES.md`.
 
@@ -98,7 +98,7 @@ El agujero negro es un recurso visual de la historia: el ejercicio del cañón c
 - `tests/physics.cjs`: comprobación de física y respuestas; ejecutar `node tests/physics.cjs`.
 - `tests/adventure.cjs`: reloj, estados de tiempo y cruces de muros; ejecutar `node tests/adventure.cjs`.
 
-Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. Las salas 05–06 mantienen puertas de boceto que se abren con clic o E estando cerca.
+Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. La sala 06 mantiene una puerta de boceto que se abre con clic o E estando cerca.
 
 ## Respaldos
 
@@ -106,6 +106,14 @@ Los ZIP independientes del juego se guardan fuera del repositorio, en `../backup
 
 ## IV · El corredor de las ideas
 
-Un pasillo ancho de descanso con tres cajas bajas y cinco ecuaciones o símbolos que aparecen durante cinco segundos de cada ciclo de siete. Usa Espacio para saltar, Shift para esprintar o rodea todo por los lados. Rozar una idea solo ralentiza durante 0.45 segundos: no hay daño, caída ni reinicio. También hay un botón de sprint táctil. La lógica y los dibujos están en `src/rooms/room-04/corridor.js`.
+Acceso exterior al castillo: cielo, torres altas al fondo, antorchas de pie y camino central de adoquín. El ancho interior pasa de 7 a 5.6 celdas (20 % menos); las colisiones y los muros visibles usan los mismos límites. Las cajas son saltables y se pueden rodear. Los símbolos π, Σ e ∫ avanzan a 1.6 celdas/s hacia la entrada, por carriles fijos: no persiguen al jugador. Se reciclan al salir del corredor. Esquiva o salta; un impacto inicia Game Over y su música. Reapareces al principio del corredor con una nueva oleada. Shift permite sprint; hay botón táctil.
 
-El laberinto termina ahora en una puerta de roble con vetas, herrajes y argolla: se desbloquea al completar las cuatro preguntas y se abre con clic o E. Otra puerta de roble termina el corredor. Al acercarte pregunta «¿Estás listo para enfrentarte al Dr. Eric?». Puedes esperar o abrir y continuar a la sala V, todavía reservada para un futuro reto; el combate con Eric no está implementado. El reloj global sigue corriendo durante ese mensaje.
+La puerta de roble final pregunta «¿Estás listo para enfrentarte al Dr. Eric?». Puedes esperar o abrir y continuar a la sala V. El reloj global sigue corriendo durante ese mensaje.
+
+## V · La parábola de Eric
+
+Patio amplio abierto al cielo, muros de piedra, fosa y máquina tecnológica. Eric, de cuerpo completo y con bata, está sobre el soporte parabólico anclado a ambos muros. Hay dos aparatos láser en los laterales; acércate, mira el aparato y pulsa E o haz clic para introducir (x, y).
+
+El plano del soporte usa **y = x²/4 + 2** y la recta de corte **y = x/2 + 4**. Son coordenadas educativas del soporte, no coordenadas del suelo del motor. Igualarlas da x² − 2x − 8 = 0: raíces −2 y 4, puntos **(−2, 3)** y **(4, 6)**. Cada aparato comprueba pertenencia a ambas curvas, números finitos y la rama que le corresponde (izquierda negativa, derecha positiva), con tolerancia 0.04. Paola ofrece una pista de planteamiento con H.
+
+Un corte ilumina el haz recto hasta su intersección. Dos cortes hacen ceder la parte central, retiran a Eric y apagan la máquina. Se habilita el puente por el centro de la fosa y la puerta a VI. La fosa causa Game Over antes de tener puente; los cortes ya hechos se conservan al reaparecer. La sala VI sigue como boceto. Archivos: `src/rooms/room-05/boss.js`, `src/engine/outdoor.js`; pruebas `tests/boss.cjs` y `tests/corridor.cjs`.

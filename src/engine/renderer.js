@@ -26,8 +26,10 @@ window.EscapeRenderer = class {
     const dx=Math.cos(angle),dy=Math.sin(angle),stepX=dx<0?-1:1,stepY=dy<0?-1:1;
     const deltaX=Math.abs(dx)>1e-10?Math.abs(1/dx):Infinity,deltaY=Math.abs(dy)>1e-10?Math.abs(1/dy):Infinity;
     let cx=Math.floor(x),cy=Math.floor(y),sideX=deltaX===Infinity?Infinity:(dx<0?x-cx:cx+1-x)*deltaX,sideY=deltaY===Infinity?Infinity:(dy<0?y-cy:cy+1-y)*deltaY;
+    const by=room.bounds?(dy>0?room.bounds.maxY:room.bounds.minY):null,bd=by!==null&&Math.abs(dy)>1e-8?(by-y)/dy:Infinity;
     for(let step=0;step<128;step++){
       let distance,axis;if(sideX<sideY){distance=sideX;sideX+=deltaX;cx+=stepX;axis='x';}else{distance=sideY;sideY+=deltaY;cy+=stepY;axis='y';}
+      if(bd>0&&bd<distance)return {distance:bd,tile:1,px:x+dx*bd,py:by,cx:Math.floor(x+dx*bd),cy:Math.floor(by),axis:'y'};
       if(distance>40)break;const tile=room.map[cy]?.[cx]??1;
       if(tile===1||(tile===2&&!opened))return {distance,tile,px:x+dx*distance,py:y+dy*distance,cx,cy,axis};
     }
@@ -38,15 +40,18 @@ window.EscapeRenderer = class {
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height,horizon=h*(.5+(player.pitch||0)),eye=.5+(player.jumpHeight||0);
     const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,horizon);if(room.environment?.kind!=='interior')for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(horizon*.86),1.8,1.8);}
     const floor=c.createLinearGradient(0,horizon,0,h);floor.addColorStop(0,'#17213f');floor.addColorStop(1,'#465477');c.fillStyle=floor;c.fillRect(0,horizon,w,h-horizon);
+    if(room.environment?.kind==='courtyard')this.outdoor.background(this,room,player,this.actors);
     if(room.environment?.kind==='interior')this.drawCeiling(room,player,horizon,eye);
-    if(room.physics||room.environment?.kind==='interior'){
+    if(room.physics||room.environment?.kind==='interior'||room.environment?.kind==='courtyard'){
       // Proyección del suelo: el abismo y el puente ocupan las mismas casillas que las colisiones.
       for(let sy=Math.max(0,horizon+2);sy<h;sy+=4){const depth=(h*eye)/(sy-horizon);
         for(let sx=0;sx<w;sx+=6){const lateral=(sx/w*2-1)*.66;
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.map[Math.floor(wy)]?.[Math.floor(wx)];
-          if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-12)/4.4,by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
+          if(tile===3&&room.boss){const bridge=opened&&Math.floor(wy)===7;c.fillStyle=bridge?'#758c8b':((Math.floor(wx*3)+Math.floor(wy*3))%2?'#060c1c':'#091425');}
+          else if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-12)/4.4,by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
           else if(room.environment?.kind==='forest'){const noise=Math.sin(Math.floor(wx*9)*12.9898+Math.floor(wy*9)*78.233)*43758.5453,grain=noise-Math.floor(noise);c.fillStyle=grain>.85?'#405435':grain>.4?'#344a30':'#293f2c';}
+          else if(room.environment?.kind==='courtyard'){const center=room.corridor?4.5:7.5,onPath=Math.abs(wy-center)<1.05,seam=((wx%0.55)+.55)%.55<.04||((wy%0.45)+.45)%.45<.035;c.fillStyle=onPath?(seam?'#776445':'#b19b75'):(seam?'#29313b':'#495052');}
           else {const seam=wx%1<.035||wy%1<.035;c.fillStyle=seam?'#151b25':(Math.floor(wx)+Math.floor(wy))%2?'#3b3c40':'#303339';}
           c.fillRect(sx,sy,6,4);
         }
@@ -61,9 +66,9 @@ window.EscapeRenderer = class {
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       if(hit.tile===1){
         const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0?this.art.forest:room.environment?.moss?this.art.moss:this.art.brick;
-        const forest=room.environment?.kind==='forest'&&hit.cx!==0,wallTop=forest?horizon-(2.6-eye)*height:top,wallHeight=forest?height*2.6:height;
+        const forest=room.environment?.kind==='forest'&&hit.cx!==0,wallTop=forest?horizon-(2.6-eye)*height:room.corridor?horizon-(.65-eye)*height:room.boss?horizon-(3-eye)*height:top,wallHeight=forest?height*2.6:room.corridor?height*.65:room.boss?height*3:height;
         c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,wallTop,3,wallHeight);
-        if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,top,3,height);c.globalAlpha=1;}
+        if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,wallTop,3,wallHeight);c.globalAlpha=1;}
         c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
       }
       if(hit.tile===2&&room.oakDoor&&hit.cx===room.oakDoor.x&&hit.cy===room.oakDoor.y){const u=((hit.py%1)+1)%1;c.drawImage(this.art.oak,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}
@@ -118,7 +123,7 @@ window.EscapeRenderer = class {
       return;
     }
     if(room.roulette){this.drawTable(room,player,opened,roulette,time);return;}
-    if(room.conceptual||room.corridor)return;
+    if(room.conceptual||room.corridor||room.boss)return;
     // Retícula y silueta del cañón; sustituibles por sprites en assets/.
     c.strokeStyle='#dbe8c3';c.lineWidth=2;c.beginPath();c.moveTo(w/2-10,h/2);c.lineTo(w/2-4,h/2);c.moveTo(w/2+4,h/2);c.lineTo(w/2+10,h/2);c.moveTo(w/2,h/2-10);c.lineTo(w/2,h/2-4);c.stroke();
     const recoil=flash>0?18:0;

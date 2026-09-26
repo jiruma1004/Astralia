@@ -1,7 +1,3 @@
-# Habitación 04 · El corredor de las ideas
+# IV · Camino exterior al castillo
 
-Un descanso de movimiento entre el laberinto y la sala principal. Llega a la puerta de roble usando WASD, Shift y Espacio. Hay tres cajas bajas que se pueden saltar o rodear y cinco símbolos intermitentes. Tocarlos solo ralentiza brevemente, sin quitar vidas.
-
-La puerta pregunta si estás listo para enfrentarte al Dr. Eric. Confirmar la abre; esperar permite seguir explorando y volver a interactuar con clic o E. La sala V y el enfrentamiento siguen pendientes.
-
-Configuración del mapa: `room.js`. Obstáculos, símbolos y ritmos: `corridor.js`. Pruebas: `tests/corridor.cjs`.
+Ancho 5.6 celdas, camino de adoquín, cielo, torres y antorchas de pie. Usa WASD, Shift y Espacio para sortear tres cajas bajas y símbolos que vienen por carriles rectos a 1.6 celdas/s. No siguen al jugador. Un impacto causa Game Over; volver reinicia la oleada en la entrada. La puerta de roble final presenta el mensaje de preparación para Eric y conduce a la sala V.

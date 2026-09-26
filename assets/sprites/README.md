@@ -2,6 +2,12 @@
 
 `dr-eric.png`: dos gestos enfadados con cejas fruncidas, derivados de la fotografía aportada. Generado con la herramienta integrada de imágenes; fondo transparente y dos columnas para el prólogo de Paola. Se eliminaron el marco circular y el icono de la captura.
 
+## Eric de cuerpo completo · sala V
+
+Archivo: `dr-eric-standing.png`. Generado con la herramienta integrada de imágenes a partir del retrato aprobado con bata; el retrato del prólogo se conserva.
+
+Prompt: Use case: identity-preserve. Reference image: existing two portraits of Dr. Eric from our pixel RPG. Create a SINGLE full-body standing sprite of this exact recognizable professor, front-facing, arms folded, stern angry eyebrows. Keep his round face, short brown hair, black glasses, white chemistry lab coat, pale blue shirt and dark tie. Add dark trousers and shoes. Dignified chemistry professor as fantasy game antagonist, polished chunky 16-bit pixel art, crisp pixel clusters. Entire body visible head to shoes, centered with margin. Transparent background, one character, no text, no frame, no scene, no duplicates. Square output, portrait-shaped character occupies height.
+
 ## Actualización de Eric con bata
 
 Archivo: `dr-eric.png`. Editado con la herramienta integrada de imágenes, conservando dos cuadros de animación y la identidad del retrato.
