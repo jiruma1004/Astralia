@@ -33,6 +33,10 @@ nav button.active{position:relative;box-shadow:inset 3px 0 0 #e3cea0,0 0 24px #9
 .station select{font-size:14px;padding:8px}
 .sliders{gap:15px;margin:18px 0}
 .sliders input{height:20px;margin-top:6px}
+.numeric-settings input[type=number]{height:44px;padding:9px 12px;border:1px solid #869abd;border-radius:7px;background:#0e1b32;color:#ecf2ff;font-size:18px}
+.numeric-settings input:invalid:not(:placeholder-shown){border-color:#e8b279}
+.calculation-hint,#input-feedback{font-size:13px;line-height:1.5;color:#bcd0e8}
+.calculation-hint{border-left:2px solid #d8c395;padding-left:12px}
 .ammo-shelf{margin-top:18px;padding-top:12px}
 .ammo b{font-size:11px}
 .ammo small{font-size:13px}

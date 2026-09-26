@@ -47,5 +47,13 @@ window.makeScenery=()=>{
   else{c.fillStyle=frame;for(const [x,y] of [[20,20],[300,20],[20,318],[300,318]]){c.beginPath();c.moveTo(x,y-13);c.lineTo(x+10,y);c.lineTo(x,y+13);c.lineTo(x-10,y);c.closePath();c.fill();}}
   c.textAlign='center';c.fillStyle='#f0dfba';c.font=(name.length>16?'18':'21')+'px Trebuchet MS';c.fillText(name,160,339);c.fillStyle='#b3afc5';c.font='12px Trebuchet MS';c.fillText('GALERÍA DEL DR. ERIC · FICCIÓN',160,360);
  });
- return {forest,portalSealed:portal(false),portalOpen:portal(true),doof:portrait('doof','DOOFENSHMIRTZ','#b091c9','#49306c'),planck:portrait('planck','MAX PLANCK','#c0a16c','#345c45'),tesla:portrait('tesla','NIKOLA TESLA','#91aebe','#303d75'),curie:portrait('curie','MARIE CURIE','#987565','#496737'),eric:portrait('eric','DR. ERIC','#b4a477','#633d61')};
+ const chalkWall=make(1200,850,c=>{
+  c.fillStyle='#313c3be8';c.fillRect(0,0,1200,850);c.strokeStyle='#69756c';c.lineWidth=9;c.strokeRect(10,10,1180,830);
+  c.fillStyle='#e8ead8';c.font='38px Trebuchet MS';c.textAlign='center';c.fillText('ALGUIEN DEJÓ ESTAS ECUACIONES…',600,72);c.font='29px Trebuchet MS';c.fillText('¿Cuáles necesitas para cruzar el abismo?',600,124);c.textAlign='left';
+  const equations=['Δx = v₀ cos(θ) cos(φ) t','Δy = v₀ sen(θ) t − ½gt²','z = v₀ cos(θ) sen(φ) t','v = v₀ + at','Eₖ = ½mv²','F = ma','Δx = v₀t + ½at²','v = ωr'];
+  equations.forEach((eq,i)=>{c.save();c.translate(55+(i%2)*590,230+Math.floor(i/2)*148);c.rotate((i%3-1)*.012);c.fillStyle=i%3===0?'#d5e9cf':i%3===1?'#ece4bd':'#d2e7eb';c.font='italic 38px Georgia';c.fillText(eq,0,0);c.restore();});
+  c.font='27px Trebuchet MS';c.fillStyle='#c3cec5';c.fillText('Razona · calcula · experimenta · corrige',55,810);
+  for(let i=0;i<2000;i++){c.fillStyle='#313c3b33';c.fillRect(rnd()*1200,rnd()*850,1+rnd()*3,1+rnd()*2);}
+ });
+ return {forest,chalkWall,portalSealed:portal(false),portalOpen:portal(true),doof:portrait('doof','DOOFENSHMIRTZ','#b091c9','#49306c'),planck:portrait('planck','MAX PLANCK','#c0a16c','#345c45'),tesla:portrait('tesla','NIKOLA TESLA','#91aebe','#303d75'),curie:portrait('curie','MARIE CURIE','#987565','#496737'),eric:portrait('eric','DR. ERIC','#b4a477','#633d61')};
 };

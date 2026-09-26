@@ -2,7 +2,10 @@
 window.EscapeRenderer = class {
   constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art={...makeWallArt(),...makeScenery()}; }
   decorate(room,hit,x,top,height){
-    if(room.environment?.kind==='forest')return;
+    if(room.environment?.kind==='forest'){
+      if(hit.axis==='x'&&hit.cx===0&&hit.py>=3.25&&hit.py<=4.75){const art=this.art.chalkWall,u=(4.75-hit.py)/1.5;this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top-height*.1,3,height);}
+      return;
+    }
     if(hit.tile!==1)return;
     const south=hit.axis==='y'&&hit.cy===6,north=hit.axis==='y'&&hit.cy===0;
     if(!south&&!north)return;
@@ -54,8 +57,8 @@ window.EscapeRenderer = class {
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       if(hit.tile===1){
-        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'?this.art.forest:this.art.brick;
-        const forest=room.environment?.kind==='forest',wallTop=forest?horizon-(2.6-eye)*height:top,wallHeight=forest?height*2.6:height;
+        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0?this.art.forest:this.art.brick;
+        const forest=room.environment?.kind==='forest'&&hit.cx!==0,wallTop=forest?horizon-(2.6-eye)*height:top,wallHeight=forest?height*2.6:height;
         c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,wallTop,3,wallHeight);
         if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,top,3,height);c.globalAlpha=1;}
         c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;

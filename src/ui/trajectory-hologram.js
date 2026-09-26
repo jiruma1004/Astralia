@@ -9,7 +9,7 @@ window.TrajectoryHologram=class {
  hide(){this.panel.hidden=true;this.toggle.setAttribute('aria-expanded','false');}
  draw(){
   if(this.panel.hidden||!this.lab.room)return;
-  const lab=this.lab,p=lab.room.physics,s=lab.shot,c=this.ctx,w=this.canvas.width,h=this.canvas.height,predict=this.preview.checked;
+  const lab=this.lab,p=lab.room.physics,s=lab.shot,c=this.ctx,w=this.canvas.width,h=this.canvas.height,predict=!lab.room.calculationMode&&this.preview.checked;
   const models=[];if(s)models.push({v:s.v,angle:s.angle,azimuth:s.azimuth,result:s.result});if(predict)models.push({v:lab.v0,angle:lab.angle,azimuth:lab.azimuth,result:lab.result});
   const stop=r=>r.hit?r.targetTime:r.endTime;
   const maxX=Math.max(22,...models.map(m=>Projectile.sample(m.v,m.angle,stop(m.result),p,m.azimuth).x))*1.08;

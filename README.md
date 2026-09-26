@@ -26,7 +26,7 @@ La música futura de tensión tiene su espacio reservado en `assets/audio/tensio
 
 1. Elige una bala en el estante: Saphir (0.5 kg), Ambre (1 kg), Rubis (2 kg) o Améthyste (4 kg).
 2. Pulsa **Cargar orbe**, o toca el cañón de la escena después de elegirla. La recámara se ilumina con su color. La torreta Prisma tiene una base hexagonal y un cabezal de cristal, sin tubo largo ni ruedas.
-3. Ajusta elevación θ, giro horizontal φ y rapidez o energía. La pantalla del cañón refleja los ángulos.
+3. Calcula y escribe elevación θ, giro horizontal φ y rapidez o energía en campos numéricos. No hay deslizadores de tiro. Gira hacia atrás desde el inicio: el muro de piedra tiene ocho ecuaciones en tiza para que elijas las pertinentes. Los campos vacíos o fuera de sus límites no disparan ni consumen el orbe.
 4. Dispara. Cada lanzamiento consume la bala cargada; hay suministro ilimitado en el estante.
 5. Al alcanzar el botón suspendido, suena el MP3 de victoria y se activa el puente. Cruza por el centro; pisar el abismo provoca una caída. Rodea la torreta: es un objeto sólido.
 6. Si disparas con más de 180 J, la torreta explota y tu personaje queda fuera de combate. Aparece «en papel nada se quema». La capacidad es una regla del equipo ficticio, no un umbral físico universal.
@@ -49,7 +49,7 @@ Los enunciados son originales, inspirados temáticamente en la cinemática unive
 - Espacio o botón **Saltar**: salto corto, sin doble salto. Puedes caer si aterrizas en el abismo; necesitas activar el puente para cruzar la primera sala.
 - F: disparar; en la segunda sala, acciona la mesa. E: interactuar con la mesa. En móvil hay botones de movimiento y pasos laterales junto a la escena.
 - El **Cuaderno de física** reúne gráfica, fórmulas y pistas. **Sobre la torreta** explica la puntería, la masa y la capacidad del equipo. Ambos se despliegan cuando los necesitas.
-- **Trayectoria** abre una pequeña proyección verde dentro de la escena. Se abre automáticamente al disparar, anima el recorrido real y conserva el último intento. **Predecir próximo tiro** superpone una curva punteada que responde a tus ajustes; la vista es lateral y el texto informa del desvío lateral. Puedes cerrarla con ×. No necesitas desplegar el cuaderno.
+- **Trayectoria** abre una pequeña proyección verde dentro de la escena. Se abre automáticamente al disparar, anima el recorrido real y conserva el último intento. En la primera sala solo se muestra el recorrido real: no hay predicción ni alcance calculado de antemano. La vista es lateral y el texto informa del desvío lateral. Puedes cerrarla con ×. No necesitas desplegar el cuaderno.
 - El ambiente intenta sonar al entrar al mundo, con una entrada suave. Si el navegador bloquea la reproducción automática, comienza con el primer clic o tecla. **Activar sonido** permite reintentar o desactivar el audio; una desactivación explícita se respeta durante la sesión.
 - El mezclador incluye volumen general, fondo, victoria y efectos, con silencio independiente. La victoria reduce gradualmente el fondo al 18 %. En sus últimos 2.2 segundos se desvanece mientras el ambiente recupera su volumen de forma progresiva. El audio se pausa al ocultar la pestaña.
 - El menú permite probar cualquiera de las seis habitaciones. Cambiar de sala restablece su reto.
