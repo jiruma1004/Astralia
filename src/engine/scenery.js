@@ -48,12 +48,19 @@ window.makeScenery=()=>{
   c.textAlign='center';c.fillStyle='#f0dfba';c.font=(name.length>16?'18':'21')+'px Trebuchet MS';c.fillText(name,160,339);c.fillStyle='#b3afc5';c.font='12px Trebuchet MS';c.fillText('GALERÍA DEL DR. ERIC · FICCIÓN',160,360);
  });
  const chalkWall=make(1200,850,c=>{
-  c.fillStyle='#313c3be8';c.fillRect(0,0,1200,850);c.strokeStyle='#69756c';c.lineWidth=9;c.strokeRect(10,10,1180,830);
-  c.fillStyle='#e8ead8';c.font='38px Trebuchet MS';c.textAlign='center';c.fillText('ALGUIEN DEJÓ ESTAS ECUACIONES…',600,72);c.font='29px Trebuchet MS';c.fillText('¿Cuáles necesitas para cruzar el abismo?',600,124);c.textAlign='left';
-  const equations=['Δx = v₀ cos(θ) cos(φ) t','Δy = v₀ sen(θ) t − ½gt²','z = v₀ cos(θ) sen(φ) t','v = v₀ + at','Eₖ = ½mv²','F = ma','Δx = v₀t + ½at²','v = ωr'];
-  equations.forEach((eq,i)=>{c.save();c.translate(55+(i%2)*590,230+Math.floor(i/2)*148);c.rotate((i%3-1)*.012);c.fillStyle=i%3===0?'#d5e9cf':i%3===1?'#ece4bd':'#d2e7eb';c.font='italic 38px Georgia';c.fillText(eq,0,0);c.restore();});
-  c.font='27px Trebuchet MS';c.fillStyle='#c3cec5';c.fillText('Razona · calcula · experimenta · corrige',55,810);
-  for(let i=0;i<2000;i++){c.fillStyle='#313c3b33';c.fillRect(rnd()*1200,rnd()*850,1+rnd()*3,1+rnd()*2);}
+  // Fondo transparente: la pintura queda directamente sobre los ladrillos.
+  const equations=[
+   ['Δx = v₀ cos(θ) cos(φ) t',60,255,-.035,60,'#d9e9d1'],
+   ['F = ma',810,145,.065,72,'#e7dcad'],
+   ['Δy = v₀ sen(θ) t − ½gt²',125,485,.025,60,'#d5e6ed'],
+   ['Eₖ = ½mv²',95,730,-.06,68,'#e7dcad'],
+   ['v = v₀ + at',735,665,.045,60,'#d9e9d1']
+  ];
+  for(const [eq,x,y,angle,size,color] of equations){c.save();c.translate(x,y);c.rotate(angle);c.fillStyle=color;c.globalAlpha=.93;c.font=`italic ${size}px Georgia`;c.fillText(eq,0,0);c.restore();}
+  // Desgaste en los trazos, sin añadir una placa ni un recuadro opaco.
+  c.globalCompositeOperation='destination-out';
+  for(let i=0;i<3500;i++){c.fillStyle='#00000055';c.fillRect(rnd()*1200,rnd()*850,1+rnd()*3,1+rnd()*2);}
+  c.globalCompositeOperation='source-over';
  });
  return {forest,chalkWall,portalSealed:portal(false),portalOpen:portal(true),doof:portrait('doof','DOOFENSHMIRTZ','#b091c9','#49306c'),planck:portrait('planck','MAX PLANCK','#c0a16c','#345c45'),tesla:portrait('tesla','NIKOLA TESLA','#91aebe','#303d75'),curie:portrait('curie','MARIE CURIE','#987565','#496737'),eric:portrait('eric','DR. ERIC','#b4a477','#633d61')};
 };
