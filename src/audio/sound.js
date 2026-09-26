@@ -1,8 +1,8 @@
 /* MP3 aportados por el usuario + efectos breves sintetizados. Compatible con file://. */
 window.Sound={
- backgroundNames:['music','maze','villain','missing'],sceneTrack:'music',backgroundLevels:{music:1,maze:0,villain:0,missing:0},heartbeat:0,
+ backgroundNames:['music','maze','villain','missing','seal'],sceneTrack:'music',backgroundLevels:{music:1,maze:0,villain:0,missing:0,seal:0},heartbeat:0,
  gameOverReady:false,enabled:false,ctx:null,master:null,dead:false,hiddenPlaying:new Set(),autoPending:true,userDisabled:false,duck:1,entryFade:0,victoryFade:1,playIds:{},
- tracks:{laugh:new Audio('assets/audio/eric-laugh.mp3'),music:new Audio('assets/audio/ambiente.mp3'),victory:new Audio('assets/audio/victoria.mp3'),explosion:new Audio('assets/audio/explosion.mp3'),gameover:new Audio('assets/audio/game-over.mp3'),maze:new Audio('assets/audio/laberinto.mp3'),villain:new Audio('assets/audio/dramatic-villain.mp3'),missing:new Audio('assets/audio/missing-person.mp3')},
+ tracks:{seal:new Audio('assets/audio/sellado-magico.mp3'),laugh:new Audio('assets/audio/eric-laugh.mp3'),music:new Audio('assets/audio/ambiente.mp3'),victory:new Audio('assets/audio/victoria.mp3'),explosion:new Audio('assets/audio/explosion.mp3'),gameover:new Audio('assets/audio/game-over.mp3'),maze:new Audio('assets/audio/laberinto.mp3'),villain:new Audio('assets/audio/dramatic-villain.mp3'),missing:new Audio('assets/audio/missing-person.mp3')},
  async enable({automatic=false}={}){if(automatic&&this.userDisabled)return;this.userDisabled=false;this.enabled=true;
   // No esperamos a resume(): algunos navegadores lo dejan pendiente hasta un gesto.
   if(!automatic){try{if(!this.ctx){this.ctx=new(window.AudioContext||window.webkitAudioContext)();this.master=this.ctx.createGain();this.master.connect(this.ctx.destination);}this.ctx.resume().catch(()=>{});}catch(e){/* Los MP3 aún pueden funcionar sin efectos Web Audio. */}}
@@ -41,7 +41,7 @@ window.Sound={
  tick(){this.tone(640,.035,'triangle',.12);},
  fire(){if(!this.enabled||!this.ctx)return;const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(35,t+.35);g.gain.setValueAtTime(.65,t);g.gain.exponentialRampToValueAtTime(.001,t+.5);o.connect(g).connect(this.master);o.start();o.stop(t+.5);}
 };
-Sound.tracks.music.loop=Sound.tracks.maze.loop=true;
+Sound.tracks.music.loop=Sound.tracks.maze.loop=Sound.tracks.seal.loop=true;
 for(const [name,track] of Object.entries(Sound.tracks)){track.preload='metadata';track.addEventListener('error',()=>{document.querySelector('#audio-status').textContent='No se pudo cargar el archivo de '+name+'.';});}
 Sound.tracks.victory.onended=()=>Sound.apply();
 document.querySelector('#sound-toggle').onclick=()=>Sound.toggle();

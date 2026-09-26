@@ -19,7 +19,7 @@ window.ProjectileLab=class {
  if(s.result.hit){feedback='¡Impacto! Puente activado. Cruza por el centro hasta la salida.';Sound.success();this.onHit();}
  else if(s.result.endTime<s.result.targetTime){feedback=s.result.endTime<s.result.groundTime?'La bala chocó con la pared lateral antes de llegar. Reduce el giro horizontal.':'La bala cayó por debajo de la plataforma antes de llegar al botón.';}
  else{const delta=s.result.targetY-this.room.physics.targetHeight;feedback=`En el plano del botón: ${Math.abs(delta).toFixed(2)} m ${delta>=0?'por encima':'por debajo'} y ${Math.abs(s.result.targetZ).toFixed(2)} m hacia ${s.result.targetZ>=0?'la derecha':'la izquierda'}.`;}
- document.querySelector('#feedback').textContent=feedback;this.history.push(`${s.ammo.name} ${s.ammo.mass} kg · ${s.v.toFixed(2)} m/s · θ ${s.angle}° · φ ${s.azimuth}° — ${feedback}`);this.renderHistory();}}
+ document.querySelector('#feedback').textContent=feedback;this.onFeedback?.(feedback);this.history.push(`${s.ammo.name} ${s.ammo.mass} kg · ${s.v.toFixed(2)} m/s · θ ${s.angle}° · φ ${s.azimuth}° — ${feedback}`);this.renderHistory();}}
  this.draw();}
  renderHistory(){const list=document.querySelector('#attempts');list.replaceChildren();this.history.forEach(text=>{const li=document.createElement('li');li.textContent=text;list.append(li);});}
  draw(){if(!this.room)return;this.hologram?.draw();const c=this.c,w=this.graph.width,h=this.graph.height,p=this.room.physics,maxY=24,X=x=>45+x/26*(w-65),Y=y=>h-35-y/maxY*(h-55);c.clearRect(0,0,w,h);c.font='14px Georgia';c.lineWidth=1;
