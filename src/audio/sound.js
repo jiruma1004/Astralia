@@ -2,7 +2,7 @@
 window.Sound={
  backgroundNames:['music','maze','villain','missing'],sceneTrack:'music',backgroundLevels:{music:1,maze:0,villain:0,missing:0},heartbeat:0,
  gameOverReady:false,enabled:false,ctx:null,master:null,dead:false,hiddenPlaying:new Set(),autoPending:true,userDisabled:false,duck:1,entryFade:0,victoryFade:1,playIds:{},
- tracks:{music:new Audio('assets/audio/ambiente.mp3'),victory:new Audio('assets/audio/victoria.mp3'),explosion:new Audio('assets/audio/explosion.mp3'),gameover:new Audio('assets/audio/game-over.mp3'),maze:new Audio('assets/audio/laberinto.mp3'),villain:new Audio('assets/audio/dramatic-villain.mp3'),missing:new Audio('assets/audio/missing-person.mp3')},
+ tracks:{laugh:new Audio('assets/audio/eric-laugh.mp3'),music:new Audio('assets/audio/ambiente.mp3'),victory:new Audio('assets/audio/victoria.mp3'),explosion:new Audio('assets/audio/explosion.mp3'),gameover:new Audio('assets/audio/game-over.mp3'),maze:new Audio('assets/audio/laberinto.mp3'),villain:new Audio('assets/audio/dramatic-villain.mp3'),missing:new Audio('assets/audio/missing-person.mp3')},
  async enable({automatic=false}={}){if(automatic&&this.userDisabled)return;this.userDisabled=false;this.enabled=true;
   // No esperamos a resume(): algunos navegadores lo dejan pendiente hasta un gesto.
   if(!automatic){try{if(!this.ctx){this.ctx=new(window.AudioContext||window.webkitAudioContext)();this.master=this.ctx.createGain();this.master.connect(this.ctx.destination);}this.ctx.resume().catch(()=>{});}catch(e){/* Los MP3 aún pueden funcionar sin efectos Web Audio. */}}
@@ -21,14 +21,15 @@ window.Sound={
  },
  apply(){const main=this.enabled?this.gain('volume'):0,effects=main*this.gain('effects-volume');
   if(this.master&&this.effectLevel!==effects){this.master.gain.setTargetAtTime(effects,this.ctx.currentTime,.03);this.effectLevel=effects;}
-  for(const name of this.backgroundNames)this.tracks[name].volume=main*this.gain('music-volume')*this.duck*this.entryFade*this.backgroundLevels[name];this.tracks.victory.volume=main*this.gain('victory-volume')*this.victoryFade;this.tracks.explosion.volume=effects;this.tracks.gameover.volume=main*this.gain('gameover-volume');
+  for(const name of this.backgroundNames)this.tracks[name].volume=main*this.gain('music-volume')*this.duck*this.entryFade*this.backgroundLevels[name];this.tracks.victory.volume=main*this.gain('victory-volume')*this.victoryFade;this.tracks.explosion.volume=effects;this.tracks.laugh.volume=effects;this.tracks.gameover.volume=main*this.gain('gameover-volume');
   for(const id of ['volume','music-volume','victory-volume','effects-volume','gameover-volume']){const output=document.querySelector('#'+id+'-value'),text=Math.round(Number(document.querySelector('#'+id).value)*100)+' %';if(output.textContent!==text)output.textContent=text;}
  },
  ui(){const b=document.querySelector('#sound-toggle');b.textContent=this.enabled?'♫ Sonido activado':'♫ Activar sonido';b.setAttribute('aria-pressed',String(this.enabled));},
  stop(name){this.playIds[name]=(this.playIds[name]??0)+1;this.tracks[name].pause();this.tracks[name].currentTime=0;this.hiddenPlaying.delete(name);},
  toggle(){if(!this.enabled)return this.enable();this.userDisabled=true;this.autoPending=false;this.enabled=false;for(const name of Object.keys(this.tracks))this.stop(name);this.entryFade=0;this.apply();this.ui();},
- success(){if(this.dead)return;this.victoryFade=0;this.play('victory',true);},
- failure(kind){this.dead=true;this.gameOverReady=false;this.stop('gameover');for(const name of this.backgroundNames)this.stop(name);this.stop('victory');this.stop('explosion');if(kind==='explosion')this.play('explosion',true);else{this.tone(330,.35,'triangle',.24);this.tone(180,.7,'sine',.23,.15);}if(kind==='timeout')this.gameOver();},
+ laugh(){if(this.dead||!this.tracks.laugh.paused)return;this.play('laugh',true);},
+ success(){if(this.dead)return;this.stop('laugh');this.victoryFade=0;this.play('victory',true);},
+ failure(kind){this.stop('laugh');this.dead=true;this.gameOverReady=false;this.stop('gameover');for(const name of this.backgroundNames)this.stop(name);this.stop('victory');this.stop('explosion');if(kind==='explosion')this.play('explosion',true);else{this.tone(330,.35,'triangle',.24);this.tone(180,.7,'sine',.23,.15);}if(kind==='timeout')this.gameOver();},
  gameOver(){if(!this.dead)return;this.gameOverReady=true;this.stop('explosion');this.play('gameover',true);},
  recover(preserveVictory=false){const wasDead=this.dead;this.gameOverReady=false;this.stop('gameover');this.dead=false;this.stop('explosion');if(!preserveVictory)this.stop('victory');if(wasDead)this.entryFade=0;this.apply();if(this.enabled)this.play(this.sceneTrack);},
  selectBackground(name){if(!this.backgroundNames.includes(name)||name===this.sceneTrack)return;this.sceneTrack=name;if(this.enabled&&!this.dead)this.play(name,true);this.apply();},

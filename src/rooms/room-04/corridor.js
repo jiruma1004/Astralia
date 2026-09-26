@@ -2,13 +2,17 @@
 window.RelaxCorridor=class {
  constructor(onEvent){this.onEvent=onEvent;this.time=0;this.readyShown=false;this.caught=false;
   this.obstacles=[{x:10,y:4.5,width:1.2,height:.22},{x:18,y:2.6,width:1,height:.22},{x:24,y:6.2,width:1,height:.22}];
-  this.symbols=[{x:12,y:3,text:'π'},{x:20,y:5.8,text:'∑'},{x:28,y:4.4,text:'∫'}];this.art=new Map();
+  this.spawnX=24;this.spawnInterval=(28.5-1.8)/1.6/3/2;this.spawnClock=this.spawnInterval;this.nextLane=0;
+  this.lanes=[{y:3,text:'π'},{y:5.8,text:'∑'},{y:4.4,text:'∫'}];
+  this.symbols=this.lanes.map((s,i)=>({...s,x:8+i*8,age:1}));this.art=new Map();
  }
  blocks(x,y,height){return height<.25&&this.obstacles.some(o=>Math.abs(x-o.x)<.32&&Math.abs(y-o.y)<o.width/2+.18);}
  tick(dt,player){if(this.caught)return;this.time+=dt;
-  for(const s of this.symbols){s.x-=1.6*dt;if(s.x<1.8)s.x=28.5;
-   if(player.jumpHeight<.30&&Math.hypot(player.x-s.x,player.y-s.y)<.48){this.caught=true;this.onEvent('hit');return;}
+  this.spawnClock-=dt;while(this.spawnClock<=0){this.symbols.push({...this.lanes[this.nextLane++%this.lanes.length],x:this.spawnX,age:0});this.spawnClock+=this.spawnInterval;}
+  for(const s of this.symbols){s.age+=dt;s.x-=1.6*dt;
+   if(s.age>=.65&&player.jumpHeight<.30&&Math.hypot(player.x-s.x,player.y-s.y)<.48){this.caught=true;this.onEvent('hit');return;}
   }
+  this.symbols=this.symbols.filter(s=>s.x>=1.8);
   if(!this.readyShown&&Math.hypot(player.x-29,player.y-4.5)<2.4){this.readyShown=true;this.onEvent('ready');}
  }
  texture(obj,crate){const key=crate?'crate':obj.text;if(this.art.has(key))return this.art.get(key);const a=document.createElement('canvas');a.width=512;a.height=256;const c=a.getContext('2d');
@@ -18,7 +22,8 @@ window.RelaxCorridor=class {
  }
  draw(renderer,player,actors){const objs=[...this.obstacles.map(o=>({...o,crate:true})),...this.symbols];objs.sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y));
   for(const o of objs){const p=actors.project(renderer,player,o.x,o.y,0);if(!p)continue;const art=this.texture(o,o.crate),width=p.scale*(o.width||.8),height=p.scale*(o.crate?.22:.48),left=p.x-width/2,top=p.y-height-(o.crate?0:.06)*p.scale,c=renderer.ctx;
-   for(let x=Math.max(0,Math.floor(left/3)*3);x<Math.min(renderer.canvas.width,left+width);x+=3){if(p.depth>(renderer.depths[x]??Infinity)+.04)continue;const u=Math.max(0,(x-left)/width);c.drawImage(art,u*512,0,Math.min(512-u*512,3/width*512),256,x,top,3,height);}
+   c.save();if(!o.crate&&o.age<.65)c.globalAlpha=.35+.35*Math.sin(o.age*30)**2;
+   for(let x=Math.max(0,Math.floor(left/3)*3);x<Math.min(renderer.canvas.width,left+width);x+=3){if(p.depth>(renderer.depths[x]??Infinity)+.04)continue;const u=Math.max(0,(x-left)/width);c.drawImage(art,u*512,0,Math.min(512-u*512,3/width*512),256,x,top,3,height);}c.restore();
   }
  }
 };

@@ -106,7 +106,7 @@ Los ZIP independientes del juego se guardan fuera del repositorio, en `../backup
 
 ## IV · El corredor de las ideas
 
-Acceso exterior al castillo: cielo, torres altas al fondo, antorchas de pie y camino central de adoquín. El ancho interior pasa de 7 a 5.6 celdas (20 % menos); las colisiones y los muros visibles usan los mismos límites. Las cajas son saltables y se pueden rodear. Los símbolos π, Σ e ∫ avanzan a 1.6 celdas/s hacia la entrada, por carriles fijos: no persiguen al jugador. Se reciclan al salir del corredor. Esquiva o salta; un impacto inicia Game Over y su música. Reapareces al principio del corredor con una nueva oleada. Shift permite sprint; hay botón táctil.
+Acceso exterior al castillo: cielo, torres altas al fondo, antorchas de pie y camino central de adoquín. El ancho interior pasa de 7 a 5.6 celdas (20 % menos); las colisiones y los muros visibles usan los mismos límites. Las cajas son saltables y se pueden rodear. Los símbolos π, Σ e ∫ avanzan a 1.6 celdas/s hacia la entrada, por carriles fijos: no persiguen al jugador. Aparecen cada 2.78125 segundos: el doble de la frecuencia media anterior (5.5625 s). Nacen en x=24, cinco celdas antes de la puerta x=29, y se eliminan al salir por la entrada. Los recién creados parpadean durante 0.65 s antes de poder impactar. Esquiva o salta; un impacto inicia Game Over y su música. Reapareces al principio del corredor con una nueva oleada. Shift permite sprint; hay botón táctil.
 
 La puerta de roble final pregunta «¿Estás listo para enfrentarte al Dr. Eric?». Puedes esperar o abrir y continuar a la sala V. El reloj global sigue corriendo durante ese mensaje.
 
@@ -117,3 +117,7 @@ Patio amplio abierto al cielo, muros de piedra, fosa y máquina tecnológica. Er
 El plano del soporte usa **y = x²/4 + 2** y la recta de corte **y = x/2 + 4**. Son coordenadas educativas del soporte, no coordenadas del suelo del motor. Igualarlas da x² − 2x − 8 = 0: raíces −2 y 4, puntos **(−2, 3)** y **(4, 6)**. Cada aparato comprueba pertenencia a ambas curvas, números finitos y la rama que le corresponde (izquierda negativa, derecha positiva), con tolerancia 0.04. Paola ofrece una pista de planteamiento con H.
 
 Un corte ilumina el haz recto hasta su intersección. Dos cortes hacen ceder la parte central, retiran a Eric y apagan la máquina. Se habilita el puente por el centro de la fosa y la puerta a VI. La fosa causa Game Over antes de tener puente; los cortes ya hechos se conservan al reaparecer. La sala VI sigue como boceto. Archivos: `src/rooms/room-05/boss.js`, `src/engine/outdoor.js`; pruebas `tests/boss.cjs` y `tests/corridor.cjs`.
+
+### Risas y globos de Eric
+
+`assets/audio/eric-laugh.mp3` es la risa 8-bit aportada por el usuario, sin modificar. Usa el canal Efectos y respeta el silencio general. Eric habla al entrar, cada 18 segundos y reacciona a los intentos; las risas tienen una separación mínima de 12 segundos para evitar solapamientos. El globo dura seis segundos y se proyecta junto a su cabeza, sin quedar fijo en una esquina. Risa y globos se detienen al morir, derrotarlo o abandonar la sala. Estas frases no modifican las ecuaciones del reto.
