@@ -32,7 +32,7 @@ window.EscapeRenderer = class {
     return {distance:40,tile:0,px:0,py:0};
   }
   draw(room,player,opened,flash,time,lab,roulette){
-    this.tableButton=null;this.cannonBounds=null;
+    this.tableButton=null;this.cannonBounds=null;this.depths=[];
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height,horizon=h*(.5+(player.pitch||0)),eye=.5+(player.jumpHeight||0);
     const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,horizon);if(room.environment?.kind!=='interior')for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(horizon*.86),1.8,1.8);}
     const floor=c.createLinearGradient(0,horizon,0,h);floor.addColorStop(0,'#17213f');floor.addColorStop(1,'#465477');c.fillStyle=floor;c.fillRect(0,horizon,w,h-horizon);
@@ -54,6 +54,7 @@ window.EscapeRenderer = class {
       const angle=player.angle+Math.atan((x/w*2-1)*.66);
       const hit=this.cast(room,player.x,player.y,angle,opened);
       const d=Math.max(.02,hit.distance*Math.cos(angle-player.angle)),height=h/d,top=horizon-(1-eye)*height;
+      this.depths[x]=d;
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       if(hit.tile===1){
@@ -63,6 +64,7 @@ window.EscapeRenderer = class {
         if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,top,3,height);c.globalAlpha=1;}
         c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
       }
+      if(hit.tile===2&&room.maze){const door=room.maze.doorAt(hit.cx,hit.cy);if(door){const art=this.actors.doorTexture(door),u=((hit.py%1)+1)%1;c.drawImage(art,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}}
       if(hit.tile===2&&room.environment?.portal){const u=hit.py-Math.floor(hit.py);c.drawImage(this.art.portalSealed,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}
       const base=hit.tile===2?[174,105,54]:room.color;
       c.fillStyle=`rgb(${base.map(v=>Math.round(v*shade)).join(',')})`;c.fillRect(x,top,3,height);
@@ -113,6 +115,7 @@ window.EscapeRenderer = class {
       return;
     }
     if(room.roulette){this.drawTable(room,player,opened,roulette,time);return;}
+    if(room.conceptual)return;
     // Retícula y silueta del cañón; sustituibles por sprites en assets/.
     c.strokeStyle='#dbe8c3';c.lineWidth=2;c.beginPath();c.moveTo(w/2-10,h/2);c.lineTo(w/2-4,h/2);c.moveTo(w/2+4,h/2);c.lineTo(w/2+10,h/2);c.moveTo(w/2,h/2-10);c.lineTo(w/2,h/2-4);c.stroke();
     const recoil=flash>0?18:0;

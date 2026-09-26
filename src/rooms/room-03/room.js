@@ -1,18 +1,10 @@
-// Sala independiente. Añade aquí la lógica de su único reto.
+// Laberinto conceptual: el mapa y los reinicios viven en maze.js.
 window.ESCAPE_ROOMS = window.ESCAPE_ROOMS || [];
 window.ESCAPE_ROOMS.push({
-  id: 'room-03', name: 'Galería de los inadores', color: [133, 116, 91],
+  id: 'room-03', name: 'El laberinto de Ivan', color: [133, 116, 91],
   environment:{kind:'interior',label:'Galería de los inadores',tint:'#694879',portraits:['doof','planck']},
-  spawn: { x: 2.5, y: 3.5, angle: 0 },
-  challenge: { id: 'challenge-03', title: 'Reto por definir', implemented: false },
-  canUnlock(context) { return context.prototypeMode === true; },
-  map: [
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,0,0,0,0,0,0,2,0,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]
-  ]
+  spawn: { x: 2.5, y: 6.5, angle: 0 },exitX:33.4,conceptual:true,
+  challenge: { id: 'challenge-03', title: 'Cuatro decisiones de física', implemented: true },
+  canUnlock(context) { return context.mazeSolved === true; },
+  map: [] // ConceptMaze construye las cuatro galerías y sus puertas.
 });
