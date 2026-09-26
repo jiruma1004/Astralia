@@ -51,8 +51,8 @@ window.RoomCompanions=class {
   this.activeDoor=null;
   if(this.maze&&playing){const hit=renderer.cast(this.room,player.x,player.y,player.angle,false);if(hit.tile===2&&hit.distance<1.8){const d=this.maze.doorAt(hit.cx,hit.cy);if(d?.stage===this.maze.stage)this.activeDoor=d;}}
   const hint=document.querySelector('#interaction-hint');hint.hidden=!playing||!(this.room.roulette||this.room.conceptual||(!this.room.physics));
-  hint.textContent=this.room.conceptual?(this.activeDoor?`Clic o E · Abrir ${this.activeDoor.letter}: ${this.activeDoor.text}`:'Acércate a una puerta'):this.room.roulette?(this.nearConsole?(this.roulette.current?'Clic o E · Panel de respuestas':'Primero gira la rueda'):'Clic o E junto a la mesa · Girar la ruleta'):'Clic o E cerca de la puerta · Abrir';
-  const chase=document.querySelector('#chase-indicator');chase.hidden=!this.maze?.chasing;chase.textContent=this.maze?.returnGrace&&this.maze.grace>0?`IVÁN ESPERA · ${Math.ceil(this.maze.grace)} s PARA ALEJARTE`:'CUIDADO, ALGUIEN TE PERSIGUE';
+  hint.textContent=this.room.conceptual?(this.maze.finished?'Clic o E junto a la puerta de roble':this.activeDoor?`Clic o E · Abrir ${this.activeDoor.letter}: ${this.activeDoor.text}`:'Acércate a una puerta'):this.room.roulette?(this.nearConsole?(this.roulette.current?'Clic o E · Panel de respuestas':'Primero gira la rueda'):'Clic o E junto a la mesa · Girar la ruleta'):'Clic o E cerca de la puerta · Abrir';
+  const chase=document.querySelector('#chase-indicator');chase.hidden=!this.maze?.chasing||this.maze.finished;chase.textContent=this.maze?.returnGrace&&this.maze.grace>0?`IVÁN ESPERA · ${Math.ceil(this.maze.grace)} s PARA ALEJARTE`:'CUIDADO, ALGUIEN TE PERSIGUE';
   if(this.toastTime>0){this.toastTime-=dt;if(this.toastTime<=0)document.querySelector('#world-toast').hidden=true;}
  }
  openConsole(){if(!this.nearConsole||!this.roulette.current)return false;window.dispatchEvent(new Event('astralia:ui-open'));this.consoleOpen=true;document.querySelector('#answer-console').hidden=false;document.querySelector('#answer-fields input')?.focus({preventScroll:true});return true;}

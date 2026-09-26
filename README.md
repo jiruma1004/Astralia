@@ -1,6 +1,6 @@
 # Astralia · Academia de los seis umbrales
 
-Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azul nocturno, cristal, detalles dorados y letras más grandes. Seis habitaciones; las tres primeras tienen retos completos y las otras tres reservan futuros desafíos. Vista 2.5D por raycasting con objetos dibujados en canvas, sin dependencias externas. Las paredes incluyen estandartes, un retrato ilustrado original de Einstein y ecuaciones grafiteadas.
+Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azul nocturno, cristal, detalles dorados y letras más grandes. Seis habitaciones; las cuatro primeras tienen actividades y las dos últimas reservan futuros desafíos. Vista 2.5D por raycasting con objetos dibujados en canvas, sin dependencias externas. Las paredes incluyen estandartes, un retrato ilustrado original de Einstein y ecuaciones grafiteadas.
 
 ## Abrir
 
@@ -8,9 +8,9 @@ Abre `index.html` en un navegador moderno. No requiere instalación ni conexión
 
 ## El castillo del Dr. Eric
 
-La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **Gabinete de la tormenta** (IV), **Cripta cuántica** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. Desde la sala III hay techo de piedra con vigas, sin cielo.
+La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **corredor de las ideas** (IV), **Cripta cuántica** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. Desde la sala III hay techo de piedra con vigas, sin cielo.
 
-La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. Los retos IV–VI siguen reservados para futuras actividades.
+La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. Los retos V–VI siguen reservados para futuras actividades.
 
 Resolver la ruleta rompe el sello violeta y activa un portal turquesa atravesable. La mesa está ligeramente desplazada para que se vea la entrada detrás.
 
@@ -46,7 +46,7 @@ Los enunciados son originales, inspirados temáticamente en la cinemática unive
 
 Cuatro galerías conectadas, con exactamente tres puertas por tramo. La pregunta conceptual aparece a la derecha; cada puerta lleva una respuesta abreviada. Acércate y usa **clic o E** para abrirla. Todas las opciones abren puertas físicas: las incorrectas activan un portal violeta sin cuarto vacío detrás. Al elegir una respuesta incorrecta, te teletransportas inmediatamente a un calabozo mohoso con Iván y un quiz de dos puertas, elegido de un banco de 12 preguntas conceptuales. Fallar el sello te mantiene dentro mientras Iván se acerca; acertar te devuelve al inicio del laberinto con todas tus puertas abiertas conservadas. Volver a cruzar una puerta incorrecta abierta activa de nuevo su portal. La correcta conecta con la siguiente galería. Se trabajan fuerza neta, aceleración en la cima de un lanzamiento, caída en el vacío y aceleración centrípeta.
 
-El aviso de entrada solo habla de una presencia y ecos extraños, sin identificar al perseguidor. **El primer error** despierta a EPI Ivan desde cualquier tramo; si no hay errores, aparece **al abrir la segunda puerta distinta**, antes de cruzarla. La aparición tiene un breve margen de 2.5 segundos para orientarse. Aparece pixelado, alterna reposo y mordida y camina a 0.756 celdas/s (un 5 % más que antes), frente a las 2.3 del jugador. Busca un camino por las casillas libres, sin atravesar paredes, y también está esperando en el calabozo, con 1.5 segundos iniciales para orientarte. Si te alcanza, el intento termina con una animación de mordida y **Game Over**. No se reinicia automáticamente: el botón de continuar devuelve al último punto seguro. Ivan solo existe en la sala III. El aviso de persecución dice «Cuidado, alguien te persigue»; Paola también lo advierte al pedir ayuda con H. Resolver el calabozo fija el nuevo punto seguro en el inicio del laberinto. Al regresar, Iván permanece inmóvil y no puede capturarte durante 7 segundos; el aviso muestra el tiempo restante para alejarte. El banco del calabozo se baraja y se agota sin repeticiones antes de volver a mezclarlo, evitando repetir la última pregunta al cambiar de ciclo. Morir no reinicia esa bolsa; recargar o seleccionar de nuevo la sala sí.
+El aviso de entrada solo habla de una presencia y ecos extraños, sin identificar al perseguidor. **El primer error** despierta a EPI Ivan desde cualquier tramo; si no hay errores, aparece **al abrir la segunda puerta distinta**, antes de cruzarla. La aparición tiene un breve margen de 2.5 segundos para orientarse. Aparece pixelado, alterna reposo y mordida y camina a 0.7938 celdas/s (otro 5 % sobre 0.756), frente a las 2.3 del jugador. Busca un camino por las casillas libres, sin atravesar paredes, y también está esperando en el calabozo, con 1.5 segundos iniciales para orientarte. Si te alcanza, el intento termina con una animación de mordida y **Game Over**. No se reinicia automáticamente: el botón de continuar devuelve al último punto seguro. Ivan solo existe en la sala III. El aviso de persecución dice «Cuidado, alguien te persigue»; Paola también lo advierte al pedir ayuda con H. Resolver el calabozo fija el nuevo punto seguro en el inicio del laberinto. Al regresar, Iván permanece inmóvil y no puede capturarte durante 5 segundos; el aviso muestra el tiempo restante para alejarte. El banco del calabozo se baraja y se agota sin repeticiones antes de volver a mezclarlo, evitando repetir la última pregunta al cambiar de ciclo. Morir no reinicia esa bolsa; recargar o seleccionar de nuevo la sala sí.
 
 ## Puntos seguros y Game Over
 
@@ -98,8 +98,14 @@ El agujero negro es un recurso visual de la historia: el ejercicio del cañón c
 - `tests/physics.cjs`: comprobación de física y respuestas; ejecutar `node tests/physics.cjs`.
 - `tests/adventure.cjs`: reloj, estados de tiempo y cruces de muros; ejecutar `node tests/adventure.cjs`.
 
-Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. Las salas 04–06 mantienen puertas de boceto que se abren con clic o E estando cerca.
+Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. Las salas 05–06 mantienen puertas de boceto que se abren con clic o E estando cerca.
 
 ## Respaldos
 
 Los ZIP independientes del juego se guardan fuera del repositorio, en `../backups/`, con un archivo SHA-256. Se conserva una copia anterior a este prólogo y otra con la versión final. Para restaurar, extrae el ZIP y abre `escape-room/index.html`; incluye scripts, imágenes y todos los audios. El historial de Git conserva también cada versión publicada.
+
+## IV · El corredor de las ideas
+
+Un pasillo ancho de descanso con tres cajas bajas y cinco ecuaciones o símbolos que aparecen durante cinco segundos de cada ciclo de siete. Usa Espacio para saltar, Shift para esprintar o rodea todo por los lados. Rozar una idea solo ralentiza durante 0.45 segundos: no hay daño, caída ni reinicio. También hay un botón de sprint táctil. La lógica y los dibujos están en `src/rooms/room-04/corridor.js`.
+
+El laberinto termina ahora en una puerta de roble con vetas, herrajes y argolla: se desbloquea al completar las cuatro preguntas y se abre con clic o E. Otra puerta de roble termina el corredor. Al acercarte pregunta «¿Estás listo para enfrentarte al Dr. Eric?». Puedes esperar o abrir y continuar a la sala V, todavía reservada para un futuro reto; el combate con Eric no está implementado. El reloj global sigue corriendo durante ese mensaje.

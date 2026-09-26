@@ -35,7 +35,7 @@ window.ConceptMaze=class {
    q.answers.forEach((text,choice)=>{
     const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABC'[choice],correct:choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
     if(door.correct)for(let y=door.y-1;y<=door.y+1;y++)for(let x=base+9;x<=base+11;x++)this.room.map[y][x]=0;
-    if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3)this.room.map[door.y][49]=0;}
+    if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3){this.room.map[door.y][49]=2;this.room.oakDoor={x:49,y:door.y};}}
    });
   });
  }
@@ -62,8 +62,8 @@ window.ConceptMaze=class {
  }
  leaveDungeon(){
   this.room.map=this.savedWorld.map;this.doors=this.savedWorld.doors;this.room.environment=this.baseEnvironment;this.dungeon=false;this.stage=0;this.savedWorld=null;
-  this.enemy={x:1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=7;this.returnGrace=true;
-  this.onEvent('return','Sello resuelto. Regresas al inicio del laberinto; las puertas que abriste siguen abiertas. Iván esperará 7 segundos: aprovecha para alejarte.');
+  this.enemy={x:1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=5;this.returnGrace=true;
+  this.onEvent('return','Sello resuelto. Regresas al inicio del laberinto; las puertas que abriste siguen abiertas. Iván esperará 5 segundos: aprovecha para alejarte.');
  }
  doorAt(x,y){return this.doors.find(d=>d.x===x&&d.y===y);}
  choose(door,player={}){
@@ -97,13 +97,13 @@ window.ConceptMaze=class {
    const portal=this.doors.find(d=>!d.correct&&this.openDoors.has(d.stage+':'+d.choice)&&player.x>=d.x&&player.x<d.x+4&&Math.abs(player.y-(d.y+.5))<1.5);
    if(portal){this.enterDungeon(player,portal);return;}
   }
-  if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage+1)*12+1){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
+  if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage===3?48.2:(this.stage+1)*12+1)){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
   if(!this.chasing||this.finished||this.caught)return;
   this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;this.returnGrace=false;
   this.pathClock-=dt;
   const atCenter=Math.hypot(this.enemy.x-Math.floor(this.enemy.x)-.5,this.enemy.y-Math.floor(this.enemy.y)-.5)<.001;
   if(!this.path.length||(this.pathClock<=0&&atCenter)){this.path=this.routeTo(player);this.pathClock=.6;}
-  const target=this.path[0];if(target){const dx=target.x-this.enemy.x,dy=target.y-this.enemy.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*(.72*1.05));if(d>0){this.enemy.x+=dx/d*step;this.enemy.y+=dy/d*step;}if(d<=step+.00001){this.enemy.x=target.x;this.enemy.y=target.y;this.path.shift();}}
+  const target=this.path[0];if(target){const dx=target.x-this.enemy.x,dy=target.y-this.enemy.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*(.72*1.05*1.05));if(d>0){this.enemy.x+=dx/d*step;this.enemy.y+=dy/d*step;}if(d<=step+.00001){this.enemy.x=target.x;this.enemy.y=target.y;this.path.shift();}}
   if(Math.hypot(this.enemy.x-player.x,this.enemy.y-player.y)<.6){this.caught=true;this.bite=1.2;this.onEvent('caught','¡Ñam! EPI Ivan te alcanzó.');}
  }
 };

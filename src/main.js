@@ -1,11 +1,11 @@
 const canvas=document.querySelector('#game'),renderer=new EscapeRenderer(canvas),keys=new Set(),rooms=window.ESCAPE_ROOMS,lab=new ProjectileLab();
 let index=0,player,opened=false,flash=0,last=0,completed=false,death=null,checkpoint=null;
 lab.hologram=new TrajectoryHologram(lab);
-const companions=new RoomCompanions(),actors=new RoomActors();renderer.actors=actors;let maze=null;
+const companions=new RoomCompanions(),actors=new RoomActors();renderer.actors=actors;let maze=null,corridor=null;
 const spawnPlayer=room=>({...room.spawn,pitch:0,jumpHeight:0,jumpVelocity:0});
 const message=document.querySelector('#message'),nav=document.querySelector('#rooms');
 const mission=new AdventureClock({onChange:updateCountdown,onExpire:expireAdventure});
-const canPlay=()=>mission.state==='running'&&!completed&&!death&&document.querySelector('#maze-notice').hidden;
+const canPlay=()=>mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
 const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>keys.clear()});
 window.addEventListener('astralia:ui-open',()=>camera.release());
 function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
@@ -17,6 +17,7 @@ function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
  if(phaseChanged){window.dispatchEvent(new CustomEvent('astralia:urgency',{detail:{phase,remainingSeconds:remaining,musicCue}}));if(phase==='warning'||phase==='danger')document.querySelector('#timer-announcement').textContent='Quedan '+Math.ceil(remaining/60)+' minutos. '+hint;}
 }
 function expireAdventure(){
+ document.querySelector('#eric-ready').close();
  keys.clear();clearDeath();companions.closeHelp();companions.closeConsole();lab.hologram.hide();lab.dead=true;lab.lock(true);if(lab.shot)lab.shot.done=true;Sound.failure('timeout');
  document.querySelector('#door-status').textContent='TIEMPO AGOTADO';message.textContent='El Dr. Eric ha completado la divergencia.';
  document.querySelector('#adventure-expired').showModal();
@@ -33,14 +34,15 @@ new ResizeObserver(entries=>{const r=entries[0].contentRect;if(r.width&&r.height
 const roulette=new ProblemRoulette(()=>{if(!rooms[index].roulette)return;opened=rooms[index].canUnlock({problemSolved:true});document.querySelector('#door-status').textContent='SELLO ABIERTO';message.textContent='¡Sello roto! Rodea la mesa y atraviesa el portal luminoso.';});
 roulette.canAnswer=()=>canPlay()&&rooms[index].roulette&&companions.consoleOpen&&companions.facing(player,rooms[index].answerDesk,renderer,opened);
 rooms.forEach((room,i)=>{const button=document.createElement('button');button.innerHTML=`<b>${['I','II','III','IV','V','VI'][i]}</b><span>${room.name}<small>${room.challenge.implemented?room.challenge.title:'Por descubrir'}</small></span>`;button.onclick=()=>load(i);nav.append(button);});
-function load(i){clearDeath();Sound.selectBackground(rooms[i].conceptual?'maze':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
+function load(i){document.querySelector('#eric-ready').close();clearDeath();Sound.selectBackground(rooms[i].conceptual?'maze':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
  document.querySelector('#room-title').textContent=`UMBRAL ${['I','II','III','IV','V','VI'][i]} / ${room.name.toUpperCase()}`;
- document.querySelector('#door-status').textContent=room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':room.conceptual?'LABERINTO · 1 / 4':'PUERTA BLOQUEADA';
- message.textContent=room.physics?'Elige una bala del estante y cárgala en el cañón.':room.roulette?'Gira la rueda. Responde en el panel verde de la segunda mesa.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Las puertas equivocadas esconden portales al calabozo.':'Acércate a la puerta y ábrela con clic o E.';
+ document.querySelector('#door-status').textContent=room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':room.conceptual?'LABERINTO · 1 / 4':room.corridor?'CAMINO A LA SALA PRINCIPAL':'PUERTA BLOQUEADA';
+ message.textContent=room.physics?'Elige una bala del estante y cárgala en el cañón.':room.roulette?'Gira la rueda. Responde en el panel verde de la segunda mesa.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Las puertas equivocadas esconden portales al calabozo.':room.corridor?'Un respiro: Shift para correr, Espacio para saltar. Esquiva las ideas y rodea las cajas.':'Acércate a la puerta y ábrela con clic o E.';
  document.querySelector('#lab').hidden=document.querySelector('#station').hidden=document.querySelector('#trajectory-toggle').hidden=!room.physics;lab.hologram.hide();document.querySelector('#roulette-panel').hidden=true;
- document.querySelector('.scene-layout').classList.toggle('has-station',!!room.physics);document.querySelector('#equipment').textContent=room.physics?'CAÑÓN ASTRAL':room.roulette?'MESA DEL DESTINO':room.conceptual?'LABERINTO CONCEPTUAL':'CAÑÓN DE IMPULSO';
+ document.querySelector('.scene-layout').classList.toggle('has-station',!!room.physics);document.querySelector('#equipment').textContent=room.physics?'CAÑÓN ASTRAL':room.roulette?'MESA DEL DESTINO':room.conceptual?'LABERINTO CONCEPTUAL':room.corridor?'SALTO Y SPRINT':'CAÑÓN DE IMPULSO';
 
  if(room.physics)lab.reset(room);if(room.roulette)roulette.reset();
+ corridor=room.corridor?new RelaxCorridor(corridorEvent):null;
  maze=room.conceptual?new ConceptMaze(room,mazeEvent):null;room.maze=maze;companions.load(room,roulette,maze);checkpoint={room:index,stage:0,position:spawnPlayer(room)};
  [...nav.children].forEach((b,j)=>{b.classList.toggle('active',j===i);b.setAttribute('aria-current',j===i?'true':'false');});
 }
@@ -52,17 +54,28 @@ function mazeEvent(type,text){
  else if(type==='wrong')Sound.tone(180,.25,'triangle',.15);
  else if(type==='correct')Sound.click();
  else if(type==='advance'){checkpoint={room:index,stage:maze.stage,position:maze.checkpointPosition()};}
- else if(type==='complete'){opened=rooms[index].canUnlock({mazeSolved:true});Sound.success();}
- companions.updateConcept();companions.revealQuestion();companions.toast(text);message.textContent=text;
+ else if(type==='complete'){Sound.success();text='¡Laberinto superado! Abre la puerta de roble al final del pasaje.';}
+ companions.updateConcept();companions.revealQuestion();if(maze.finished)document.querySelector('#question-bubble').hidden=true;companions.toast(text);message.textContent=text;
  document.querySelector('#door-status').textContent=maze.dungeon?'CALABOZO · RESUELVE EL SELLO':maze.finished?'LABERINTO SUPERADO':`LABERINTO · ${maze.stage+1} / 4`;
 }
 function openNearbyDoor(angle=player.angle,screenY=null){
  const room=rooms[index];if(room.physics||room.roulette)return false;
  const hit=renderer.cast(room,player.x,player.y,angle,opened);if(hit.tile!==2||hit.distance>1.8)return false;
  if(screenY!==null){const height=canvas.height/(hit.distance*Math.cos(angle-player.angle)),top=canvas.height*(.5+(player.pitch||0))-(.5-(player.jumpHeight||0))*height;if(screenY<top||screenY>top+height)return false;}
+ if(room.oakDoor&&hit.cx===room.oakDoor.x&&hit.cy===room.oakDoor.y){
+  if(room.corridor){corridorEvent('ready');return true;}
+  if(maze?.finished){opened=room.canUnlock({mazeSolved:true});Sound.click();companions.toast('La puerta de roble se abre. Continúa hacia el corredor.');return true;}
+  return false;
+ }
  if(maze){const door=maze.doorAt(hit.cx,hit.cy);if(door?.stage!==maze.stage)return false;maze.choose(door,player);return true;}
  opened=room.canUnlock({prototypeMode:true});if(opened){Sound.click();document.querySelector('#door-status').textContent='PUERTA ABIERTA';message.textContent='Cruza la puerta para continuar.';}return opened;
 }
+function corridorEvent(type,text){
+ if(type==='ready'){if(opened)return;keys.clear();camera.release();document.querySelector('#eric-ready').showModal();return;}
+ companions.toast(text);Sound.tone(310,.08,'triangle',.06);
+}
+document.querySelector('#eric-ready-yes').onclick=()=>{document.querySelector('#eric-ready').close();if(!corridor)return;opened=rooms[index].canUnlock({ready:true});Sound.click();document.querySelector('#door-status').textContent='PUERTA DE ROBLE ABIERTA';companions.toast('Respira hondo. La sala principal te espera.');canvas.focus({preventScroll:true});};
+document.querySelector('#eric-ready-wait').onclick=()=>{document.querySelector('#eric-ready').close();canvas.focus({preventScroll:true});};
 async function interact(){
  if(!canPlay())return;
  if(openNearbyDoor())return;
@@ -93,7 +106,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape'){companions.closeHelp(
 document.querySelector('#station-fire').onclick=()=>shoot();
 document.querySelector('#jump').onclick=()=>{jump();canvas.focus({preventScroll:true});};
 document.querySelectorAll('[data-key]').forEach(b=>{b.onpointerdown=e=>{if(!canPlay())return;b.setPointerCapture(e.pointerId);keys.add(b.dataset.key.toLowerCase());};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.key.toLowerCase());});
-function walkable(x,y){const room=rooms[index];if(room.answerDesk&&Math.hypot(x-room.answerDesk.x,y-room.answerDesk.y)<.65)return false;if(room.table&&Math.hypot(x-room.table.x,y-room.table.y)<.8)return false;if(room.physics&&Math.hypot(x-room.physics.originX,y-room.physics.originY)<.38)return false;return [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]].every(([dx,dy])=>{const tile=room.map[Math.floor(y+dy)]?.[Math.floor(x+dx)]??1;return tile===0||(tile===2&&opened)||tile===3;});}
+function walkable(x,y){const room=rooms[index];if(corridor?.blocks(x,y,player.jumpHeight))return false;if(room.answerDesk&&Math.hypot(x-room.answerDesk.x,y-room.answerDesk.y)<.65)return false;if(room.table&&Math.hypot(x-room.table.x,y-room.table.y)<.8)return false;if(room.physics&&Math.hypot(x-room.physics.originX,y-room.physics.originY)<.38)return false;return [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]].every(([dx,dy])=>{const tile=room.map[Math.floor(y+dy)]?.[Math.floor(x+dx)]??1;return tile===0||(tile===2&&opened)||tile===3;});}
 // El abismo permite caminar: perder el suelo inicia la caída.
 function supported(x,y){const tile=rooms[index].map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===3);}
 function clearDeath(){death=null;camera.release();canvas.style.transform='';canvas.style.opacity='';const dialog=document.querySelector('#death-dialog');if(dialog.open)dialog.close();}
@@ -122,7 +135,7 @@ document.querySelector('#respawn').onclick=respawn;
 document.querySelector('#death-dialog').addEventListener('cancel',e=>{e.preventDefault();respawn();});
 
 function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);mission.tick();
- if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0),s=(keys.has('d')?1:0)-(keys.has('a')?1:0),speed=dt*2.3*(keys.has('shift')?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
+ if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0),s=(keys.has('d')?1:0)-(keys.has('a')?1:0),speed=dt*2.3*(corridor?.slow>0?.55:1)*(keys.has('shift')?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
  if(walkable(nx,player.y))player.x=nx;if(walkable(player.x,ny))player.y=ny;
  // Altura en celdas (2 m en Galileo): salto corto, sin doble salto ni apoyo sobre el vacío.
  if(player.jumpHeight>0||player.jumpVelocity>0){player.jumpVelocity-=4.905*dt;player.jumpHeight=Math.max(0,player.jumpHeight+player.jumpVelocity*dt);if(player.jumpHeight===0)player.jumpVelocity=0;}
@@ -130,8 +143,9 @@ function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math
  if(!death&&opened&&player.x>(rooms[index].exitX??7.6)){if(index<5)load(index+1);else if(mission.finish()){completed=true;message.textContent='Has cruzado los seis umbrales. ¡Has detenido al Dr. Eric!';document.querySelector('#door-status').textContent='SALIDA ALCANZADA';keys.clear();}}
  }
  if(canPlay()&&maze){maze.tick(dt,player);if(maze.chasing&&!maze.caught)Sound.pursuit(dt,Math.hypot(maze.enemy.x-player.x,maze.enemy.y-player.y));}
+ if(canPlay()&&corridor)corridor.tick(dt,player);
  companions.tick(dt,player,renderer,opened,canPlay());
  if(canPlay()&&rooms[index].physics)lab.tick(dt);if(canPlay()&&rooms[index].roulette)roulette.tick(dt);
- renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);animateDeath(dt);requestAnimationFrame(tick);
+ renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);if(corridor)corridor.draw(renderer,player,actors);animateDeath(dt);requestAnimationFrame(tick);
 }
 document.querySelector('#reset-lab').onclick=()=>load(index);document.querySelector('#reset-roulette').onclick=()=>load(index);load(0);mission.notify();document.querySelector('#adventure-intro').showModal();Sound.enable({automatic:true});requestAnimationFrame(tick);
