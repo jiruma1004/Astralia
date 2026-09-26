@@ -60,7 +60,7 @@ function openNearbyDoor(angle=player.angle,screenY=null){
  const room=rooms[index];if(room.physics||room.roulette)return false;
  const hit=renderer.cast(room,player.x,player.y,angle,opened);if(hit.tile!==2||hit.distance>1.8)return false;
  if(screenY!==null){const height=canvas.height/(hit.distance*Math.cos(angle-player.angle)),top=canvas.height*(.5+(player.pitch||0))-(.5-(player.jumpHeight||0))*height;if(screenY<top||screenY>top+height)return false;}
- if(maze){const door=maze.doorAt(hit.cx,hit.cy);if(door?.stage!==maze.stage)return false;maze.choose(door);return true;}
+ if(maze){const door=maze.doorAt(hit.cx,hit.cy);if(door?.stage!==maze.stage)return false;maze.choose(door,player);return true;}
  opened=room.canUnlock({prototypeMode:true});if(opened){Sound.click();document.querySelector('#door-status').textContent='PUERTA ABIERTA';message.textContent='Cruza la puerta para continuar.';}return opened;
 }
 async function interact(){

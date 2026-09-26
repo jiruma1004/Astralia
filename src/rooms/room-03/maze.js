@@ -16,7 +16,7 @@ window.ConceptMaze=class {
  reset(){
   this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
   this.enemy={x:1.5,y:8.5};
-  // Cada galería tiene una franja de cuartos detrás de las puertas. Solo uno conecta con la siguiente.
+  // Solo la respuesta correcta tiene un pasaje. Las incorrectas son portales sin cuarto detrás.
   this.room.map=Array.from({length:17},()=>Array(51).fill(1));
   CONCEPT_QUESTIONS.forEach((q,stage)=>{
    const base=stage*12;
@@ -25,7 +25,7 @@ window.ConceptMaze=class {
    const rows=q.answers.length===3?[3,8,13]:[2,6,10,14];
    q.answers.forEach((text,choice)=>{
     const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABCD'[choice],correct:choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
-    for(let y=door.y-1;y<=door.y+1;y++)for(let x=base+9;x<=base+11;x++)this.room.map[y][x]=0;
+    if(door.correct)for(let y=door.y-1;y<=door.y+1;y++)for(let x=base+9;x<=base+11;x++)this.room.map[y][x]=0;
     if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3)this.room.map[door.y][49]=0;}
    });
   });
@@ -47,7 +47,7 @@ window.ConceptMaze=class {
   this.onEvent('return','Sello resuelto. Regresas al inicio del laberinto; las puertas que abriste siguen abiertas.');
  }
  doorAt(x,y){return this.doors.find(d=>d.x===x&&d.y===y);}
- choose(door){
+ choose(door,player={}){
   if(this.dungeon){
    if(!door||!this.doors.includes(door)||this.caught)return null;
    if(door.correct){this.leaveDungeon();return true;}
@@ -57,7 +57,7 @@ window.ConceptMaze=class {
   this.room.map[door.y][door.x]=0;this.openDoors.add(door.stage+':'+door.choice);
   if(!door.correct||this.openDoors.size>=2)this.awaken();
   if(door.correct){this.passed.add(this.stage);this.onEvent('correct','La puerta se abre. Explora el pasaje y cruza hasta la siguiente galería.');return true;}
-  this.onEvent('wrong','Un portal se enciende tras la puerta equivocada. Cruzarlo te llevará al calabozo del error.');
+  this.enterDungeon(player,door);
   return false;
  }
  awaken(silent=false){if(this.chasing)return;this.chasing=true;this.enemy={x:this.stage*12+1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=2.5;if(!silent)this.onEvent('presence','Oyes pasos entre los muros. No estás solo.');}
