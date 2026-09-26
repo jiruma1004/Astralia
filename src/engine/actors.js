@@ -1,5 +1,5 @@
 window.RoomActors=class {
- constructor(){this.ivan=new Image();this.ivan.src='assets/sprites/epi-ivan.png';this.paola=new Image();/* Añadir paola.src cuando llegue su retrato. */this.doorArt=new Map();}
+ constructor(){this.ivan=new Image();this.ivan.src='assets/sprites/epi-ivan.png';this.doorArt=new Map();}
  doorTexture(door){
   const key=door.stage+'-'+door.choice;if(this.doorArt.has(key))return this.doorArt.get(key);
   const art=document.createElement('canvas');art.width=art.height=512;const c=art.getContext('2d');
@@ -9,7 +9,7 @@ window.RoomActors=class {
  }
  project(renderer,player,x,y,z){const w=renderer.canvas.width,h=renderer.canvas.height,dx=x-player.x,dy=y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.12)return null;return {x:w/2+side/depth*w/1.32,y:h*(.5+(player.pitch||0))-(z-.5-(player.jumpHeight||0))*h/depth,scale:h/depth,depth};}
  draw(renderer,room,player,opened,time,maze){
-  const objects=[];if(room.guide)objects.push({...room.guide,kind:'guide'});if(room.answerDesk)objects.push({...room.answerDesk,kind:'desk'});if(maze?.chasing)objects.push({...maze.enemy,kind:'ivan'});
+  const objects=[];if(room.answerDesk)objects.push({...room.answerDesk,kind:'desk'});if(maze?.chasing)objects.push({...maze.enemy,kind:'ivan'});
   objects.sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y));
   this.deskBounds=this.guideBounds=null;
   if(maze)this.drawDoorLabels(renderer,room,player,maze);
@@ -20,13 +20,6 @@ window.RoomActors=class {
    if(obj.kind==='desk'){
     c.fillStyle='#1c2535';c.strokeStyle='#c7a877';c.lineWidth=4;c.fillRect(-103,-136,17,135);c.fillRect(85,-136,17,135);c.fillStyle='#40516b';c.beginPath();c.ellipse(0,-140,132,35,0,0,Math.PI*2);c.fill();c.stroke();c.fillStyle='#869d9c';c.fillRect(-5,-185,10,40);
     c.fillStyle='#082b2a';c.strokeStyle='#9ae9c5';c.lineWidth=3;c.fillRect(-81,-291,162,110);c.strokeRect(-81,-291,162,110);c.fillStyle='#c8ffe5';c.font='16px Trebuchet MS';c.textAlign='center';c.fillText('RESPUESTAS',0,-260);c.font='13px Trebuchet MS';c.fillText('Mira aquí · E',0,-235);c.fillStyle='#82c9aa';c.fillRect(-55,-218,110,12);this.deskBounds={x:p.x-85*s,y:p.y-295*s,w:170*s,h:125*s};
-   }else{
-    c.fillStyle='#0005';c.beginPath();c.ellipse(0,-3,45,14,0,0,Math.PI*2);c.fill();
-    if(this.paola.complete&&this.paola.naturalWidth){c.imageSmoothingEnabled=false;c.drawImage(this.paola,-70,-295,140,280);}else{
-     // Figura de guía provisional, sin atribuir a Paola un retrato inventado.
-     c.fillStyle='#302945';c.fillRect(-35,-33,24,28);c.fillRect(11,-33,24,28);c.fillStyle='#a297bd';c.beginPath();c.moveTo(-26,-189);c.lineTo(26,-189);c.lineTo(58,-33);c.lineTo(-58,-33);c.closePath();c.fill();c.fillStyle='#5c4b83';c.fillRect(-27,-182,54,148);c.fillStyle='#e8d1b0';c.fillRect(-24,-244,48,51);c.fillStyle='#4b4166';c.fillRect(-32,-262,64,24);c.fillRect(-35,-244,13,66);c.fillRect(22,-244,13,66);c.fillStyle='#e6cf95';c.fillRect(-6,-158,12,12);c.fillRect(48,-171,5,149);c.fillStyle='#c2efff';c.beginPath();c.arc(50,-178,13,0,Math.PI*2);c.fill();
-    }
-    c.font='bold 16px Trebuchet MS';c.textAlign='center';c.fillStyle='#e8d5ff';c.fillText('EPI PAOLA',0,-282);c.font='12px Trebuchet MS';c.fillText('Tu guía · pide una pista',0,21);this.guideBounds={x:p.x-65*s,y:p.y-285*s,w:130*s,h:310*s};
    }c.restore();
   }
   if(room.conceptual||room.roulette){const c=renderer.ctx,w=renderer.canvas.width,h=renderer.canvas.height;c.fillStyle='#eee7c1';c.fillRect(w/2-2,h/2-2,4,4);}

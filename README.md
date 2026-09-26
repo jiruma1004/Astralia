@@ -30,13 +30,13 @@ La música futura de tensión tiene su espacio reservado en `assets/audio/tensio
 4. Dispara. Cada lanzamiento consume la bala cargada; hay suministro ilimitado en el estante.
 5. Al alcanzar el botón suspendido, suena el MP3 de victoria y se activa el puente. Cruza por el centro; pisar el abismo provoca una caída. Rodea la torreta: es un objeto sólido.
 6. Si disparas con más de 180 J, la torreta explota y tu personaje queda fuera de combate. Aparece «en papel nada se quema». La capacidad es una regla del equipo ficticio, no un umbral físico universal.
-7. Tras caer o explotar, pulsa **Volver a la plataforma** (también Escape). Conservas el registro y el puente si ya estaba activo; la torreta se repara. Una explosión consume la bala. Un disparo interrumpido por caída no activa el puente.
+7. Tras caer o explotar aparece **Game Over** con el MP3 aportado. Pulsa **Volver al último punto seguro** (también Escape). Conservas el registro y el puente si ya estaba activo; la torreta se repara. Una explosión consume la bala. Un disparo interrumpido por caída no activa el puente.
 
 En **rapidez fijada**, la masa cambia la energía, pero no la trayectoria ideal. En **energía fija**, la rapidez depende de la masa: v = √(2E/m). Modelo sin resistencia del aire, g = 9.81 m/s². El cañón permanece fijo: mirar alrededor no modifica su puntería. La gráfica lateral muestra x e y; los fallos informan también del desvío lateral z.
 
 ## Segunda sala · La rueda del destino
 
-Acércate a la mesa y pulsa su cristal, el botón **Pulsar mesa** o la tecla **E**. Suena una campanada y la rueda gira durante 3.8 segundos. Selecciona sin repetir uno de diez problemas de MRUA, caída libre y tiro parabólico. Dos sectores rojos contienen retos avanzados de intercepción y optimización.
+Acércate a la mesa y pulsa su cristal o la tecla **E**. Suena una campanada y la rueda gira durante 3.8 segundos. Selecciona sin repetir uno de diez problemas de MRUA, caída libre y tiro parabólico. Dos sectores rojos contienen retos avanzados de intercepción y optimización.
 
 El enunciado aparece en un globo a la derecha de la vista, que puedes minimizar. Busca la **segunda mesa, con panel verde**, a la derecha del portal: acércate, mira hacia él y pulsa **E** o haz clic en la pantalla. Solo así se abre el formulario; al apartar la mirada o alejarte se cierra. Introduce las dos respuestas numéricas en las unidades indicadas. Se acepta punto o coma decimal. Resolver un problema abre la puerta; puedes seguir girando para practicar el resto. Cada problema incluye pista y desarrollo. Reiniciar cierra la puerta y restablece la rueda.
 
@@ -44,24 +44,32 @@ Los enunciados son originales, inspirados temáticamente en la cinemática unive
 
 ## Tercera sala · El laberinto de Ivan
 
-Cuatro galerías conectadas, con tres o cuatro puertas por tramo. La pregunta conceptual aparece a la derecha; cada puerta lleva una respuesta abreviada. Acércate, mira la puerta y pulsa **E** (o el botón de interacción) para elegir. La correcta abre un paso físico; cruzarlo muestra la siguiente pregunta. Se trabajan fuerza neta, aceleración en la cima de un lanzamiento, caída en el vacío y aceleración centrípeta.
+Cuatro galerías conectadas, con tres o cuatro puertas por tramo. La pregunta conceptual aparece a la derecha; cada puerta lleva una respuesta abreviada. Acércate y usa **clic o E** para abrirla. Todas las opciones abren puertas físicas: las incorrectas dan a cuartos sin salida, mientras que la correcta conecta con la siguiente galería. Puedes retroceder para cambiar de ruta. Se trabajan fuerza neta, aceleración en la cima de un lanzamiento, caída en el vacío y aceleración centrípeta.
 
-Un error devuelve al inicio y cierra todas las puertas, mostrando una explicación breve. Los fallos del primer tramo no despiertan a Ivan. El primer error desde el segundo tramo activa la persecución: **EPI Ivan** aparece pixelado, alterna reposo y mordida y camina a 0.72 celdas/s, frente a las 2.3 del jugador. Busca un camino por las casillas libres, sin atravesar paredes. Si te alcanza, vuelves al inicio; seguirá persiguiéndote. El reloj no se reinicia. Al salir de la sala III desaparece. Cambiar de sala con el menú restablece el reto, como en las demás habitaciones.
+Desde el segundo tramo, abrir una puerta incorrecta despierta a **EPI Ivan**. Aparece pixelado, alterna reposo y mordida y camina a 0.72 celdas/s, frente a las 2.3 del jugador. Busca un camino por las casillas libres, sin atravesar paredes, y puede seguirte dentro de los cuartos cerrados. Si te alcanza, el intento termina con una animación de mordida y **Game Over**. No se reinicia automáticamente: el botón de continuar devuelve al último punto seguro. Ivan solo existe en la sala III.
 
-## Epi Paola · Pistas durante la aventura
+## Puntos seguros y Game Over
 
-Hay una guía provisional en las primeras tres salas. Haz clic en ella, acércate y mírala con **E**, o pulsa **Epi Paola · Ayuda**. En Galileo invita a mirar las ecuaciones detrás del inicio; en la ruleta orienta según el problema; en el laberinto ofrece una pista conceptual para el tramo actual. Su figura aún no reproduce a Paola: está preparada para reemplazarse con la foto que aportará el usuario. El sprite de Ivan y el prompt de generación están documentados en `assets/sprites/README.md`.
+Entrar en una sala guarda su inicio como punto seguro. En el laberinto, **cruzar completamente una puerta correcta hasta la siguiente galería** guarda ese nuevo tramo; abrirla sin cruzar aún no guarda progreso. Morir por captura, caída o sobrecarga reproduce `assets/audio/game-over.mp3`. En una explosión se escucha primero su efecto y luego Game Over. El contador global continúa durante la muerte y al reaparecer.
+
+Al continuar en el laberinto se mantienen abiertas las puertas correctas de tramos anteriores, se cierran los cuartos equivocados y se desactiva la persecución hasta otro error. En Galileo se conservan el puente desbloqueado y el registro de intentos. Elegir otra sala mediante el menú de pruebas o reiniciar un reto establece un nuevo punto seguro en su entrada. Recargar la página restablece la sesión completa; no hay guardado persistente.
+
+## Epi Paola · Diálogo animado
+
+En las primeras tres salas aparece un **globo de Epi Paola** dentro de la vista. Haz clic en él o pulsa **H**. Se abre su retrato pixelado, basado en la foto proporcionada, con dos gestos que se alternan mientras el texto se escribe letra por letra. Los zumbidos breves son sintetizados y se regulan con el canal **Efectos**; no son grabaciones de voz ni audio extraído de otro juego. **Mostrar todo** termina la escritura y la animación. Cerrar el diálogo o cambiar de sala detiene los sonidos.
+
+Las pistas son contextuales: en Galileo invita a mirar las ecuaciones detrás del inicio; en la ruleta orienta según el problema; en el laberinto ofrece una pista del tramo actual. Los sprites y prompts de generación están documentados en `assets/sprites/README.md`.
 
 ## Controles y audio
 
-- WASD: caminar; flechas izquierda/derecha: girar la cámara. Arrastra el mouse dentro de la escena (o el dedo en pantalla táctil) para mirar horizontal y verticalmente. Un clic breve conserva la interacción con la torreta o el cristal.
+- WASD: caminar; flechas izquierda/derecha: girar la cámara. En escritorio, un clic en el mundo captura el mouse: mueve el ratón para mirar sin mantener pulsado. **Esc** libera el cursor. Abrir la ayuda o el formulario, morir o cambiar de sala también lo libera. Si el navegador no permite capturarlo, se activa mirada con el mouse dentro de la escena; siguen disponibles las flechas. En pantalla táctil se mantiene el arrastre con el dedo. Un toque breve interactúa con los objetos cercanos.
 - Mantén **Shift** mientras caminas para esprintar: 55 % más rápido. Soltarlo devuelve la velocidad normal; el movimiento diagonal conserva la misma rapidez y las colisiones siguen activas.
 - Espacio o botón **Saltar**: salto corto, sin doble salto. Puedes caer si aterrizas en el abismo; necesitas activar el puente para cruzar la primera sala.
-- F: disparar; en las salas II y III, interactuar. E: usar la ruleta, el panel, una puerta o hablar con la guía. En móvil hay botones de movimiento y pasos laterales junto a la escena.
+- F: disparar; en las salas II y III, interactuar. Clic o E: usar la ruleta, el panel o abrir una puerta cercana. H: hablar con Epi Paola. No hay botón genérico de acción; la torreta mantiene su control de disparo. En móvil hay botones de movimiento y pasos laterales junto a la escena.
 - El **Cuaderno de física** reúne gráfica, fórmulas y pistas. **Sobre la torreta** explica la puntería, la masa y la capacidad del equipo. Ambos se despliegan cuando los necesitas.
 - **Trayectoria** abre una pequeña proyección verde dentro de la escena. Se abre automáticamente al disparar, anima el recorrido real y conserva el último intento. En la primera sala solo se muestra el recorrido real: no hay predicción ni alcance calculado de antemano. La vista es lateral y el texto informa del desvío lateral. Puedes cerrarla con ×. No necesitas desplegar el cuaderno.
 - El ambiente intenta sonar al entrar al mundo, con una entrada suave. Si el navegador bloquea la reproducción automática, comienza con el primer clic o tecla. **Activar sonido** permite reintentar o desactivar el audio; una desactivación explícita se respeta durante la sesión.
-- El mezclador incluye volumen general, fondo, victoria y efectos, con silencio independiente. La victoria reduce gradualmente el fondo al 18 %. En sus últimos 2.2 segundos se desvanece mientras el ambiente recupera su volumen de forma progresiva. El audio se pausa al ocultar la pestaña.
+- El mezclador incluye volumen general, fondo, victoria, **Game Over** y efectos, con silencio independiente. La victoria reduce gradualmente el fondo al 18 %. En sus últimos 2.2 segundos se desvanece mientras el ambiente recupera su volumen de forma progresiva. El audio se pausa al ocultar la pestaña.
 - El menú permite probar cualquiera de las seis habitaciones. Cambiar de sala restablece su reto.
 
 ## Estructura
@@ -70,13 +78,14 @@ Hay una guía provisional en las primeras tres salas. Haz clic en ella, acércat
 - `src/rooms/room-02/`: configuración, banco de problemas y controlador de ruleta.
 - `src/rooms/room-03/`: mapa, banco conceptual, puertas, reinicios y persecución.
 - `src/rooms/room-04/` a `room-06/`: espacios para futuros retos.
-- `src/engine/actors.js`: mesas, guía, etiquetas de puertas y sprite animado de Ivan.
-- `src/ui/companions.js` y `world-panels.css`: globos, pistas y formulario dentro de la escena.
+- `src/engine/actors.js`: mesas, etiquetas de puertas y sprite animado de Ivan.
+- `src/engine/first-person.js`: captura del mouse, liberación del cursor, clics y controles táctiles.
+- `src/ui/companions.js`, `world-panels.css` y `dialogue.css`: globos, diálogo animado de Paola, pistas y formulario dentro de la escena.
 - `src/engine/renderer.js`: raycasting, cámara con altura e inclinación, cañón, pantalla y mesa/ruleta.
 - `src/engine/decor.js`: ladrillos envejecidos, retrato, grafitis y estandartes originales dibujados en canvas; proyección sobre las paredes.
 - `src/engine/adventure.js`: contador global, umbrales y eventos para futura música de tensión.
 - `src/audio/sound.js`: mezclador y reproducción de los MP3 locales aportados por el usuario; clics y disparos sintetizados.
-- `assets/audio/ambiente.mp3`, `victoria.mp3`, `explosion.mp3`: copias de los tres archivos facilitados. Los originales de Descargas no se modifican.
+- `assets/audio/ambiente.mp3`, `victoria.mp3`, `explosion.mp3`: copias de los tres archivos facilitados. `assets/audio/game-over.mp3` es la música de derrota proporcionada después. Los originales de Descargas no se modifican.
 - `src/main.js`: navegación, interacción y colisiones.
 - `src/ui/styles.css` y `src/ui/rpg.css`: tema base y menús de RPG adaptables.
 - `src/ui/trajectory-hologram.js`: proyección del tiro dentro de la escena, sincronizada con la física del orbe.
@@ -85,4 +94,4 @@ Hay una guía provisional en las primeras tres salas. Haz clic en ella, acércat
 - `tests/physics.cjs`: comprobación de física y respuestas; ejecutar `node tests/physics.cjs`.
 - `tests/adventure.cjs`: reloj, estados de tiempo y cruces de muros; ejecutar `node tests/adventure.cjs`.
 
-Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. Las salas 04–06 mantienen puertas de boceto que se abren con un disparo.
+Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. Las salas 04–06 mantienen puertas de boceto que se abren con clic o E estando cerca.

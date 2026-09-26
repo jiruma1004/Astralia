@@ -7,21 +7,34 @@ window.CONCEPT_QUESTIONS=[
 ];
 window.ConceptMaze=class {
  constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.reset();}
- reset(keepPursuer=false){
-  this.stage=0;this.passed=new Set();this.finished=false;this.chasing=keepPursuer;this.bite=0;this.path=[];this.pathClock=0;
-  this.enemy={x:1.5,y:10.5};this.doors=[];
-  this.room.map=Array.from({length:13},(_,y)=>Array.from({length:35},(_,x)=>x===0||x===34||y===0||y===12||[8,16,24,32].includes(x)?1:0));
-  // Contrafuertes que obligan a rodear las galerías y dan refugio visual.
-  for(let stage=0;stage<4;stage++)for(const y of [1,2,3,9,10,11])this.room.map[y][stage*8+4]=1;
-  CONCEPT_QUESTIONS.forEach((q,stage)=>{const rows=q.answers.length===3?[3,6,9]:[2,5,8,10];q.answers.forEach((text,choice)=>{const door={x:(stage+1)*8,y:rows[choice],stage,choice,text,letter:'ABCD'[choice]};this.doors.push(door);this.room.map[door.y][door.x]=2;});});
+ reset(){
+  this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();
+  this.enemy={x:1.5,y:8.5};
+  // Cada galería tiene una franja de cuartos detrás de las puertas. Solo uno conecta con la siguiente.
+  this.room.map=Array.from({length:17},()=>Array(51).fill(1));
+  CONCEPT_QUESTIONS.forEach((q,stage)=>{
+   const base=stage*12;
+   for(let y=1;y<=15;y++)for(let x=base+1;x<=base+7;x++)this.room.map[y][x]=0;
+   for(const y of [1,2,3,13,14,15])this.room.map[y][base+4]=1;
+   const rows=q.answers.length===3?[3,8,13]:[2,6,10,14];
+   q.answers.forEach((text,choice)=>{
+    const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABCD'[choice],correct:choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
+    for(let y=door.y-1;y<=door.y+1;y++)for(let x=base+9;x<=base+11;x++)this.room.map[y][x]=0;
+    if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3)this.room.map[door.y][49]=0;}
+   });
+  });
  }
  doorAt(x,y){return this.doors.find(d=>d.x===x&&d.y===y);}
  choose(door){
-  if(!door||door.stage!==this.stage||this.passed.has(this.stage)||this.finished)return null;
-  const q=CONCEPT_QUESTIONS[this.stage];
-  if(door.choice===q.correct){this.passed.add(this.stage);this.room.map[door.y][door.x]=0;this.onEvent('correct','La puerta se abre. Cruza para continuar.');return true;}
-  const awakened=this.chasing||this.stage>=1;this.reset(awakened);this.onEvent('wrong',q.explanation+(awakened?' ¡EPI Ivan te persigue! Regresa a las puertas y sigue avanzando.':' Vuelves al inicio. Esta vez Ivan sigue dormido.'));return false;
+  if(!door||door.stage!==this.stage||this.finished||this.caught||this.openDoors.has(door.stage+':'+door.choice))return null;
+  this.room.map[door.y][door.x]=0;this.openDoors.add(door.stage+':'+door.choice);
+  if(door.correct){this.passed.add(this.stage);this.onEvent('correct','La puerta se abre. Explora el pasaje y cruza hasta la siguiente galería.');return true;}
+  if(!this.chasing&&this.stage>=1){this.chasing=true;this.enemy={x:this.stage*12+1.5,y:8.5};this.path=[];this.pathClock=0;}
+  this.onEvent('wrong','La puerta conduce a un cuarto sin salida. '+CONCEPT_QUESTIONS[this.stage].explanation+(this.chasing?' ¡Ivan se acerca! Retrocede y busca otra puerta.':' Retrocede y elige otra puerta.'));
+  return false;
  }
+ checkpointPosition(stage=this.stage){if(stage===0)return {...this.room.spawn};const previous=this.doors.find(d=>d.stage===stage-1&&d.correct);return {x:stage*12+1.5,y:previous.y+.5,angle:0};}
+ restoreCheckpoint(stage){this.reset();this.stage=Math.max(0,Math.min(3,stage));for(const door of this.doors)if(door.stage<this.stage&&door.correct){this.room.map[door.y][door.x]=0;this.passed.add(door.stage);this.openDoors.add(door.stage+':'+door.choice);}return this.checkpointPosition();}
  routeTo(player){
   const start=[Math.floor(this.enemy.x),Math.floor(this.enemy.y)],goal=[Math.floor(player.x),Math.floor(player.y)],key=(x,y)=>x+','+y,queue=[start],parents=new Map([[key(...start),null]]);
   for(let i=0;i<queue.length;i++){const [x,y]=queue[i];if(x===goal[0]&&y===goal[1])break;for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=key(nx,ny);if(this.room.map[ny]?.[nx]===0&&!parents.has(k)){parents.set(k,[x,y]);queue.push([nx,ny]);}}}
@@ -33,12 +46,12 @@ window.ConceptMaze=class {
  }
  tick(dt,player){
   this.bite=Math.max(0,this.bite-dt);
-  if(this.passed.has(this.stage)&&player.x>(this.stage+1)*8+1){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Nuevo tramo. Lee la pregunta y elige una puerta.');}
-  if(!this.chasing||this.finished)return;
+  if(this.passed.has(this.stage)&&player.x>(this.stage+1)*12+1){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
+  if(!this.chasing||this.finished||this.caught)return;
   this.pathClock-=dt;
   const atCenter=Math.hypot(this.enemy.x-Math.floor(this.enemy.x)-.5,this.enemy.y-Math.floor(this.enemy.y)-.5)<.001;
   if(!this.path.length||(this.pathClock<=0&&atCenter)){this.path=this.routeTo(player);this.pathClock=.6;}
   const target=this.path[0];if(target){const dx=target.x-this.enemy.x,dy=target.y-this.enemy.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*.72);if(d>0){this.enemy.x+=dx/d*step;this.enemy.y+=dy/d*step;}if(d<=step+.00001){this.enemy.x=target.x;this.enemy.y=target.y;this.path.shift();}}
-  if(Math.hypot(this.enemy.x-player.x,this.enemy.y-player.y)<.6){this.reset(true);this.bite=1.2;this.onEvent('caught','¡Ñam! EPI Ivan te alcanzó. Vuelves al inicio; el reloj sigue corriendo.');}
+  if(Math.hypot(this.enemy.x-player.x,this.enemy.y-player.y)<.6){this.caught=true;this.bite=1.2;this.onEvent('caught','¡Ñam! EPI Ivan te alcanzó.');}
  }
 };

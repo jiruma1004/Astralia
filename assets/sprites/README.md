@@ -2,7 +2,11 @@
 
 `epi-ivan.png`: sprite sheet de dos columnas, reposo y mordida. Generado con la herramienta integrada de imágenes a partir de la foto proporcionada por el usuario; sin API externa ni clave. La animación recorta cada mitad al dibujar en canvas, con suavizado desactivado.
 
-Epi Paola usa por ahora una figura provisional dibujada por código. Para añadir su imagen, guardar `epi-paola.png` y configurar `RoomActors.paola.src` con esa ruta; no es necesario cambiar las pistas.
+`epi-paola.png`: retrato basado en la foto aportada de Epi Paola, generado con la herramienta integrada de imágenes. Tiene dos columnas iguales: boca cerrada y hablando, con fondo transparente. `RoomCompanions` alterna los cuadros mientras escribe el diálogo y vuelve al reposo al terminar. No usa servicios externos durante el juego.
+
+## Prompt usado para Paola
+
+Use case: identity-preserve and style-transfer. Edit the supplied photograph of Epi Paola into a retro pixel-art dialogue portrait sprite sheet for a fantasy educational game. Preserve her recognizable face, skin tone, dark straight hair, facial proportions and magenta shirt neckline from the photograph. Exactly TWO equal-width square cells arranged horizontally, aligned with identical head size, shoulders and eye positions. Each cell shows head and shoulders with complete hair silhouette and ample transparent padding. LEFT FRAME: friendly attentive expression, mouth gently closed. RIGHT FRAME: same face and pose, mouth slightly open speaking, subtle warm smile. Only the mouth and tiny expression change; do not shift or scale her head between frames. Chunky crisp pixel art, visible square pixel clusters, limited warm palette, dark pixel outline, matching a classic RPG conversation portrait. No photoreal texture, no antialias blur. True transparent alpha background in both cells. No letters, no labels, no scene, no extra figures or frames. This sheet will animate her speaking by alternating the two equal halves.
 
 ## Prompt usado para Ivan
 
