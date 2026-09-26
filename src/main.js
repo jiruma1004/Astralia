@@ -36,7 +36,7 @@ rooms.forEach((room,i)=>{const button=document.createElement('button');button.in
 function load(i){clearDeath();Sound.selectBackground(rooms[i].conceptual?'maze':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
  document.querySelector('#room-title').textContent=`UMBRAL ${['I','II','III','IV','V','VI'][i]} / ${room.name.toUpperCase()}`;
  document.querySelector('#door-status').textContent=room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':room.conceptual?'LABERINTO · 1 / 4':'PUERTA BLOQUEADA';
- message.textContent=room.physics?'Elige una bala del estante y cárgala en el cañón.':room.roulette?'Gira la rueda. Responde en el panel verde de la segunda mesa.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Los cuartos equivocados no tienen salida.':'Acércate a la puerta y ábrela con clic o E.';
+ message.textContent=room.physics?'Elige una bala del estante y cárgala en el cañón.':room.roulette?'Gira la rueda. Responde en el panel verde de la segunda mesa.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Las puertas equivocadas esconden portales al calabozo.':'Acércate a la puerta y ábrela con clic o E.';
  document.querySelector('#lab').hidden=document.querySelector('#station').hidden=document.querySelector('#trajectory-toggle').hidden=!room.physics;lab.hologram.hide();document.querySelector('#roulette-panel').hidden=true;
  document.querySelector('.scene-layout').classList.toggle('has-station',!!room.physics);document.querySelector('#equipment').textContent=room.physics?'CAÑÓN ASTRAL':room.roulette?'MESA DEL DESTINO':room.conceptual?'LABERINTO CONCEPTUAL':'CAÑÓN DE IMPULSO';
 
@@ -46,13 +46,15 @@ function load(i){clearDeath();Sound.selectBackground(rooms[i].conceptual?'maze':
 }
 function mazeEvent(type,text){
  if(type==='caught'){die('ivan');return;}
+ if(type==='return'){player=spawnPlayer(rooms[index]);checkpoint={room:index,stage:0,position:spawnPlayer(rooms[index])};keys.clear();}
+ if(type==='dungeon'||type==='return'){keys.clear();companions.closeHelp();camera.release();}
  if(type==='presence')Sound.tone(85,.6,'sine',.11);
  else if(type==='wrong')Sound.tone(180,.25,'triangle',.15);
  else if(type==='correct')Sound.click();
  else if(type==='advance'){checkpoint={room:index,stage:maze.stage,position:maze.checkpointPosition()};}
  else if(type==='complete'){opened=rooms[index].canUnlock({mazeSolved:true});Sound.success();}
  companions.updateConcept();companions.revealQuestion();companions.toast(text);message.textContent=text;
- document.querySelector('#door-status').textContent=maze.finished?'LABERINTO SUPERADO':`LABERINTO · ${maze.stage+1} / 4`;
+ document.querySelector('#door-status').textContent=maze.dungeon?'CALABOZO · RESUELVE EL SELLO':maze.finished?'LABERINTO SUPERADO':`LABERINTO · ${maze.stage+1} / 4`;
 }
 function openNearbyDoor(angle=player.angle,screenY=null){
  const room=rooms[index];if(room.physics||room.roulette)return false;

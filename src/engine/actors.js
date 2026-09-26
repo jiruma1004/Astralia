@@ -1,7 +1,7 @@
 window.RoomActors=class {
  constructor(){this.ivan=new Image();this.ivan.src='assets/sprites/epi-ivan.png';this.doorArt=new Map();}
  doorTexture(door){
-  const key=door.stage+'-'+door.choice;if(this.doorArt.has(key))return this.doorArt.get(key);
+  const key=(door.dungeon?'dungeon-':'maze-')+door.stage+'-'+door.choice;if(this.doorArt.has(key))return this.doorArt.get(key);
   const art=document.createElement('canvas');art.width=art.height=512;const c=art.getContext('2d');
   c.fillStyle='#273346';c.fillRect(0,0,512,512);for(let i=0;i<8;i++){c.fillStyle=i%2?'#324257':'#2b394d';c.fillRect(14+i*61,12,56,488);}c.strokeStyle='#ba9764';c.lineWidth=13;c.strokeRect(14,14,484,484);
   c.fillStyle='#101c2bf2';c.fillRect(36,113,440,239);c.strokeStyle='#d0bb8e';c.lineWidth=3;c.strokeRect(36,113,440,239);c.textAlign='center';c.fillStyle='#ecd3a2';c.font='bold 68px Georgia';c.fillText(door.letter,256,192);
@@ -9,11 +9,12 @@ window.RoomActors=class {
  }
  project(renderer,player,x,y,z){const w=renderer.canvas.width,h=renderer.canvas.height,dx=x-player.x,dy=y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.12)return null;return {x:w/2+side/depth*w/1.32,y:h*(.5+(player.pitch||0))-(z-.5-(player.jumpHeight||0))*h/depth,scale:h/depth,depth};}
  draw(renderer,room,player,opened,time,maze){
-  const objects=[];if(room.answerDesk)objects.push({...room.answerDesk,kind:'desk'});if(maze?.chasing)objects.push({...maze.enemy,kind:'ivan'});
+  const objects=[];if(room.answerDesk)objects.push({...room.answerDesk,kind:'desk'});if(maze&&!maze.dungeon)for(const d of maze.doors)if(!d.correct&&maze.openDoors.has(d.stage+':'+d.choice))objects.push({x:d.x+.5,y:d.y+.5,kind:'rift'});if(maze?.chasing)objects.push({...maze.enemy,kind:'ivan'});
   objects.sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y));
   this.deskBounds=this.guideBounds=null;
   if(maze)this.drawDoorLabels(renderer,room,player,maze);
   for(const obj of objects){const p=this.project(renderer,player,obj.x,obj.y,0);if(!p)continue;const c=renderer.ctx;
+   if(obj.kind==='rift'){this.drawRift(renderer,p,time);continue;}
    if(obj.kind==='ivan'){this.drawIvan(renderer,p,time,maze.bite>0);continue;}
    const hit=renderer.cast(room,player.x,player.y,Math.atan2(obj.y-player.y,obj.x-player.x),opened);if(hit.distance+.1<Math.hypot(obj.x-player.x,obj.y-player.y))continue;
    c.save();c.translate(p.x,p.y);const s=p.scale/350;c.scale(s,s);
@@ -24,6 +25,16 @@ window.RoomActors=class {
   }
   if(room.conceptual||room.roulette){const c=renderer.ctx,w=renderer.canvas.width,h=renderer.canvas.height;c.fillStyle='#eee7c1';c.fillRect(w/2-2,h/2-2,4,4);}
   if(maze?.bite>0){const c=renderer.ctx;c.fillStyle=`rgba(150,35,65,${maze.bite*.15})`;c.fillRect(0,0,renderer.canvas.width,renderer.canvas.height);}
+ }
+ drawRift(renderer,p,time){
+  const c=renderer.ctx,size=p.scale*.9,left=p.x-size*.36,top=p.y-size,w=size*.72;
+  c.save();
+  for(let x=Math.max(0,Math.floor(left/3)*3);x<Math.min(renderer.canvas.width,left+w);x+=3){
+   if(p.depth>(renderer.depths[x]??Infinity)+.05)continue;
+   const u=(x-left)/w*2-1,r=Math.sqrt(Math.max(0,1-u*u)),height=size*r;
+   c.fillStyle='#50286bcc';c.fillRect(x,top+(size-height)/2,3,height);
+   c.fillStyle=`rgba(179,126,245,${.65+.25*Math.sin(time/210+u*8)})`;c.fillRect(x,top+(size-height)/2,3,Math.min(height,5));c.fillRect(x,top+(size+height)/2-5,3,5);
+  }c.restore();
  }
  drawIvan(renderer,p,time,biting){
   if(!this.ivan.complete||!this.ivan.naturalWidth)return;

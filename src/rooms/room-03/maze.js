@@ -5,10 +5,16 @@ window.CONCEPT_QUESTIONS=[
  {title:'Dos esferas, un vacío',text:'Dejas caer dos esferas de masas distintas, desde la misma altura y al mismo tiempo, en el vacío. ¿Cuál llega primero al suelo?',answers:['La más pesada','La más ligera','Llegan juntas'],correct:2,hint:'Relaciona el peso mg con F = ma. ¿Qué pasa con la masa al despejar la aceleración?',explanation:'Sin aire, ambas tienen la misma aceleración g y llegan juntas.'},
  {title:'El giro del centinela',text:'Una esfera gira en una circunferencia con rapidez constante. ¿Hacia dónde apunta su aceleración?',answers:['Hacia fuera','Es cero','Tangente al círculo','Hacia el centro'],correct:3,hint:'La rapidez no cambia, pero la dirección de la velocidad sí. Imagina la diferencia entre dos vectores velocidad cercanos.',explanation:'El cambio de dirección requiere aceleración centrípeta, dirigida hacia el centro.'}
 ];
+window.DUNGEON_QUESTIONS=[
+ {title:'El sello de inercia',text:'Si la fuerza neta sobre un cuerpo es cero, ¿qué ocurre con su velocidad?',answers:['Permanece constante','Siempre se hace cero'],correct:0,hint:'F = ma: sin fuerza neta no hay aceleración. Puede estar en reposo o seguir moviéndose.'},
+ {title:'El sello de gravedad',text:'En el punto más alto de un lanzamiento vertical, sin aire, ¿cuál afirmación es correcta?',answers:['Velocidad y aceleración son cero','v = 0; a apunta hacia abajo'],correct:1,hint:'La gravedad sigue actuando incluso cuando la pelota se detiene por un instante.'},
+ {title:'El sello del vacío',text:'En caída libre sin aire, al duplicar la masa de un objeto, su aceleración…',answers:['No cambia','Se duplica'],correct:0,hint:'Escribe mg = ma y cancela la masa en ambos lados.'},
+ {title:'El sello del giro',text:'En movimiento circular uniforme, ¿por qué hay aceleración?',answers:['Porque aumenta la rapidez','Porque cambia la dirección'],correct:1,hint:'La velocidad es un vector: importa tanto su magnitud como su dirección.'}
+];
 window.ConceptMaze=class {
  constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.reset();}
  reset(){
-  this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
+  this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
   this.enemy={x:1.5,y:8.5};
   // Cada galería tiene una franja de cuartos detrás de las puertas. Solo uno conecta con la siguiente.
   this.room.map=Array.from({length:17},()=>Array(51).fill(1));
@@ -24,13 +30,34 @@ window.ConceptMaze=class {
    });
   });
  }
+ get question(){return this.dungeon?this.dungeonQuestion:CONCEPT_QUESTIONS[Math.min(this.stage,3)];}
+ enterDungeon(player,door){
+  this.savedWorld={map:this.room.map,doors:this.doors};this.dungeon=true;this.dungeonQuestion=DUNGEON_QUESTIONS[door.stage];
+  this.room.environment={kind:'interior',label:'Calabozo del error',tint:'#395338',moss:true,portraits:[]};
+  this.room.map=Array.from({length:13},(_,y)=>Array.from({length:15},(_,x)=>x===0||x===14||y===0||y===12?1:0));
+  this.doors=this.dungeonQuestion.answers.map((text,choice)=>({x:13,y:choice===0?3:9,stage:this.stage,choice,text,letter:'AB'[choice],correct:choice===this.dungeonQuestion.correct,dungeon:true}));
+  for(const d of this.doors)this.room.map[d.y][d.x]=2;
+  Object.assign(player,{x:6.5,y:6.5,angle:0,pitch:0,jumpHeight:0,jumpVelocity:0});
+  this.chasing=true;this.enemy={x:2.5,y:6.5};this.path=[];this.pathClock=0;this.grace=1.5;
+  this.onEvent('dungeon','El portal te arrastra al calabozo. Resuelve el sello de dos puertas para volver al inicio. Cuidado, alguien te persigue.');
+ }
+ leaveDungeon(){
+  this.room.map=this.savedWorld.map;this.doors=this.savedWorld.doors;this.room.environment=this.baseEnvironment;this.dungeon=false;this.stage=0;this.savedWorld=null;
+  this.enemy={x:1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=2.5;
+  this.onEvent('return','Sello resuelto. Regresas al inicio del laberinto; las puertas que abriste siguen abiertas.');
+ }
  doorAt(x,y){return this.doors.find(d=>d.x===x&&d.y===y);}
  choose(door){
+  if(this.dungeon){
+   if(!door||!this.doors.includes(door)||this.caught)return null;
+   if(door.correct){this.leaveDungeon();return true;}
+   this.onEvent('wrong','Ese sello no responde. '+this.dungeonQuestion.hint+' ¡Iván sigue acercándose!');return false;
+  }
   if(!door||door.stage!==this.stage||this.finished||this.caught||this.openDoors.has(door.stage+':'+door.choice))return null;
   this.room.map[door.y][door.x]=0;this.openDoors.add(door.stage+':'+door.choice);
   if(!door.correct||this.openDoors.size>=2)this.awaken();
   if(door.correct){this.passed.add(this.stage);this.onEvent('correct','La puerta se abre. Explora el pasaje y cruza hasta la siguiente galería.');return true;}
-  this.onEvent('wrong','La puerta conduce a un cuarto sin salida. '+CONCEPT_QUESTIONS[this.stage].explanation+' Algo se mueve detrás de ti. Retrocede y busca otra puerta.');
+  this.onEvent('wrong','Un portal se enciende tras la puerta equivocada. Cruzarlo te llevará al calabozo del error.');
   return false;
  }
  awaken(silent=false){if(this.chasing)return;this.chasing=true;this.enemy={x:this.stage*12+1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=2.5;if(!silent)this.onEvent('presence','Oyes pasos entre los muros. No estás solo.');}
@@ -47,13 +74,17 @@ window.ConceptMaze=class {
  }
  tick(dt,player){
   this.bite=Math.max(0,this.bite-dt);
-  if(this.passed.has(this.stage)&&player.x>(this.stage+1)*12+1){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
+  if(!this.dungeon&&!this.caught){
+   const portal=this.doors.find(d=>!d.correct&&this.openDoors.has(d.stage+':'+d.choice)&&player.x>=d.x&&player.x<d.x+4&&Math.abs(player.y-(d.y+.5))<1.5);
+   if(portal){this.enterDungeon(player,portal);return;}
+  }
+  if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage+1)*12+1){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
   if(!this.chasing||this.finished||this.caught)return;
   this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;
   this.pathClock-=dt;
   const atCenter=Math.hypot(this.enemy.x-Math.floor(this.enemy.x)-.5,this.enemy.y-Math.floor(this.enemy.y)-.5)<.001;
   if(!this.path.length||(this.pathClock<=0&&atCenter)){this.path=this.routeTo(player);this.pathClock=.6;}
-  const target=this.path[0];if(target){const dx=target.x-this.enemy.x,dy=target.y-this.enemy.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*.72);if(d>0){this.enemy.x+=dx/d*step;this.enemy.y+=dy/d*step;}if(d<=step+.00001){this.enemy.x=target.x;this.enemy.y=target.y;this.path.shift();}}
+  const target=this.path[0];if(target){const dx=target.x-this.enemy.x,dy=target.y-this.enemy.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*(.72*1.05));if(d>0){this.enemy.x+=dx/d*step;this.enemy.y+=dy/d*step;}if(d<=step+.00001){this.enemy.x=target.x;this.enemy.y=target.y;this.path.shift();}}
   if(Math.hypot(this.enemy.x-player.x,this.enemy.y-player.y)<.6){this.caught=true;this.bite=1.2;this.onEvent('caught','¡Ñam! EPI Ivan te alcanzó.');}
  }
 };

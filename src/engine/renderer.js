@@ -1,12 +1,14 @@
 /* Motor visual compartido: raycasting de una cuadrícula, sin dependencias. */
 window.EscapeRenderer = class {
-  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art={...makeWallArt(),...makeScenery()}; }
+  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art={...makeWallArt(),...makeScenery()};
+    const moss=document.createElement('canvas');moss.width=moss.height=512;const m=moss.getContext('2d');m.drawImage(this.art.brick,0,0,512,512);m.fillStyle='#22362688';m.fillRect(0,0,512,512);
+    for(let i=0;i<900;i++){const x=(i*173)%512,y=(i*97+Math.floor(i/7)*31)%512;m.fillStyle=['#42613a99','#67804c88','#1a3026aa'][i%3];m.fillRect(x,y,3+i%13,5+i%27);}this.art.moss=moss; }
   decorate(room,hit,x,top,height){
     if(room.environment?.kind==='forest'){
       if(hit.axis==='x'&&hit.cx===0&&hit.py>=3.25&&hit.py<=4.75){const art=this.art.chalkWall,u=(4.75-hit.py)/1.5;this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top-height*.1,3,height);}
       return;
     }
-    if(hit.tile!==1)return;
+    if(hit.tile!==1||room.environment?.moss)return;
     const south=hit.axis==='y'&&hit.cy===6,north=hit.axis==='y'&&hit.cy===0;
     if(!south&&!north)return;
     let art,start,end;
@@ -58,7 +60,7 @@ window.EscapeRenderer = class {
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       if(hit.tile===1){
-        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0?this.art.forest:this.art.brick;
+        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0?this.art.forest:room.environment?.moss?this.art.moss:this.art.brick;
         const forest=room.environment?.kind==='forest'&&hit.cx!==0,wallTop=forest?horizon-(2.6-eye)*height:top,wallHeight=forest?height*2.6:height;
         c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,wallTop,3,wallHeight);
         if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,top,3,height);c.globalAlpha=1;}

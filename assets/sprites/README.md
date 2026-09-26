@@ -2,7 +2,13 @@
 
 `dr-eric.png`: dos gestos enfadados con cejas fruncidas, derivados de la fotografía aportada. Generado con la herramienta integrada de imágenes; fondo transparente y dos columnas para el prólogo de Paola. Se eliminaron el marco circular y el icono de la captura.
 
-## Prompt usado para Eric
+## Actualización de Eric con bata
+
+Archivo: `dr-eric.png`. Editado con la herramienta integrada de imágenes, conservando dos cuadros de animación y la identidad del retrato.
+
+Prompt final: Edit target: the attached two-frame pixel-art Dr. Eric sprite sheet. Preserve this man's recognizable face, light brown short hair, round black glasses and angry eyebrows. Stylize him as a respected chemistry professor: white laboratory coat with broad lapels, pale blue shirt, tasteful dark tie, small pens in breast pocket. Show upper torso so the lab coat is unmistakable. Refine the proportions into polished 16-bit RPG pixel art, dignified and stern rather than caricature. Exactly TWO equal square frames side by side, identical pose and scale: left closed mouth, right slightly open speaking mouth. Transparent background, no text, no labels, no extra frames. Keep crisp pixels and comfortable transparent margins. Output 2:1 sprite sheet.
+
+## Prompt original usado para Eric
 
 Use case: identity-preserve and style-transfer. Edit the supplied photo into a chunky retro pixel-art character portrait sprite sheet for Dr. Eric, the fictional villain in a playful educational fantasy game. Preserve the recognizable round face, light skin, short light brown hair and black round eyeglasses from the photo. Remove the circular photo frame, outdoor background, grey app background and X close icon entirely. Head and shoulders wearing a dark shirt. Strong visibly furrowed angular eyebrows above and behind the glasses, narrowed eyes and an irritated frown: he is comically angry that students never put titles on their graphs. EXACTLY TWO equally sized square cells side by side on a transparent alpha background, with identical head scale and alignment, ample padding around hair and shoulders. LEFT: angry frown, mouth closed. RIGHT: same pose, eyebrows slightly more furrowed and mouth slightly open as if grumbling. Pixel art matching classic RPG dialogue portraits: crisp square pixel clusters, limited warm palette, dark outlines, no photographic texture or antialias blur. No text, no numbers, no symbols, no additional character, no scene. Keep both faces centered in their half of the sheet and consistent between frames.
 
