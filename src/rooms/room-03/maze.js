@@ -1,20 +1,29 @@
 /* Puertas físicas y persecución sobre la misma cuadrícula que las colisiones. */
 window.CONCEPT_QUESTIONS=[
  {title:'El carro encantado',text:'Un carro se mueve en línea recta con velocidad constante sobre un suelo horizontal. ¿Cuál es la fuerza neta sobre él?',answers:['Hacia delante','Es cero','Hacia atrás'],correct:1,hint:'Piensa qué mide la aceleración. Una velocidad constante no implica que no existan fuerzas.',explanation:'Velocidad constante significa aceleración cero: la suma de fuerzas es cero.'},
- {title:'Un instante en lo alto',text:'Lanzas una pelota verticalmente hacia arriba. Sin resistencia del aire, ¿qué aceleración tiene justo en su punto más alto?',answers:['Cero','g hacia arriba','g hacia abajo','Depende de su masa'],correct:2,hint:'Distingue velocidad de aceleración. ¿La gravedad desaparece cuando la pelota se detiene un instante?',explanation:'En la cima la velocidad es cero, pero la aceleración sigue siendo g hacia abajo.'},
+ {title:'Un instante en lo alto',text:'Lanzas una pelota verticalmente hacia arriba. Sin resistencia del aire, ¿qué aceleración tiene justo en su punto más alto?',answers:['Cero','g hacia arriba','g hacia abajo'],correct:2,hint:'Distingue velocidad de aceleración. ¿La gravedad desaparece cuando la pelota se detiene un instante?',explanation:'En la cima la velocidad es cero, pero la aceleración sigue siendo g hacia abajo.'},
  {title:'Dos esferas, un vacío',text:'Dejas caer dos esferas de masas distintas, desde la misma altura y al mismo tiempo, en el vacío. ¿Cuál llega primero al suelo?',answers:['La más pesada','La más ligera','Llegan juntas'],correct:2,hint:'Relaciona el peso mg con F = ma. ¿Qué pasa con la masa al despejar la aceleración?',explanation:'Sin aire, ambas tienen la misma aceleración g y llegan juntas.'},
- {title:'El giro del centinela',text:'Una esfera gira en una circunferencia con rapidez constante. ¿Hacia dónde apunta su aceleración?',answers:['Hacia fuera','Es cero','Tangente al círculo','Hacia el centro'],correct:3,hint:'La rapidez no cambia, pero la dirección de la velocidad sí. Imagina la diferencia entre dos vectores velocidad cercanos.',explanation:'El cambio de dirección requiere aceleración centrípeta, dirigida hacia el centro.'}
+ {title:'El giro del centinela',text:'Una esfera gira en una circunferencia con rapidez constante. ¿Hacia dónde apunta su aceleración?',answers:['Es cero','Tangente al círculo','Hacia el centro'],correct:2,hint:'La rapidez no cambia, pero la dirección de la velocidad sí. Imagina la diferencia entre dos vectores velocidad cercanos.',explanation:'El cambio de dirección requiere aceleración centrípeta, dirigida hacia el centro.'}
 ];
 window.DUNGEON_QUESTIONS=[
  {title:'El sello de inercia',text:'Si la fuerza neta sobre un cuerpo es cero, ¿qué ocurre con su velocidad?',answers:['Permanece constante','Siempre se hace cero'],correct:0,hint:'F = ma: sin fuerza neta no hay aceleración. Puede estar en reposo o seguir moviéndose.'},
  {title:'El sello de gravedad',text:'En el punto más alto de un lanzamiento vertical, sin aire, ¿cuál afirmación es correcta?',answers:['Velocidad y aceleración son cero','v = 0; a apunta hacia abajo'],correct:1,hint:'La gravedad sigue actuando incluso cuando la pelota se detiene por un instante.'},
  {title:'El sello del vacío',text:'En caída libre sin aire, al duplicar la masa de un objeto, su aceleración…',answers:['No cambia','Se duplica'],correct:0,hint:'Escribe mg = ma y cancela la masa en ambos lados.'},
- {title:'El sello del giro',text:'En movimiento circular uniforme, ¿por qué hay aceleración?',answers:['Porque aumenta la rapidez','Porque cambia la dirección'],correct:1,hint:'La velocidad es un vector: importa tanto su magnitud como su dirección.'}
+ {title:'El sello del giro',text:'En movimiento circular uniforme, ¿por qué hay aceleración?',answers:['Porque aumenta la rapidez','Porque cambia la dirección'],correct:1,hint:'La velocidad es un vector: importa tanto su magnitud como su dirección.'},
+ {title:'El sello del proyectil',text:'Un proyectil vuela sin resistencia del aire. ¿Cómo cambia su velocidad horizontal?',answers:['Permanece constante','Disminuye por la gravedad'],correct:0,hint:'La gravedad apunta verticalmente. No hay fuerza horizontal ni aceleración horizontal.'},
+ {title:'El sello del impulso',text:'La misma fuerza neta constante actúa sobre dos cuerpos. El de mayor masa tiene…',answers:['Mayor aceleración','Menor aceleración'],correct:1,hint:'Despeja a = F/m. Mantén F fija y compara las masas.'},
+ {title:'El sello de la pendiente',text:'En una gráfica de velocidad contra tiempo, ¿qué representa la pendiente?',answers:['La aceleración','El desplazamiento'],correct:0,hint:'La pendiente es cambio de velocidad dividido entre cambio de tiempo.'},
+ {title:'El sello del área',text:'En una gráfica de velocidad contra tiempo, el área con signo representa…',answers:['La aceleración','El desplazamiento'],correct:1,hint:'Multiplica las unidades: (m/s) por s. Conserva el signo de cada área.'},
+ {title:'El sello de la cima',text:'En un tiro parabólico oblicuo sin aire, con velocidad horizontal no nula, en la cima la rapidez…',answers:['Es cero','No es cero'],correct:1,hint:'Se anula la componente vertical, pero permanece la componente horizontal.'},
+ {title:'El sello del frenado',text:'Un móvil avanza hacia la derecha y reduce su rapidez. Su aceleración apunta…',answers:['Hacia la izquierda','Hacia la derecha'],correct:0,hint:'Para reducir la rapidez, la aceleración debe oponerse a la velocidad.'},
+ {title:'El sello de la altura',text:'Sin aire y desde el mismo nivel, dos lanzamientos verticales con igual rapidez inicial y distinta masa alcanzan…',answers:['La misma altura máxima','Más altura con mayor masa'],correct:0,hint:'En v² = v₀² − 2gΔy no aparece la masa. En la cima v = 0.'},
+ {title:'El sello de las fuerzas',text:'Las fuerzas de acción y reacción de la tercera ley de Newton actúan…',answers:['Sobre el mismo cuerpo','Sobre cuerpos distintos'],correct:1,hint:'Identifica quién ejerce cada fuerza y quién la recibe: son dos cuerpos diferentes.'}
+
 ];
 window.ConceptMaze=class {
- constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.reset();}
+ constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.questionPool=[];this.lastDungeonQuestion=null;this.reset();}
  reset(){
-  this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
+  this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
   this.enemy={x:1.5,y:8.5};
   // Solo la respuesta correcta tiene un pasaje. Las incorrectas son portales sin cuarto detrás.
   this.room.map=Array.from({length:17},()=>Array(51).fill(1));
@@ -22,17 +31,27 @@ window.ConceptMaze=class {
    const base=stage*12;
    for(let y=1;y<=15;y++)for(let x=base+1;x<=base+7;x++)this.room.map[y][x]=0;
    for(const y of [1,2,3,13,14,15])this.room.map[y][base+4]=1;
-   const rows=q.answers.length===3?[3,8,13]:[2,6,10,14];
+   const rows=[3,8,13];
    q.answers.forEach((text,choice)=>{
-    const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABCD'[choice],correct:choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
+    const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABC'[choice],correct:choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
     if(door.correct)for(let y=door.y-1;y<=door.y+1;y++)for(let x=base+9;x<=base+11;x++)this.room.map[y][x]=0;
     if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3)this.room.map[door.y][49]=0;}
    });
   });
  }
  get question(){return this.dungeon?this.dungeonQuestion:CONCEPT_QUESTIONS[Math.min(this.stage,3)];}
+ nextDungeonQuestion(){
+  // Bolsa barajada: agotar el banco antes de repetir, incluso después de morir.
+  if(!this.questionPool.length){
+   this.questionPool=DUNGEON_QUESTIONS.map((_,i)=>i);
+   for(let i=this.questionPool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[this.questionPool[i],this.questionPool[j]]=[this.questionPool[j],this.questionPool[i]];}
+   const last=this.questionPool.length-1;
+   if(this.questionPool[last]===this.lastDungeonQuestion&&last>0)[this.questionPool[0],this.questionPool[last]]=[this.questionPool[last],this.questionPool[0]];
+  }
+  this.lastDungeonQuestion=this.questionPool.pop();return DUNGEON_QUESTIONS[this.lastDungeonQuestion];
+ }
  enterDungeon(player,door){
-  this.savedWorld={map:this.room.map,doors:this.doors};this.dungeon=true;this.dungeonQuestion=DUNGEON_QUESTIONS[door.stage];
+  this.savedWorld={map:this.room.map,doors:this.doors};this.dungeon=true;this.dungeonQuestion=this.nextDungeonQuestion();this.returnGrace=false;
   this.room.environment={kind:'interior',label:'Calabozo del error',tint:'#395338',moss:true,portraits:[]};
   this.room.map=Array.from({length:13},(_,y)=>Array.from({length:15},(_,x)=>x===0||x===14||y===0||y===12?1:0));
   this.doors=this.dungeonQuestion.answers.map((text,choice)=>({x:13,y:choice===0?3:9,stage:this.stage,choice,text,letter:'AB'[choice],correct:choice===this.dungeonQuestion.correct,dungeon:true}));
@@ -43,8 +62,8 @@ window.ConceptMaze=class {
  }
  leaveDungeon(){
   this.room.map=this.savedWorld.map;this.doors=this.savedWorld.doors;this.room.environment=this.baseEnvironment;this.dungeon=false;this.stage=0;this.savedWorld=null;
-  this.enemy={x:1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=2.5;
-  this.onEvent('return','Sello resuelto. Regresas al inicio del laberinto; las puertas que abriste siguen abiertas.');
+  this.enemy={x:1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=7;this.returnGrace=true;
+  this.onEvent('return','Sello resuelto. Regresas al inicio del laberinto; las puertas que abriste siguen abiertas. Iván esperará 7 segundos: aprovecha para alejarte.');
  }
  doorAt(x,y){return this.doors.find(d=>d.x===x&&d.y===y);}
  choose(door,player={}){
@@ -80,7 +99,7 @@ window.ConceptMaze=class {
   }
   if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage+1)*12+1){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
   if(!this.chasing||this.finished||this.caught)return;
-  this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;
+  this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;this.returnGrace=false;
   this.pathClock-=dt;
   const atCenter=Math.hypot(this.enemy.x-Math.floor(this.enemy.x)-.5,this.enemy.y-Math.floor(this.enemy.y)-.5)<.001;
   if(!this.path.length||(this.pathClock<=0&&atCenter)){this.path=this.routeTo(player);this.pathClock=.6;}

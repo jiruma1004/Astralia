@@ -15,3 +15,18 @@ assert(maze.caught);assert.equal(events.at(-1).type,'caught');const count=events
 maze.restoreCheckpoint(0);assert(!maze.dungeon);assert.equal(room.environment.moss,undefined);pass();assert.equal(maze.stage,1);assert(!maze.chasing);maze.choose(door(1,2));assert(maze.chasing,'Segunda puerta correcta despierta la presencia');maze.tick(.016,{x:25.3,y:10.5});assert.equal(maze.stage,2);pass();pass();assert(maze.finished);
 maze.restoreCheckpoint(1);assert.equal(maze.stage,1);assert(!maze.chasing);assert.equal(room.map[8][8],0);maze.restoreCheckpoint(2);assert(maze.chasing);assert(maze.grace>0);
 console.log('OK: penalización inmediata, sin cuartos vacíos, dos respuestas, retorno con puertas abiertas, reentrada, velocidad, captura y progreso correcto.');
+maze.reset();
+for(let stage=0;stage<4;stage++){
+ const doors=maze.doors.filter(d=>d.stage===stage);assert.equal(doors.length,3);assert.equal(doors.filter(d=>d.correct).length,1);
+ const correct=doors.find(d=>d.correct);assert.equal(room.map[correct.y][correct.x+4],0,'El pasaje coincide con la respuesta correcta');
+}
+const cycle=world.DUNGEON_QUESTIONS.length;assert.equal(cycle,12);
+maze.questionPool=[];maze.lastDungeonQuestion=null;const questions=[];
+for(let i=0;i<cycle*3;i++)questions.push(maze.nextDungeonQuestion().title);
+for(let i=0;i<3;i++)assert.equal(new Set(questions.slice(i*cycle,(i+1)*cycle)).size,cycle,'Sin repetir dentro de cada ciclo');
+for(let i=1;i<questions.length;i++)assert.notEqual(questions[i],questions[i-1],'Sin repetición consecutiva entre ciclos');
+maze.nextDungeonQuestion();const remaining=maze.questionPool.length;maze.restoreCheckpoint(0);assert.equal(maze.questionPool.length,remaining,'Morir no reinicia el banco');
+maze.choose(door(0,0),traveler);maze.choose(maze.doors.find(d=>d.correct),traveler);assert.equal(maze.grace,7);assert(maze.returnGrace);
+const still={...maze.enemy};const near={x:still.x+.1,y:still.y};for(let i=0;i<69;i++)maze.tick(.1,near);
+assert.equal(maze.enemy.x,still.x);assert.equal(maze.enemy.y,still.y);assert(!maze.caught,'No captura durante el margen de regreso');maze.tick(.2,near);assert(maze.caught,'La persecución se reanuda al terminar el margen');
+console.log('OK: tres puertas en los cuatro tramos, banco de 12 sin repeticiones y margen de regreso de 7 segundos sin movimiento ni captura.');
