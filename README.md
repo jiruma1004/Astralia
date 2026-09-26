@@ -8,15 +8,15 @@ Abre `index.html` en un navegador moderno. No requiere instalación ni conexión
 
 ## El castillo del Dr. Eric
 
-La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de Ivan** (III), **Gabinete de la tormenta** (IV), **Cripta cuántica** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. Desde la sala III hay techo de piedra con vigas, sin cielo.
+La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **Gabinete de la tormenta** (IV), **Cripta cuántica** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. Desde la sala III hay techo de piedra con vigas, sin cielo.
 
 La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. Los retos IV–VI siguen reservados para futuras actividades.
 
 Resolver la ruleta rompe el sello violeta y activa un portal turquesa atravesable. La mesa está ligeramente desplazada para que se vea la entrada detrás.
 
-Al entrar aparece una introducción: el Dr. Eric se oculta en un castillo abandonado y prepara la divergencia, un experimento que unirá la gravedad y el espacio. Las paredes son de ladrillo antiguo con juntas alternadas, grietas y humedad; se conservan los cuadros, grafitis y estandartes.
+Antes de entrar, Epi Paola narra un prólogo de cinco escenas. Los retratos alternan Paola, Eric enfadado, Paola, Iván desaparecido y Paola. Eric se cansó de que los alumnos no pusieran títulos a las gráficas y prepara la divergencia para unificar la gravedad y el espacio. Iván está desaparecido desde que Eric se fue; se dice que se perdió en un bosque. Al final, Paola recuerda que puedes pedirle ayuda con H. El texto aparece letra por letra; puedes mostrarlo completo, avanzar o saltar el relato. Las paredes son de ladrillo antiguo con juntas alternadas, grietas y humedad; se conservan los cuadros, grafitis y estandartes.
 
-Pulsa **Entrar al castillo** para iniciar una aventura de **30 minutos**. El reloj permanece en la esquina inferior derecha: verde al principio, naranja cuando quedan **10 minutos** y rojo en los últimos **3 minutos**. El texto también indica la urgencia.
+Pulsa **Entrar al mundo** al terminar el prólogo, o **Saltar relato y entrar**, para iniciar una aventura de **30 minutos**. Durante toda la narración el contador permanece detenido. El reloj permanece en la esquina inferior derecha: verde al principio, naranja cuando quedan **10 minutos** y rojo en los últimos **3 minutos**. El texto también indica la urgencia.
 
 El tiempo es global: sigue corriendo al cambiar de habitación, reiniciar un reto, caer, reaparecer o cambiar de pestaña. Al llegar a cero, el Dr. Eric completa la divergencia, se detiene la partida y puedes **Volver a intentarlo** desde la primera sala con otros 30 minutos. Salir por el sexto umbral detiene el reloj. Recargar la página inicia una sesión nueva, con su introducción y sin progreso guardado.
 
@@ -28,9 +28,9 @@ La música futura de tensión tiene su espacio reservado en `assets/audio/tensio
 2. Pulsa **Cargar orbe**, o toca el cañón de la escena después de elegirla. La recámara se ilumina con su color. La torreta Prisma tiene una base hexagonal y un cabezal de cristal, sin tubo largo ni ruedas.
 3. Calcula y escribe elevación θ, giro horizontal φ y rapidez o energía en campos numéricos. No hay deslizadores de tiro. Gira hacia atrás desde el inicio: el muro de piedra tiene cinco ecuaciones grafiteadas directamente sobre los ladrillos, sin pizarra ni marco para que elijas las pertinentes. Los campos vacíos o fuera de sus límites no disparan ni consumen el orbe.
 4. Dispara. Cada lanzamiento consume la bala cargada; hay suministro ilimitado en el estante.
-5. Al alcanzar el botón suspendido, suena el MP3 de victoria y se activa el puente. Cruza por el centro; pisar el abismo provoca una caída. Rodea la torreta: es un objeto sólido.
+5. Al alcanzar el botón suspendido, suena el MP3 de victoria y se activa el puente. Cruza por el centro; pisar el vacío provoca una caída a una singularidad. Rodea la torreta: es un objeto sólido.
 6. Si disparas con más de 180 J, la torreta explota y tu personaje queda fuera de combate. Aparece «en papel nada se quema». La capacidad es una regla del equipo ficticio, no un umbral físico universal.
-7. Tras caer o explotar aparece **Game Over** con el MP3 aportado. Pulsa **Volver al último punto seguro** (también Escape). Conservas el registro y el puente si ya estaba activo; la torreta se repara. Una explosión consume la bala. Un disparo interrumpido por caída no activa el puente.
+7. Al caer se muestra una viñeta en tercera persona: el personaje cae desde el borde, gira y se pierde en un agujero negro. El canvas permanece fijo; tras **2.6 segundos** aparece **Game Over** y suena el MP3 aportado. Una explosión conserva su animación y muestra Game Over tras 1.5 segundos. Pulsa **Volver al último punto seguro** (también Escape). Conservas el registro y el puente si ya estaba activo; la torreta se repara. Una explosión consume la bala. Un disparo interrumpido por caída no activa el puente.
 
 En **rapidez fijada**, la masa cambia la energía, pero no la trayectoria ideal. En **energía fija**, la rapidez depende de la masa: v = √(2E/m). Modelo sin resistencia del aire, g = 9.81 m/s². El cañón permanece fijo: mirar alrededor no modifica su puntería. La gráfica lateral muestra x e y; los fallos informan también del desvío lateral z.
 
@@ -42,23 +42,25 @@ El enunciado aparece en un globo a la derecha de la vista, que puedes minimizar.
 
 Los enunciados son originales, inspirados temáticamente en la cinemática universitaria de Serway y Jewett; no son transcripciones ni números de ejercicios de una edición concreta. Consulta `docs/FUENTES.md`.
 
-## Tercera sala · El laberinto de Ivan
+## Tercera sala · El laberinto de los ecos
 
 Cuatro galerías conectadas, con tres o cuatro puertas por tramo. La pregunta conceptual aparece a la derecha; cada puerta lleva una respuesta abreviada. Acércate y usa **clic o E** para abrirla. Todas las opciones abren puertas físicas: las incorrectas dan a cuartos sin salida, mientras que la correcta conecta con la siguiente galería. Puedes retroceder para cambiar de ruta. Se trabajan fuerza neta, aceleración en la cima de un lanzamiento, caída en el vacío y aceleración centrípeta.
 
-Desde el segundo tramo, abrir una puerta incorrecta despierta a **EPI Ivan**. Aparece pixelado, alterna reposo y mordida y camina a 0.72 celdas/s, frente a las 2.3 del jugador. Busca un camino por las casillas libres, sin atravesar paredes, y puede seguirte dentro de los cuartos cerrados. Si te alcanza, el intento termina con una animación de mordida y **Game Over**. No se reinicia automáticamente: el botón de continuar devuelve al último punto seguro. Ivan solo existe en la sala III.
+El aviso de entrada solo habla de una presencia y ecos extraños, sin identificar al perseguidor. **El primer error** despierta a EPI Ivan desde cualquier tramo; si no hay errores, aparece **al abrir la segunda puerta distinta**, antes de cruzarla. La aparición tiene un breve margen de 2.5 segundos para orientarse. Aparece pixelado, alterna reposo y mordida y camina a 0.72 celdas/s, frente a las 2.3 del jugador. Busca un camino por las casillas libres, sin atravesar paredes, y puede seguirte dentro de los cuartos cerrados. Si te alcanza, el intento termina con una animación de mordida y **Game Over**. No se reinicia automáticamente: el botón de continuar devuelve al último punto seguro. Ivan solo existe en la sala III.
 
 ## Puntos seguros y Game Over
 
 Entrar en una sala guarda su inicio como punto seguro. En el laberinto, **cruzar completamente una puerta correcta hasta la siguiente galería** guarda ese nuevo tramo; abrirla sin cruzar aún no guarda progreso. Morir por captura, caída o sobrecarga reproduce `assets/audio/game-over.mp3`. En una explosión se escucha primero su efecto y luego Game Over. El contador global continúa durante la muerte y al reaparecer.
 
-Al continuar en el laberinto se mantienen abiertas las puertas correctas de tramos anteriores, se cierran los cuartos equivocados y se desactiva la persecución hasta otro error. En Galileo se conservan el puente desbloqueado y el registro de intentos. Elegir otra sala mediante el menú de pruebas o reiniciar un reto establece un nuevo punto seguro en su entrada. Recargar la página restablece la sesión completa; no hay guardado persistente.
+Al continuar en el laberinto se mantienen abiertas las puertas correctas de tramos anteriores, se cierran los cuartos equivocados. Si el punto seguro ya conserva al menos dos puertas correctas abiertas, la presencia vuelve con un margen inicial de 2.5 segundos; de lo contrario se activa con el primer error o la segunda apertura. En Galileo se conservan el puente desbloqueado y el registro de intentos. Elegir otra sala mediante el menú de pruebas o reiniciar un reto establece un nuevo punto seguro en su entrada. Recargar la página restablece la sesión completa; no hay guardado persistente.
 
 ## Epi Paola · Diálogo animado
 
 En las primeras tres salas aparece un **globo de Epi Paola** dentro de la vista. Haz clic en él o pulsa **H**. Se abre su retrato pixelado, basado en la foto proporcionada, con dos gestos que se alternan mientras el texto se escribe letra por letra. Los zumbidos breves son sintetizados y se regulan con el canal **Efectos**; no son grabaciones de voz ni audio extraído de otro juego. **Mostrar todo** termina la escritura y la animación. Cerrar el diálogo o cambiar de sala detiene los sonidos.
 
 Las pistas son contextuales: en Galileo invita a mirar las ecuaciones detrás del inicio; en la ruleta orienta según el problema; en el laberinto ofrece una pista del tramo actual. Los sprites y prompts de generación están documentados en `assets/sprites/README.md`.
+
+El agujero negro es un recurso visual de la historia: el ejercicio del cañón conserva gravedad uniforme y no simula relatividad.
 
 ## Controles y audio
 
@@ -68,7 +70,7 @@ Las pistas son contextuales: en Galileo invita a mirar las ecuaciones detrás de
 - F: disparar; en las salas II y III, interactuar. Clic o E: usar la ruleta, el panel o abrir una puerta cercana. H: hablar con Epi Paola. No hay botón genérico de acción; la torreta mantiene su control de disparo. En móvil hay botones de movimiento y pasos laterales junto a la escena.
 - El **Cuaderno de física** reúne gráfica, fórmulas y pistas. **Sobre la torreta** explica la puntería, la masa y la capacidad del equipo. Ambos se despliegan cuando los necesitas.
 - **Trayectoria** abre una pequeña proyección verde dentro de la escena. Se abre automáticamente al disparar, anima el recorrido real y conserva el último intento. En la primera sala solo se muestra el recorrido real: no hay predicción ni alcance calculado de antemano. La vista es lateral y el texto informa del desvío lateral. Puedes cerrarla con ×. No necesitas desplegar el cuaderno.
-- El ambiente intenta sonar al entrar al mundo, con una entrada suave. Si el navegador bloquea la reproducción automática, comienza con el primer clic o tecla. **Activar sonido** permite reintentar o desactivar el audio; una desactivación explícita se respeta durante la sesión.
+- El fondo usa `ambiente.mp3` en las salas habituales y **Clues in the Dark** (`laberinto.mp3`) en la sala III, en bucle. El prólogo cambia a `dramatic-villain.mp3` al mostrar a Eric y a `missing-person.mp3` al hablar de Iván. Los cambios de pista tienen fundidos; el canal **Fondo e historia** regula todas estas músicas. Al acercarse la presencia, se oyen pulsos graves sintetizados regulados por **Efectos**. El ambiente intenta sonar al entrar, con una entrada suave. Si el navegador bloquea la reproducción automática, comienza con el primer clic o tecla. **Activar sonido** permite reintentar o desactivar el audio; una desactivación explícita se respeta durante la sesión.
 - El mezclador incluye volumen general, fondo, victoria, **Game Over** y efectos, con silencio independiente. La victoria reduce gradualmente el fondo al 18 %. En sus últimos 2.2 segundos se desvanece mientras el ambiente recupera su volumen de forma progresiva. El audio se pausa al ocultar la pestaña.
 - El menú permite probar cualquiera de las seis habitaciones. Cambiar de sala restablece su reto.
 
@@ -79,6 +81,8 @@ Las pistas son contextuales: en Galileo invita a mirar las ecuaciones detrás de
 - `src/rooms/room-03/`: mapa, banco conceptual, puertas, reinicios y persecución.
 - `src/rooms/room-04/` a `room-06/`: espacios para futuros retos.
 - `src/engine/actors.js`: mesas, etiquetas de puertas y sprite animado de Ivan.
+- `src/ui/prologue.js` y `prologue.css`: relato de Paola, cinco escenas, retratos y cues musicales.
+- `src/engine/black-hole.js`: viñeta de caída con avatar, sin transformar la pantalla.
 - `src/engine/first-person.js`: captura del mouse, liberación del cursor, clics y controles táctiles.
 - `src/ui/companions.js`, `world-panels.css` y `dialogue.css`: globos, diálogo animado de Paola, pistas y formulario dentro de la escena.
 - `src/engine/renderer.js`: raycasting, cámara con altura e inclinación, cañón, pantalla y mesa/ruleta.
@@ -95,3 +99,7 @@ Las pistas son contextuales: en Galileo invita a mirar las ecuaciones detrás de
 - `tests/adventure.cjs`: reloj, estados de tiempo y cruces de muros; ejecutar `node tests/adventure.cjs`.
 
 Repositorio: https://github.com/jiruma1004/Astralia. Demo: https://jiruma1004.github.io/Astralia/. El progreso y los intentos viven en memoria; se reinician al recargar. Las salas 04–06 mantienen puertas de boceto que se abren con clic o E estando cerca.
+
+## Respaldos
+
+Los ZIP independientes del juego se guardan fuera del repositorio, en `../backups/`, con un archivo SHA-256. Se conserva una copia anterior a este prólogo y otra con la versión final. Para restaurar, extrae el ZIP y abre `escape-room/index.html`; incluye scripts, imágenes y todos los audios. El historial de Git conserva también cada versión publicada.

@@ -24,8 +24,7 @@ function expireAdventure(){
 function enterAdventure(){
  const intro=document.querySelector('#adventure-intro');if(intro.open)intro.close();keys.clear();mission.start();canvas.focus({preventScroll:true});canvas.scrollIntoView({block:'center'});
 }
-document.querySelector('#adventure-start').onclick=enterAdventure;
-document.querySelector('#adventure-intro').addEventListener('cancel',e=>{e.preventDefault();enterAdventure();});
+const prologue=new AdventurePrologue(enterAdventure);
 document.querySelector('#adventure-expired').addEventListener('cancel',e=>e.preventDefault());
 document.querySelector('#adventure-restart').onclick=()=>{document.querySelector('#adventure-expired').close();load(0);mission.restart();canvas.focus({preventScroll:true});};
 document.addEventListener('visibilitychange',()=>{keys.clear();mission.tick();});
@@ -34,7 +33,7 @@ new ResizeObserver(entries=>{const r=entries[0].contentRect;if(r.width&&r.height
 const roulette=new ProblemRoulette(()=>{if(!rooms[index].roulette)return;opened=rooms[index].canUnlock({problemSolved:true});document.querySelector('#door-status').textContent='SELLO ABIERTO';message.textContent='¡Sello roto! Rodea la mesa y atraviesa el portal luminoso.';});
 roulette.canAnswer=()=>canPlay()&&rooms[index].roulette&&companions.consoleOpen&&companions.facing(player,rooms[index].answerDesk,renderer,opened);
 rooms.forEach((room,i)=>{const button=document.createElement('button');button.innerHTML=`<b>${['I','II','III','IV','V','VI'][i]}</b><span>${room.name}<small>${room.challenge.implemented?room.challenge.title:'Por descubrir'}</small></span>`;button.onclick=()=>load(i);nav.append(button);});
-function load(i){clearDeath();Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
+function load(i){clearDeath();Sound.selectBackground(rooms[i].conceptual?'maze':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
  document.querySelector('#room-title').textContent=`UMBRAL ${['I','II','III','IV','V','VI'][i]} / ${room.name.toUpperCase()}`;
  document.querySelector('#door-status').textContent=room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':room.conceptual?'LABERINTO · 1 / 4':'PUERTA BLOQUEADA';
  message.textContent=room.physics?'Elige una bala del estante y cárgala en el cañón.':room.roulette?'Gira la rueda. Responde en el panel verde de la segunda mesa.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Los cuartos equivocados no tienen salida.':'Acércate a la puerta y ábrela con clic o E.';
@@ -47,7 +46,8 @@ function load(i){clearDeath();Sound.recover(true);index=i;player=spawnPlayer(roo
 }
 function mazeEvent(type,text){
  if(type==='caught'){die('ivan');return;}
- if(type==='wrong')Sound.tone(180,.25,'triangle',.15);
+ if(type==='presence')Sound.tone(85,.6,'sine',.11);
+ else if(type==='wrong')Sound.tone(180,.25,'triangle',.15);
  else if(type==='correct')Sound.click();
  else if(type==='advance'){checkpoint={room:index,stage:maze.stage,position:maze.checkpointPosition()};}
  else if(type==='complete'){opened=rooms[index].canUnlock({mazeSolved:true});Sound.success();}
@@ -95,18 +95,18 @@ function walkable(x,y){const room=rooms[index];if(room.answerDesk&&Math.hypot(x-
 // El abismo permite caminar: perder el suelo inicia la caída.
 function supported(x,y){const tile=rooms[index].map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===3);}
 function clearDeath(){death=null;camera.release();canvas.style.transform='';canvas.style.opacity='';const dialog=document.querySelector('#death-dialog');if(dialog.open)dialog.close();}
-function die(type){if(death)return;death={type,t:0,shown:false};camera.release();companions.closeHelp();companions.closeConsole();lab.hologram.hide();keys.clear();lab.dead=true;lab.lock(true);if(lab.shot&&!lab.shot.done){lab.shot.done=true;lab.history.push('Lanzamiento interrumpido por el fin del intento.');lab.renderHistory();}Sound.failure(type);message.textContent=type==='fall'?'Has perdido pie…':type==='ivan'?'¡EPI Ivan te alcanzó!':'¡Sobrecarga de la torreta!';}
+function die(type){if(death)return;death={type,t:0,shown:false,startedAt:performance.now()};camera.release();companions.closeHelp();companions.closeConsole();lab.hologram.hide();keys.clear();lab.dead=true;lab.lock(true);if(lab.shot&&!lab.shot.done){lab.shot.done=true;lab.history.push('Lanzamiento interrumpido por el fin del intento.');lab.renderHistory();}Sound.failure(type);message.textContent=type==='fall'?'Has perdido pie…':type==='ivan'?'¡EPI Ivan te alcanzó!':'¡Sobrecarga de la torreta!';}
 function checkpointLabel(){return rooms[checkpoint.room].name+(checkpoint.room===2?` · tramo ${checkpoint.stage+1}`:'');}
-function animateDeath(dt){if(!death)return;death.t+=dt;const t=death.t,c=renderer.ctx,w=canvas.width,h=canvas.height;
- if(death.type==='fall'){const u=Math.min(t/1.3,1);canvas.style.transform=`translateY(${u*u*48}%) scale(${1-u*.3}) rotate(${u*5}deg)`;canvas.style.opacity=String(1-u*.9);}
+function animateDeath(dt){if(!death)return;death.t=(performance.now()-death.startedAt)/1000;const t=death.t,c=renderer.ctx,w=canvas.width,h=canvas.height;
+ if(death.type==='fall')drawBlackHoleFall(c,w,h,t);
  else if(death.type==='ivan'){c.fillStyle=`rgba(85,9,28,${Math.min(.7,t*.5)})`;c.fillRect(0,0,w,h);if(actors.ivan.complete){const size=Math.min(w,h)*(.65+Math.min(t,.6)*.35),fw=actors.ivan.naturalWidth/2;c.save();c.imageSmoothingEnabled=false;c.drawImage(actors.ivan,fw,0,fw,actors.ivan.naturalHeight,(w-size)/2,(h-size)/2,size,size);c.restore();}}
  else{c.save();const fade=Math.max(0,1-t/1.5);c.fillStyle=`rgba(255,130,60,${fade*.3})`;c.fillRect(0,0,w,h);c.translate(w*.44,h*.6);for(let i=0;i<16;i++){const a=i*Math.PI/8,r=t*230+i%3*12;c.fillStyle=i%2?'#ffbf76':'#9eb8da';c.save();c.translate(Math.cos(a)*r,Math.sin(a)*r+t*t*85);c.rotate(t*3+i);c.globalAlpha=fade;c.fillRect(-7,-7,14,14);c.restore();}c.restore();}
- if(t>=1.5&&!death.shown){
+ if(t>=(death.type==='fall'?2.6:1.5)&&!death.shown){
   death.shown=true;const explosion=death.type==='explosion',ivan=death.type==='ivan';
-  document.querySelector('#death-kind').textContent='GAME OVER · '+(explosion?'SOBRECARGA':ivan?'EPI IVAN':'CAÍDA AL ABISMO');
-  document.querySelector('#death-title').textContent=explosion?'Te pasaste de energía.':ivan?'Ivan te atrapó.':'La gravedad ganó esta ronda.';
+  document.querySelector('#death-kind').textContent='GAME OVER · '+(explosion?'SOBRECARGA':ivan?'EPI IVAN':'AGUJERO NEGRO');
+  document.querySelector('#death-title').textContent=explosion?'Te pasaste de energía.':ivan?'Ivan te atrapó.':'La singularidad ganó esta ronda.';
   document.querySelector('#death-quote').textContent=explosion?'en papel nada se quema':ivan?'Confundiste una salida con la hora de la comida.':'La gravedad funciona. Tu estrategia necesita ajustes.';
-  document.querySelector('#death-detail').textContent=(explosion?'La torreta superó los 180 J. ':ivan?'Los cuartos sin salida le dieron tiempo para alcanzarte. ':'Has caído al abismo. ')+`Volverás a tu último punto seguro: ${checkpointLabel()}. El reloj sigue corriendo.`;
+  document.querySelector('#death-detail').textContent=(explosion?'La torreta superó los 180 J. ':ivan?'Los cuartos sin salida le dieron tiempo para alcanzarte. ':'Has caído en el agujero negro. ')+`Volverás a tu último punto seguro: ${checkpointLabel()}. El reloj sigue corriendo.`;
   document.querySelector('#death-dialog').showModal();Sound.gameOver();
  }
 }
@@ -114,12 +114,12 @@ function respawn(){
  if(!death)return;clearDeath();player={...checkpoint.position,pitch:0,jumpHeight:0,jumpVelocity:0};keys.clear();
  if(maze){player={...maze.restoreCheckpoint(checkpoint.stage),pitch:0,jumpHeight:0,jumpVelocity:0};opened=false;companions.updateConcept();companions.revealQuestion();document.querySelector('#door-status').textContent=`LABERINTO · ${maze.stage+1} / 4`;}
  lab.dead=false;lab.destroyed=false;if(rooms[index].physics){lab.lock(false);lab.update();document.querySelector('#loaded-status').textContent=lab.loaded?`● Cargada: ${lab.loaded.name} · ${lab.loaded.mass} kg`:'Recámara vacía. Elige una bala y cárgala.';document.querySelector('#feedback').textContent='Nuevo intento: conservas el registro. Revisa la energía antes de disparar.';}
- Sound.recover();message.textContent=`Punto seguro: ${checkpointLabel()}. `+(maze?'Ivan volverá si eliges otra puerta equivocada.':opened?'El puente sigue activo.':'Tienes otro intento.');companions.toast(message.textContent);canvas.focus({preventScroll:true});
+ Sound.recover();message.textContent=`Punto seguro: ${checkpointLabel()}. `+(maze?'Una presencia sigue recorriendo las galerías.':opened?'El puente sigue activo.':'Tienes otro intento.');companions.toast(message.textContent);canvas.focus({preventScroll:true});
 }
 document.querySelector('#respawn').onclick=respawn;
 document.querySelector('#death-dialog').addEventListener('cancel',e=>{e.preventDefault();respawn();});
 
-function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);mission.tick();
+function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);mission.tick();
  if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0),s=(keys.has('d')?1:0)-(keys.has('a')?1:0),speed=dt*2.3*(keys.has('shift')?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
  if(walkable(nx,player.y))player.x=nx;if(walkable(player.x,ny))player.y=ny;
  // Altura en celdas (2 m en Galileo): salto corto, sin doble salto ni apoyo sobre el vacío.
@@ -127,7 +127,7 @@ function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math
  if(player.jumpHeight===0&&!supported(player.x,player.y))die('fall');
  if(!death&&opened&&player.x>(rooms[index].exitX??7.6)){if(index<5)load(index+1);else if(mission.finish()){completed=true;message.textContent='Has cruzado los seis umbrales. ¡Has detenido al Dr. Eric!';document.querySelector('#door-status').textContent='SALIDA ALCANZADA';keys.clear();}}
  }
- if(canPlay()&&maze)maze.tick(dt,player);
+ if(canPlay()&&maze){maze.tick(dt,player);if(maze.chasing&&!maze.caught)Sound.pursuit(dt,Math.hypot(maze.enemy.x-player.x,maze.enemy.y-player.y));}
  companions.tick(dt,player,renderer,opened,canPlay());
  if(canPlay()&&rooms[index].physics)lab.tick(dt);if(canPlay()&&rooms[index].roulette)roulette.tick(dt);
  renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);animateDeath(dt);requestAnimationFrame(tick);

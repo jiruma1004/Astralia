@@ -1,5 +1,11 @@
 # Personajes de Astralia
 
+`dr-eric.png`: dos gestos enfadados con cejas fruncidas, derivados de la fotografía aportada. Generado con la herramienta integrada de imágenes; fondo transparente y dos columnas para el prólogo de Paola. Se eliminaron el marco circular y el icono de la captura.
+
+## Prompt usado para Eric
+
+Use case: identity-preserve and style-transfer. Edit the supplied photo into a chunky retro pixel-art character portrait sprite sheet for Dr. Eric, the fictional villain in a playful educational fantasy game. Preserve the recognizable round face, light skin, short light brown hair and black round eyeglasses from the photo. Remove the circular photo frame, outdoor background, grey app background and X close icon entirely. Head and shoulders wearing a dark shirt. Strong visibly furrowed angular eyebrows above and behind the glasses, narrowed eyes and an irritated frown: he is comically angry that students never put titles on their graphs. EXACTLY TWO equally sized square cells side by side on a transparent alpha background, with identical head scale and alignment, ample padding around hair and shoulders. LEFT: angry frown, mouth closed. RIGHT: same pose, eyebrows slightly more furrowed and mouth slightly open as if grumbling. Pixel art matching classic RPG dialogue portraits: crisp square pixel clusters, limited warm palette, dark outlines, no photographic texture or antialias blur. No text, no numbers, no symbols, no additional character, no scene. Keep both faces centered in their half of the sheet and consistent between frames.
+
 `epi-ivan.png`: sprite sheet de dos columnas, reposo y mordida. Generado con la herramienta integrada de imágenes a partir de la foto proporcionada por el usuario; sin API externa ni clave. La animación recorta cada mitad al dibujar en canvas, con suavizado desactivado.
 
 `epi-paola.png`: retrato basado en la foto aportada de Epi Paola, generado con la herramienta integrada de imágenes. Tiene dos columnas iguales: boca cerrada y hablando, con fondo transparente. `RoomCompanions` alterna los cuadros mientras escribe el diálogo y vuelve al reposo al terminar. No usa servicios externos durante el juego.

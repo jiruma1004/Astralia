@@ -43,7 +43,7 @@ window.EscapeRenderer = class {
         for(let sx=0;sx<w;sx+=6){const lateral=(sx/w*2-1)*.66;
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.map[Math.floor(wy)]?.[Math.floor(wx)];
-          if(tile===3){const bridge=opened&&Math.floor(wy)===3;c.fillStyle=bridge?(wx%1<.08?'#a6d6f8':'#4b6586'):'#04090d';}
+          if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-12)/4.4,by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
           else if(room.environment?.kind==='forest'){const noise=Math.sin(Math.floor(wx*9)*12.9898+Math.floor(wy*9)*78.233)*43758.5453,grain=noise-Math.floor(noise);c.fillStyle=grain>.85?'#405435':grain>.4?'#344a30':'#293f2c';}
           else {const seam=wx%1<.035||wy%1<.035;c.fillStyle=seam?'#151b25':(Math.floor(wx)+Math.floor(wy))%2?'#3b3c40':'#303339';}
           c.fillRect(sx,sy,6,4);
@@ -111,7 +111,7 @@ window.EscapeRenderer = class {
         this.cannonBounds={x:cx-115*scale,y:cy-165*scale,w:230*scale,h:225*scale};
       }
       const screen=project(p.originX+.3,p.originY+.7,.75);if(screen){const sc=Math.min(1.1,screen.scale/320);c.save();c.translate(screen.x,screen.y);c.scale(sc,sc);c.fillStyle='#111d3bea';c.strokeStyle='#96b7db';c.lineWidth=2;c.fillRect(-75,-55,150,110);c.strokeRect(-75,-55,150,110);c.font='13px Georgia';c.fillStyle='#e4d3a0';c.fillText('ASTROLABIO',-57,-30);c.fillStyle='#bce6ff';c.fillText('Elevación  '+lab.angle+'°',-57,-6);c.fillText('Giro  '+lab.azimuth+'°',-57,15);c.fillText(lab.loaded?lab.loaded.mass+' kg · CARGADO':'RECÁMARA VACÍA',-57,38);c.restore();}
-      c.fillStyle='rgba(9,17,35,.8)';c.fillRect(20,h-64,315,42);c.fillStyle='#cce099';c.font='12px Arial';c.fillText(opened?'PUENTE DESPLEGADO · AVANZA POR EL CENTRO':'ABISMO · ACTIVA EL BOTÓN PARA CRUZAR',32,h-39);
+      c.fillStyle='rgba(9,17,35,.8)';c.fillRect(20,h-64,315,42);c.fillStyle='#cce099';c.font='12px Arial';c.fillText(opened?'PUENTE DESPLEGADO · AVANZA POR EL CENTRO':'SINGULARIDAD · ACTIVA EL BOTÓN PARA CRUZAR',32,h-39);
       return;
     }
     if(room.roulette){this.drawTable(room,player,opened,roulette,time);return;}
