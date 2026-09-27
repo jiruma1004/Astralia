@@ -627,3 +627,8 @@ window.ENGLISH={
   "LA BALA CAYÓ POR DEBAJO DE LA PLATAFORMA ANTES DE LLEGAR AL BOTÓN.": "THE ORB FELL BELOW THE PLATFORM BEFORE REACHING THE BUTTON."
 };
 Object.assign(ENGLISH,{"EL DESTINO GIRA…":"FATE IS SPINNING…","PULSA EL CRISTAL":"PRESS THE CRYSTAL","PUENTE ACTIVO":"BRIDGE ACTIVE","BOTÓN SUSPENDIDO":"SUSPENDED BUTTON","ASTROLABIO":"ASTROLABE","Elevación  ":"Elevation  ","Giro  ":"Azimuth  ","CARGADO":"LOADED","RECÁMARA VACÍA":"EMPTY CHAMBER","PUENTE DESPLEGADO · AVANZA POR EL CENTRO":"BRIDGE DEPLOYED · WALK THROUGH THE CENTER","SINGULARIDAD · ACTIVA EL BOTÓN PARA CRUZAR":"SINGULARITY · HIT THE BUTTON TO CROSS","El borde cede bajo tus pies…":"The edge gives way beneath your feet…","El vacío era un agujero negro.":"The void was a black hole.","La singularidad te atrae.":"The singularity pulls you in.","IGNITIA EN VUELO":"IGNITIA IN FLIGHT"});
+Object.assign(ENGLISH,{
+ 'Ayuda de José Luis':'Help from José Luis',
+ 'José Luis hablando':'José Luis speaking',
+ 'Primero combina v = at con h = ½at² para encontrar el tiempo: t = 2h/v. Después calcula a = v/t. Esa es la aceleración neta; el empuje debe vencer también el peso, así que usa F = m(a + g). Los datos están en el terminal azul. Puedes contar conmigo pulsando H.':'First combine v = at with h = ½at² to find time: t = 2h/v. Then calculate a = v/t. This is net acceleration; thrust must also overcome weight, so use F = m(a + g). The blue terminal has the data. Press H whenever you need me.'
+});

@@ -136,3 +136,10 @@ Música: Juanillo 8 bit en IV, Final Stand en V, The Transformation durante el a
 El selector English / Español funciona también desde el prólogo. Cambia interfaz, preguntas, pistas, diálogos y rótulos dibujados; mantiene el progreso y los parámetros. Solo se guarda la preferencia de idioma en localStorage, no la partida. Diccionario: src/ui/translations.js; motor: src/ui/i18n.js. Recursos y prompts de los dos nuevos sprites: assets/sprites/IGNITIA.md.
 
 Pruebas: node tests/physics.cjs, node tests/adventure.cjs, node tests/maze.cjs, node tests/corridor.cjs, node tests/boss.cjs, node tests/rocket.cjs y node tests/i18n.cjs.
+
+## Estilo RPG y respaldo anterior
+El aspecto de letras y diálogos se aplica mediante src/ui/classic-rpg.css: Pixelify Sans, cuadros azules y bordes plateados inspirados en la referencia del usuario. La fuente se distribuye localmente junto a su licencia OFL en assets/fonts/; las fórmulas conservan glifos matemáticos en una fuente de apoyo. Fuente original: https://github.com/google/fonts/tree/main/ofl/pixelifysans.
+
+Antes de cambiar estilos se guardó ../backups/astralia-antes-estilo-rpg.zip y su SHA-256. También se conserva la versión anterior en el commit 22c4a266e0fcc03b5bd490e22913fe6070997abb. El ZIP contiene el juego completo bajo escape-room/.
+
+José Luis mueve la boca mientras aparecen las letras y queda en reposo al mostrar todo. En la sala VI se puede pedirle ayuda con H o su globo; Paola conserva las salas anteriores. El idioma ocupa una esquina independiente de los controles de audio y de la narración del prólogo. Eric escapa sentado sobre el cohete: la imagen se recorta a la altura del suelo y se revela al ascender. El audio mantiene sus pistas, mezclas y tiempos. Recursos y prompts: assets/sprites/RPG-POLISH.md.

@@ -15,8 +15,8 @@ window.RoomCompanions=class {
   const credits=document.createElement('details');credits.innerHTML='<summary>Acerca de estos problemas</summary>';credits.append(document.querySelector('.source-note'));panel.append(credits);
   document.querySelector('#question-fold').setAttribute('aria-label','Minimizar o mostrar la pregunta');
   document.querySelector('#roulette-panel').hidden=true;
-  view.insertAdjacentHTML('beforeend','<button id="ask-paola" class="paola-bubble" aria-controls="paola-dialog" aria-expanded="false"><span aria-hidden="true">···</span> Epi Paola <small>Una pista · H</small></button>');
-  this.portrait=new Image();this.portrait.src='assets/sprites/epi-paola.png';this.dialogue=null;
+  view.insertAdjacentHTML('beforeend','<button id="ask-paola" class="paola-bubble" aria-controls="paola-dialog" aria-expanded="false"><span aria-hidden="true">···</span> <b id="helper-name">Epi Paola</b> <small>Una pista · H</small></button>');
+  this.paolaPortrait=new Image();this.paolaPortrait.src='assets/sprites/epi-paola.png';this.josePortrait=new Image();this.josePortrait.src='assets/sprites/jose-luis-talk.png';this.portrait=this.paolaPortrait;this.dialogue=null;
   document.querySelector('#ask-paola').onclick=()=>this.help();
   document.querySelector('#paola-close').onclick=()=>this.closeHelp();
   document.querySelector('#paola-skip').onclick=()=>{if(this.dialogue?.speaking)this.finishDialogue();else this.closeHelp();};
@@ -28,14 +28,18 @@ window.RoomCompanions=class {
  }
  load(room,roulette,maze){
   this.room=room;this.roulette=roulette;this.maze=maze;this.consoleOpen=false;this.nearConsole=false;this.toastTime=0;this.lastProblem=null;
-  room.guide=null;this.closeHelp();
+  room.guide=null;this.closeHelp();this.portrait=room.rocket?this.josePortrait:this.paolaPortrait;
+  document.querySelector('#helper-name').textContent=room.rocket?'José Luis':'Epi Paola';
+  document.querySelector('#paola-dialog .eyebrow').textContent=room.rocket?'JOSÉ LUIS · LÍDER DE IGNITIA':'EPI PAOLA · TU GUÍA';
+  document.querySelector('#paola-dialog').setAttribute('aria-label',room.rocket?'Ayuda de José Luis':'Ayuda de Epi Paola');
+  document.querySelector('#paola-portrait').setAttribute('aria-label',room.rocket?'José Luis hablando':'Epi Paola hablando');
   for(const id of ['answer-console','paola-dialog','world-toast','chase-indicator'])document.getElementById(id).hidden=true;
   document.querySelector('.scene-view').classList.toggle('has-world-question',!!(room.roulette||room.conceptual||room.boss));
   document.querySelector('#question-bubble').hidden=!(room.roulette||room.conceptual);
   document.querySelector('#question-owner').textContent=room.conceptual?'EL LABERINTO PREGUNTA':'LA RUEDA PREGUNTA';
   document.querySelector('#roulette-status').hidden=!room.roulette;document.querySelector('#problem-card').hidden=true;
   document.querySelector('#concept-question').hidden=!room.conceptual;document.querySelector('#maze-notice').hidden=!room.conceptual;
-  document.querySelector('#ask-paola').hidden=!(room.physics||room.roulette||room.conceptual||room.boss);
+  document.querySelector('#ask-paola').hidden=!(room.physics||room.roulette||room.conceptual||room.boss||room.rocket);
   document.querySelector('#question-content').hidden=false;document.querySelector('#question-fold').textContent='−';document.querySelector('#question-fold').setAttribute('aria-expanded','true');
   this.updateConcept();
  }
@@ -58,8 +62,8 @@ window.RoomCompanions=class {
  openConsole(){if(!this.nearConsole||!this.roulette.current)return false;window.dispatchEvent(new Event('astralia:ui-open'));this.consoleOpen=true;document.querySelector('#answer-console').hidden=false;document.querySelector('#answer-fields input')?.focus({preventScroll:true});return true;}
  closeConsole(){this.consoleOpen=false;const panel=document.querySelector('#answer-console');if(panel.contains(document.activeElement)){document.activeElement.blur();document.querySelector('#game').focus({preventScroll:true});}panel.hidden=true;}
  help(){
-  if(!this.room||!(this.room.physics||this.room.roulette||this.room.conceptual||this.room.boss))return;
-  const q=this.roulette?.current,text=this.room.boss?'Iguala la parábola y la recta. Multiplica por cuatro para quitar las fracciones, lleva todo a un lado y factoriza. Obtendrás dos valores de x; sustituye cada uno en la recta para encontrar y. El láser izquierdo usa la raíz negativa y el derecho la positiva.':this.room.physics?'Tal vez podrías mirar atrás… quizá ahí tengas la respuesta. En el muro hay ecuaciones escritas con tiza. Elige las que relacionen el movimiento horizontal y el vertical.':this.room.roulette?(q?`${q.hint} Cuando tengas tu resultado, mira el sello de la puerta y pulsa E para escribir tu respuesta.`:'Pulsa el cristal de la mesa central para elegir un problema. Luego separa los datos de lo que te piden. La respuesta se escribe directamente en el sello de la puerta.'):this.maze.question.hint+(this.maze.stage===2&&!this.maze.dungeon?' Pisa la placa azul: congela a Iván durante 10 segundos, una sola vez. ':' ')+(this.maze.returnGrace&&this.maze.grace>0?' Iván está esperando unos segundos. Aprovecha para alejarte. ':this.maze.chasing?' Cuidado, alguien te persigue. ':' ')+(this.maze.dungeon?'Resuelve el sello y elige una de las dos puertas para volver al inicio del laberinto. Tus puertas abiertas se conservarán.':'Elegir una puerta equivocada te teletransporta de inmediato al calabozo: allí tendrás otra pregunta antes de volver al inicio.');
+  if(this.canHelp&&!this.canHelp())return;if(!this.room||!(this.room.physics||this.room.roulette||this.room.conceptual||this.room.boss||this.room.rocket))return;if(this.room.rocket)window.dispatchEvent(new Event('astralia:help-open'));
+  const q=this.roulette?.current,text=this.room.rocket?'Primero combina v = at con h = ½at² para encontrar el tiempo: t = 2h/v. Después calcula a = v/t. Esa es la aceleración neta; el empuje debe vencer también el peso, así que usa F = m(a + g). Los datos están en el terminal azul. Puedes contar conmigo pulsando H.':this.room.boss?'Iguala la parábola y la recta. Multiplica por cuatro para quitar las fracciones, lleva todo a un lado y factoriza. Obtendrás dos valores de x; sustituye cada uno en la recta para encontrar y. El láser izquierdo usa la raíz negativa y el derecho la positiva.':this.room.physics?'Tal vez podrías mirar atrás… quizá ahí tengas la respuesta. En el muro hay ecuaciones escritas con tiza. Elige las que relacionen el movimiento horizontal y el vertical.':this.room.roulette?(q?`${q.hint} Cuando tengas tu resultado, mira el sello de la puerta y pulsa E para escribir tu respuesta.`:'Pulsa el cristal de la mesa central para elegir un problema. Luego separa los datos de lo que te piden. La respuesta se escribe directamente en el sello de la puerta.'):this.maze.question.hint+(this.maze.stage===2&&!this.maze.dungeon?' Pisa la placa azul: congela a Iván durante 10 segundos, una sola vez. ':' ')+(this.maze.returnGrace&&this.maze.grace>0?' Iván está esperando unos segundos. Aprovecha para alejarte. ':this.maze.chasing?' Cuidado, alguien te persigue. ':' ')+(this.maze.dungeon?'Resuelve el sello y elige una de las dos puertas para volver al inicio del laberinto. Tus puertas abiertas se conservarán.':'Elegir una puerta equivocada te teletransporta de inmediato al calabozo: allí tendrás otra pregunta antes de volver al inicio.');
   window.dispatchEvent(new Event('astralia:ui-open'));this.dialogue={source:text,text:I18n.t(text),chars:[...I18n.t(text)],index:0,clock:0,elapsed:0,speaking:true};
   document.querySelector('#paola-text').textContent='';document.querySelector('#paola-announcement').textContent=text;document.querySelector('#paola-skip').textContent='Mostrar todo';document.querySelector('#paola-dialog').hidden=false;document.querySelector('#ask-paola').setAttribute('aria-expanded','true');Sound.tone(420,.08,'triangle',.09);
  }
