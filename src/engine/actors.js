@@ -9,6 +9,7 @@ window.RoomActors=class {
  }
  project(renderer,player,x,y,z){const w=renderer.canvas.width,h=renderer.canvas.height,dx=x-player.x,dy=y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.12)return null;return {x:w/2+side/depth*w/1.32,y:h*(.5+(player.pitch||0))-(z-.5-(player.jumpHeight||0))*h/depth,scale:h/depth,depth};}
  draw(renderer,room,player,opened,time,maze){
+  if(opened&&(room.physics||room.boss))this.drawBridgeRails(renderer,room,player);
   const objects=[];if(room.answerDesk)objects.push({...room.answerDesk,kind:'desk'});if(maze&&!maze.dungeon)for(const d of maze.doors)if(!d.correct&&maze.openDoors.has(d.stage+':'+d.choice))objects.push({x:d.x+.5,y:d.y+.5,kind:'rift'});if(maze?.chasing)objects.push({...maze.enemy,kind:'ivan'});
   objects.sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y));
   this.deskBounds=this.guideBounds=null;
@@ -27,10 +28,15 @@ window.RoomActors=class {
   if(room.conceptual||room.roulette){const c=renderer.ctx,w=renderer.canvas.width,h=renderer.canvas.height;c.fillStyle='#eee7c1';c.fillRect(w/2-2,h/2-2,4,4);}
   if(maze?.bite>0){const c=renderer.ctx;c.fillStyle=`rgba(150,35,65,${maze.bite*.15})`;c.fillRect(0,0,renderer.canvas.width,renderer.canvas.height);}
  }
+ drawBridgeRails(renderer,room,player){
+  const c=renderer.ctx,forest=!!room.physics,start=forest?6:17,end=forest?18:24,sides=forest?[3.03,3.97]:[7.03,7.97];
+  const segment=(a,b,color,width)=>{const p=this.project(renderer,player,...a),q=this.project(renderer,player,...b);if(!p||!q)return;const mid=(p.x+q.x)/2;if(mid<0||mid>renderer.canvas.width||Math.min(p.depth,q.depth)>(renderer.depths[Math.floor(mid/3)*3]??Infinity)+.08)return;c.strokeStyle=color;c.lineWidth=Math.min(16,Math.max(1,(p.scale+q.scale)*width/2));c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();};
+  c.save();c.lineCap='round';for(const y of sides){for(let x=start;x<=end;x+=1)segment([x,y,0],[x,y,.62],forest?'#a67a47':'#b7ccd5',.045);for(const z of [.28,.58])for(let x=start;x<end;x+=.2)segment([x,y,z],[Math.min(end,x+.2),y,z],forest?'#c19b67':'#77aabd',.025);}c.restore();
+ }
  drawFreezePlate(renderer,player,maze,time){
   const c=renderer.ctx,p=this.project(renderer,player,maze.freezePlate.x,maze.freezePlate.y,.015);if(!p||p.depth<.3)return;
   if(p.depth>(renderer.depths[Math.round(p.x/3)*3]??Infinity)+.1)return;
-  c.save();c.fillStyle=maze.freezeUsed?'#364f67':'#168fe8';c.strokeStyle='#a1f3ff';c.lineWidth=3;c.beginPath();c.ellipse(p.x,p.y,p.scale*.55,p.scale*.16,0,0,7);c.fill();c.stroke();c.fillStyle='#e7ffff';c.font=`bold ${Math.max(15,p.scale*.22)}px Georgia`;c.textAlign='center';c.fillText(maze.freezeUsed?'✓':'❄ 10 s',p.x,p.y-5);c.restore();
+  c.save();c.fillStyle=maze.freezeUsed?'#364f67':'#168fe8';c.strokeStyle='#a1f3ff';c.lineWidth=3;const corners=[[-.6,-.6],[.6,-.6],[.6,.6],[-.6,.6]].map(([x,y])=>this.project(renderer,player,maze.freezePlate.x+x,maze.freezePlate.y+y,.015));if(corners.some(q=>!q)){c.restore();return;}c.beginPath();corners.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fill();c.stroke();c.fillStyle='#e7ffff';c.font=`bold ${Math.max(15,p.scale*.22)}px Georgia`;c.textAlign='center';c.fillText(maze.freezeUsed?'✓':'❄ 20 s',p.x,p.y-5);c.restore();
  }
  drawRift(renderer,p,time){
   const c=renderer.ctx,size=p.scale*.9,left=p.x-size*.36,top=p.y-size,w=size*.72;

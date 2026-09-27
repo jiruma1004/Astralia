@@ -2,7 +2,7 @@
 window.Sound={
  backgroundNames:['music','maze','villain','missing','seal','corridor','stand','transformation','phase'],sceneTrack:'music',backgroundLevels:{music:1,maze:0,villain:0,missing:0,seal:0,corridor:0,stand:0,transformation:0,phase:0},heartbeat:0,
  gameOverReady:false,enabled:false,ctx:null,master:null,dead:false,hiddenPlaying:new Set(),autoPending:true,userDisabled:false,duck:1,entryFade:0,victoryFade:1,playIds:{},
- tracks:{corridor:new Audio('assets/audio/juanillo.mp3'),stand:new Audio('assets/audio/final-stand.mp3'),transformation:new Audio('assets/audio/transformation.mp3'),phase:new Audio('assets/audio/final-phase.mp3'),rocket:new Audio('assets/audio/rocket-ignition.mp3'),seal:new Audio('assets/audio/sellado-magico.mp3'),laugh:new Audio('assets/audio/eric-laugh.mp3'),music:new Audio('assets/audio/ambiente.mp3'),victory:new Audio('assets/audio/victoria.mp3'),explosion:new Audio('assets/audio/explosion.mp3'),gameover:new Audio('assets/audio/game-over.mp3'),maze:new Audio('assets/audio/laberinto.mp3'),villain:new Audio('assets/audio/dramatic-villain.mp3'),missing:new Audio('assets/audio/missing-person.mp3')},
+ tracks:{corridor:new Audio('assets/audio/juanillo.mp3'),stand:new Audio('assets/audio/final-stand.mp3'),transformation:new Audio('assets/audio/transformation.mp3'),phase:new Audio('assets/audio/final-phase.mp3'),rocket:new Audio('assets/audio/rocket-ignition.mp3'),seal:new Audio('assets/audio/sellado-magico.mp3'),laugh:new Audio('assets/audio/eric-laugh.mp3?v=short-1500'),music:new Audio('assets/audio/ambiente.mp3'),victory:new Audio('assets/audio/victoria.mp3'),explosion:new Audio('assets/audio/explosion.mp3'),gameover:new Audio('assets/audio/game-over.mp3'),maze:new Audio('assets/audio/laberinto.mp3'),villain:new Audio('assets/audio/dramatic-villain.mp3'),missing:new Audio('assets/audio/missing-person.mp3')},
  async enable({automatic=false}={}){if(automatic&&this.userDisabled)return;this.userDisabled=false;this.enabled=true;
   // No esperamos a resume(): algunos navegadores lo dejan pendiente hasta un gesto.
   if(!automatic){try{if(!this.ctx){this.ctx=new(window.AudioContext||window.webkitAudioContext)();this.master=this.ctx.createGain();this.master.connect(this.ctx.destination);}this.ctx.resume().catch(()=>{});}catch(e){/* Los MP3 aún pueden funcionar sin efectos Web Audio. */}}
@@ -13,9 +13,9 @@ window.Sound={
   catch(e){if(id!==this.playIds[name])return false;if(this.backgroundNames.includes(name)&&e.name==='NotAllowedError'){this.autoPending=!this.userDisabled;this.enabled=false;this.apply();this.ui();document.querySelector('#audio-status').textContent='La música empezará con tu primer clic o tecla.';}else if(e.name!=='AbortError')document.querySelector('#audio-status').textContent='No se pudo reproducir '+name+'. Puedes reintentar con Activar sonido.';return false;}
  },
  gain(id){return document.querySelector('#'+id+'-mute').checked?0:Number(document.querySelector('#'+id).value);},
- mix(dt){if(document.hidden)return;const v=this.tracks.victory,playing=!v.paused&&!v.ended,tail=playing&&Number.isFinite(v.duration)?Math.max(0,Math.min(1,(v.duration-v.currentTime)/2.2)):1;
+ mix(dt){if(document.hidden)return;const v=this.tracks.victory,end=Number.isFinite(v.duration)?Math.min(3,v.duration):3;if(!v.paused&&v.currentTime>=end)this.stop('victory');const playing=!v.paused&&!v.ended,tail=playing?Math.max(0,Math.min(1,(end-v.currentTime)/.7)):1;
   this.victoryFade=playing?Math.min(1,v.currentTime/.2,tail):0;
-  const target=playing?1-.82*tail:1;this.duck+=(target-this.duck)*(1-Math.exp(-dt/(target<this.duck?.35:1.1)));
+  const target=playing?1-.82*tail:1;this.duck+=(target-this.duck)*(1-Math.exp(-dt/(target<this.duck?.25:.45)));
   for(const name of this.backgroundNames){const target=name===this.sceneTrack&&!this.silence?1:0;this.backgroundLevels[name]+=(target-this.backgroundLevels[name])*(1-Math.exp(-dt/.45));if(target===0&&this.backgroundLevels[name]<.005&&!this.tracks[name].paused)this.stop(name);}
   if(!this.tracks[this.sceneTrack].paused)this.entryFade=Math.min(1,this.entryFade+dt/1.2);this.apply();
  },

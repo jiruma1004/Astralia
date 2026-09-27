@@ -123,7 +123,7 @@ window.EscapeRenderer = class {
       return;
     }
     if(room.roulette){this.drawTable(room,player,opened,roulette,time);return;}
-    if(room.conceptual||room.corridor||room.boss)return;
+    if(room.conceptual||room.corridor||room.boss||room.rocket)return;
     // Retícula y silueta del cañón; sustituibles por sprites en assets/.
     c.strokeStyle='#dbe8c3';c.lineWidth=2;c.beginPath();c.moveTo(w/2-10,h/2);c.lineTo(w/2-4,h/2);c.moveTo(w/2+4,h/2);c.lineTo(w/2+10,h/2);c.moveTo(w/2,h/2-10);c.lineTo(w/2,h/2-4);c.stroke();
     const recoil=flash>0?18:0;

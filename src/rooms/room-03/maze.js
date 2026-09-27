@@ -93,7 +93,7 @@ window.ConceptMaze=class {
  }
  tick(dt,player){
   this.bite=Math.max(0,this.bite-dt);
-  if(!this.dungeon&&this.stage===2&&!this.freezeUsed&&Math.hypot(player.x-this.freezePlate.x,player.y-this.freezePlate.y)<.8){this.freezeUsed=true;this.freezeLeft=10;this.onEvent('freeze','Placa azul activada. Iván queda congelado durante 10 segundos.');return;}
+  if(!this.dungeon&&this.stage===2&&!this.freezeUsed&&Math.abs(player.x-this.freezePlate.x)<.6&&Math.abs(player.y-this.freezePlate.y)<.6){this.freezeUsed=true;this.freezeLeft=20;this.onEvent('freeze','Placa azul activada. Iván queda congelado durante 20 segundos.');return;}
   this.freezeLeft=Math.max(0,this.freezeLeft-dt);
   if(!this.dungeon&&!this.caught){
    const portal=this.doors.find(d=>!d.correct&&this.openDoors.has(d.stage+':'+d.choice)&&player.x>=d.x&&player.x<d.x+4&&Math.abs(player.y-(d.y+.5))<1.5);

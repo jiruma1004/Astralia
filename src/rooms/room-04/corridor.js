@@ -1,14 +1,14 @@
 /* Símbolos en carriles rectos: jamás siguen al jugador. */
 window.RelaxCorridor=class {
  constructor(onEvent){this.onEvent=onEvent;this.time=0;this.readyShown=false;this.caught=false;
-  this.obstacles=[{x:10,y:4.5,width:1.2,height:.22},{x:18,y:2.6,width:1,height:.22},{x:24,y:6.2,width:1,height:.22}];
+  this.obstacles=[{x:8,y:2.9,width:2.2,height:.22},{x:12,y:6.1,width:2.2,height:.22},{x:16,y:4.5,width:1.8,height:.22},{x:20,y:2.9,width:2.2,height:.22},{x:24,y:6.1,width:2.2,height:.22}];
   this.spawnX=24;this.spawnInterval=(28.5-1.8)/1.6/3/2/1.4;this.spawnClock=this.spawnInterval;this.nextLane=0;
-  this.lanes=[{y:3,text:'π'},{y:5.8,text:'∑'},{y:4.4,text:'∫'}];
-  this.symbols=this.lanes.map((s,i)=>({...s,x:8+i*8,age:1}));this.art=new Map();
+  this.glyphs=['π','∑','∫','dy/dx','Δx','eˣ'];
+  this.symbols=[2.3,6.6,4.3].map((y,i)=>({y,text:this.glyphs[i],x:8+i*8,age:1}));this.art=new Map();
  }
  blocks(x,y,height){return height<.25&&this.obstacles.some(o=>Math.abs(x-o.x)<.32&&Math.abs(y-o.y)<o.width/2+.18);}
  tick(dt,player){if(this.caught)return;this.time+=dt;
-  this.spawnClock-=dt;while(this.spawnClock<=0){this.symbols.push({...this.lanes[this.nextLane++%this.lanes.length],x:this.spawnX,age:0});this.spawnClock+=this.spawnInterval;}
+  this.spawnClock-=dt;while(this.spawnClock<=0){const band=this.nextLane%3;this.symbols.push({y:2.2+band*1.55+Math.random()*1.4,text:this.glyphs[this.nextLane++%this.glyphs.length],x:this.spawnX,age:0});this.spawnClock+=this.spawnInterval;}
   for(const s of this.symbols){s.age+=dt;s.x-=1.6*dt;
    if(s.age>=.65&&player.jumpHeight<.30&&Math.hypot(player.x-s.x,player.y-s.y)<.48){this.caught=true;this.onEvent('hit');return;}
   }
@@ -17,7 +17,7 @@ window.RelaxCorridor=class {
  }
  texture(obj,crate){const key=crate?'crate':obj.text;if(this.art.has(key))return this.art.get(key);const a=document.createElement('canvas');a.width=512;a.height=256;const c=a.getContext('2d');
   if(crate){c.fillStyle='#735338';c.fillRect(0,0,512,256);for(let i=0;i<8;i++){c.fillStyle=i%2?'#917046':'#7f603e';c.fillRect(i*64+3,5,57,246);}c.strokeStyle='#c2a371';c.lineWidth=14;c.strokeRect(8,8,496,240);c.beginPath();c.moveTo(15,240);c.lineTo(497,15);c.stroke();}
-  else{c.fillStyle='#beffe0';c.shadowColor='#5fffc7';c.shadowBlur=12;c.textAlign='center';c.font='bold 210px Georgia';c.fillText(obj.text,256,210);}
+  else{c.fillStyle='#beffe0';c.shadowColor='#5fffc7';c.shadowBlur=12;c.textAlign='center';c.font=obj.text.length>2?'bold 145px Georgia':'bold 210px Georgia';c.fillText(obj.text,256,210,480);}
   this.art.set(key,a);return a;
  }
  draw(renderer,player,actors){const objs=[...this.obstacles.map(o=>({...o,crate:true})),...this.symbols];objs.sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y));

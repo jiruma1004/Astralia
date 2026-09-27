@@ -59,9 +59,9 @@ window.ENGLISH={
   "Clic o E · Programar el cohete": "Click or E · Program rocket",
   "Acércate al terminal azul de Ignitia": "Approach Ignitia’s blue terminal",
   "Misión completada": "Mission complete",
-  "Placa azul activada. Iván queda congelado durante 10 segundos.": "Blue plate activated. Iván is frozen for 10 seconds.",
+  "Placa azul activada. Iván queda congelado durante 20 segundos.": "Blue plate activated. Iván is frozen for 20 seconds.",
   "IVÁN CONGELADO": "IVÁN FROZEN",
-  "Pisa la placa azul: congela a Iván durante 10 segundos, una sola vez.": "Step on the blue plate: it freezes Iván for 10 seconds, once per attempt.",
+  "Pisa la placa azul: congela a Iván durante 20 segundos, una sola vez.": "Step on the blue plate: it freezes Iván for 20 seconds, once per attempt.",
   "ACADEMIA DE LOS SEIS UMBRALES": "ACADEMY OF THE SIX GATEWAYS",
   "LA DIVERGENCIA": "THE DIVERGENCE",
   "DIVERGENCIA DETENIDA": "DIVERGENCE STOPPED",
@@ -632,3 +632,5 @@ Object.assign(ENGLISH,{
  'José Luis hablando':'José Luis speaking',
  'Primero combina v = at con h = ½at² para encontrar el tiempo: t = 2h/v. Después calcula a = v/t. Esa es la aceleración neta; el empuje debe vencer también el peso, así que usa F = m(a + g). Los datos están en el terminal azul. Puedes contar conmigo pulsando H.':'First combine v = at with h = ½at² to find time: t = 2h/v. Then calculate a = v/t. This is net acceleration; thrust must also overcome weight, so use F = m(a + g). The blue terminal has the data. Press H whenever you need me.'
 });
+
+Object.assign(ENGLISH,{'Relaciona altura, rapidez y tiempo. Recuerda que el empuje también debe vencer el peso. Los datos están en el terminal azul.':'Relate height, speed and time. Remember that thrust must also overcome weight. The blue terminal has the data.','CONTROL DE VUELO':'FLIGHT CONTROL'});

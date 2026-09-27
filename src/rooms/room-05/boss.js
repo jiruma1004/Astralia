@@ -20,7 +20,7 @@ window.EricEncounter=class {
  fire(){if(this.active<0||!this.canFire?.())return;const ix=document.querySelector('#boss-x'),iy=document.querySelector('#boss-y'),feedback=document.querySelector('#boss-feedback');if(!ix.value.trim()||!iy.value.trim()){feedback.textContent='Escribe ambas coordenadas.';return;}
   const ok=this.puzzle.submit(this.lasers[this.active].side,Number(ix.value),Number(iy.value));feedback.textContent=ok?'¡Intersección correcta! El láser corta el soporte.':'Ese punto no pertenece a ambas curvas en esta rama. Sustituye x e y en las dos ecuaciones.';
   if(!ok)this.say('¡Ja, ja! Ese punto no está en mis dos curvas.',true);
-  if(ok){this.say(this.puzzle.solved?'¡Mi soporte! ¡Esto no estaba en la gráfica!':'¿Un corte? Todavía te falta la otra intersección.',false);Sound.tone(900,.25,'sawtooth',.06);document.querySelector('#boss-progress').textContent=this.puzzle.cuts.filter(Boolean).length+' / 2 cortes';if(this.puzzle.solved){this.close();this.onEvent('solved');}}
+  if(ok){this.close();document.querySelector('#game').focus({preventScroll:true});this.say(this.puzzle.solved?'¡Mi soporte! ¡Esto no estaba en la gráfica!':'¿Un corte? Todavía te falta la otra intersección.',false);Sound.tone(900,.25,'sawtooth',.06);document.querySelector('#boss-progress').textContent=this.puzzle.cuts.filter(Boolean).length+' / 2 cortes';if(this.puzzle.solved){this.close();this.onEvent('solved');}}
  }
  say(text,laugh=false){this.speech=text;this.speechLeft=6;if(laugh&&this.elapsed-this.lastLaugh>=12){Sound.laugh();this.lastLaugh=this.elapsed;}}
  tick(dt,player,renderer,room,opened){this.elapsed+=dt;this.speechLeft=Math.max(0,this.speechLeft-dt);this.tauntClock-=dt;
