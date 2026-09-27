@@ -150,3 +150,10 @@ Diez obstáculos bajos alternados en el corredor. Risa de Eric recortada a 1.5 s
 El corredor recorre ahora 54 celdas entre la entrada y el centro de la puerta, el doble que antes. El abismo de Galileo tiene 15 celdas de largo (25 % más) y el botón está a 20 m del cañón. Las barandillas bloquean el movimiento lateral, incluso al saltar, solo después de desplegar el puente.
 
 Eric lanza una poción a los 8 s y después cada 9 s. Apunta a la posición de hace 1.5 s, con vuelo de 1.6 s y un círculo de aviso. Al caer ríe y deja un charco verde de radio 0.7 celdas durante 2 s: tocarlo sin saltar causa Game Over. Los peligros desaparecen al vencerlo o reaparecer.
+
+### Legibilidad y pasajero inesperado
+La fuente local Oxanium sustituye a Pixelify Sans en la interfaz, con cifras más claras y campos numéricos grandes. Licencia OFL en `assets/fonts/Oxanium-OFL.txt`; fuente oficial: https://github.com/google/fonts/tree/main/ofl/oxanium. Los paneles de respuestas, láseres, cohete y cañón se adaptan a móvil, con foco visible y reloj compacto al escribir.
+
+El prólogo conserva la pista de Eric durante la siguiente intervención de Paola. Cambia a `missing` al presentar a Iván desaparecido y vuelve a `music` con la última intervención de Paola.
+
+El lanzamiento final dura 13 segundos: Iván busca a Eric, se engancha en un cable, gira de cabeza y asciende sujeto por el pie. El cohete empieza a elevarse a los 4.5 segundos. Una cámara despejada permite ver toda la escena, sin el terminal delante. Los cuatro fotogramas, referencia y prompt se documentan en `assets/sprites/IVAN-FINALE.md`.

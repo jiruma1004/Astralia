@@ -77,7 +77,7 @@ function openNearbyDoor(angle=player.angle,screenY=null){
 }
 function bossEvent(type){if(type==='potion'){die('potion');return;}if(type!=='solved')return;Sound.stop('laugh');companions.closeHelp();document.querySelector('#ask-paola').hidden=true;ignitia.startEscape(player);keys.clear();return;}
 function ignitiaEvent(type){
- if(type==='launch'){keys.clear();camera.release();player.angle=Math.atan2(7.5-player.y,16-player.x);player.pitch=.10;return;}
+ if(type==='launch'){keys.clear();camera.release();companions.closeHelp();Object.assign(player,{x:8,y:7.5,angle:0,pitch:.10,jumpHeight:0,jumpVelocity:0});return;}
  if(type==='complete'){if(mission.finish()){completed=true;keys.clear();document.querySelector('#door-status').textContent='IGNITIA RUMBO A LA LUNA';message.textContent='Has completado las seis pruebas. La persecución continúa.';}return;}
  if(type!=='escapeDone')return;opened=rooms[index].canUnlock({parabolaCut:true});companions.toast('Eric escapó. Cruza el puente central hacia el cohete de Ignitia.');document.querySelector('#door-status').textContent='SOPORTE CORTADO · PASO ABIERTO';}
 function corridorEvent(type,text){
