@@ -12,10 +12,11 @@ window.RoomActors=class {
   const objects=[];if(room.answerDesk)objects.push({...room.answerDesk,kind:'desk'});if(maze&&!maze.dungeon)for(const d of maze.doors)if(!d.correct&&maze.openDoors.has(d.stage+':'+d.choice))objects.push({x:d.x+.5,y:d.y+.5,kind:'rift'});if(maze?.chasing)objects.push({...maze.enemy,kind:'ivan'});
   objects.sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y));
   this.deskBounds=this.guideBounds=null;
+  if(maze&&!maze.dungeon&&maze.stage===2)this.drawFreezePlate(renderer,player,maze,time);
   if(maze)this.drawDoorLabels(renderer,room,player,maze);
   for(const obj of objects){const p=this.project(renderer,player,obj.x,obj.y,0);if(!p)continue;const c=renderer.ctx;
    if(obj.kind==='rift'){this.drawRift(renderer,p,time);continue;}
-   if(obj.kind==='ivan'){this.drawIvan(renderer,p,time,maze.bite>0);continue;}
+   if(obj.kind==='ivan'){this.drawIvan(renderer,p,maze.freezeLeft>0?0:time,maze.bite>0);if(maze.freezeLeft>0){c.fillStyle='#62dfff';c.font='24px Georgia';c.textAlign='center';c.fillText('❄',p.x,p.y-p.scale);}continue;}
    const hit=renderer.cast(room,player.x,player.y,Math.atan2(obj.y-player.y,obj.x-player.x),opened);if(hit.distance+.1<Math.hypot(obj.x-player.x,obj.y-player.y))continue;
    c.save();c.translate(p.x,p.y);const s=p.scale/350;c.scale(s,s);
    if(obj.kind==='desk'){
@@ -25,6 +26,11 @@ window.RoomActors=class {
   }
   if(room.conceptual||room.roulette){const c=renderer.ctx,w=renderer.canvas.width,h=renderer.canvas.height;c.fillStyle='#eee7c1';c.fillRect(w/2-2,h/2-2,4,4);}
   if(maze?.bite>0){const c=renderer.ctx;c.fillStyle=`rgba(150,35,65,${maze.bite*.15})`;c.fillRect(0,0,renderer.canvas.width,renderer.canvas.height);}
+ }
+ drawFreezePlate(renderer,player,maze,time){
+  const c=renderer.ctx,p=this.project(renderer,player,maze.freezePlate.x,maze.freezePlate.y,.015);if(!p||p.depth<.3)return;
+  if(p.depth>(renderer.depths[Math.round(p.x/3)*3]??Infinity)+.1)return;
+  c.save();c.fillStyle=maze.freezeUsed?'#364f67':'#168fe8';c.strokeStyle='#a1f3ff';c.lineWidth=3;c.beginPath();c.ellipse(p.x,p.y,p.scale*.55,p.scale*.16,0,0,7);c.fill();c.stroke();c.fillStyle='#e7ffff';c.font=`bold ${Math.max(15,p.scale*.22)}px Georgia`;c.textAlign='center';c.fillText(maze.freezeUsed?'✓':'❄ 10 s',p.x,p.y-5);c.restore();
  }
  drawRift(renderer,p,time){
   const c=renderer.ctx,size=p.scale*.9,left=p.x-size*.36,top=p.y-size,w=size*.72;

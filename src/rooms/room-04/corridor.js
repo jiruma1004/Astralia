@@ -2,7 +2,7 @@
 window.RelaxCorridor=class {
  constructor(onEvent){this.onEvent=onEvent;this.time=0;this.readyShown=false;this.caught=false;
   this.obstacles=[{x:10,y:4.5,width:1.2,height:.22},{x:18,y:2.6,width:1,height:.22},{x:24,y:6.2,width:1,height:.22}];
-  this.spawnX=24;this.spawnInterval=(28.5-1.8)/1.6/3/2;this.spawnClock=this.spawnInterval;this.nextLane=0;
+  this.spawnX=24;this.spawnInterval=(28.5-1.8)/1.6/3/2/1.4;this.spawnClock=this.spawnInterval;this.nextLane=0;
   this.lanes=[{y:3,text:'π'},{y:5.8,text:'∑'},{y:4.4,text:'∫'}];
   this.symbols=this.lanes.map((s,i)=>({...s,x:8+i*8,age:1}));this.art=new Map();
  }

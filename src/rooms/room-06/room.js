@@ -1,18 +1,9 @@
-// Sala independiente. Añade aquí la lógica de su único reto.
-window.ESCAPE_ROOMS = window.ESCAPE_ROOMS || [];
+window.ESCAPE_ROOMS=window.ESCAPE_ROOMS||[];
 window.ESCAPE_ROOMS.push({
-  id: 'room-06', name: 'El laboratorio del Dr. Eric', color: [128, 135, 98],
-  environment:{kind:'interior',label:'El laboratorio del Dr. Eric',tint:'#714657',portraits:['eric','tesla']},
-  spawn: { x: 2.5, y: 3.5, angle: 0 },
-  challenge: { id: 'challenge-06', title: 'Reto por definir', implemented: false },
-  canUnlock(context) { return context.prototypeMode === true; },
-  map: [
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,0,0,0,0,0,0,2,0,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,0,0,0,0,0,0,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1]
-  ]
+ id:'room-06',name:'La plataforma de Ignitia',color:[105,126,146],rocket:true,
+ environment:{kind:'courtyard',label:'Base de lanzamiento Ignitia',tint:'#33476e',portraits:[]},
+ spawn:{x:3,y:7.5,angle:0},exitX:100,
+ challenge:{id:'challenge-06',title:'Rumbo a la Luna',implemented:true},
+ canUnlock(context){return context.launchReady===true;},
+ map:Array.from({length:15},(_,y)=>Array.from({length:25},(_,x)=>x===0||x===24||y===0||y===14?1:0))
 });

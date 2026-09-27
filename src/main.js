@@ -6,18 +6,20 @@ const cannon=new CannonConsole(lab),companions=new RoomCompanions(),actors=new R
 const spawnPlayer=room=>({...room.spawn,pitch:0,jumpHeight:0,jumpVelocity:0});
 const message=document.querySelector('#message'),nav=document.querySelector('#rooms');
 const mission=new AdventureClock({onChange:updateCountdown,onExpire:expireAdventure});
-const canPlay=()=>mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
+const ignitia=new IgnitiaMission(ignitiaEvent);
+const canPlay=()=>!ignitia.blocking&&mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
 const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>keys.clear()});
 window.addEventListener('astralia:ui-open',()=>camera.release());
 function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
  const timer=document.querySelector('#adventure-timer');timer.dataset.phase=phase;
  document.querySelector('#timer-value').textContent=String(Math.floor(remaining/60)).padStart(2,'0')+':'+String(remaining%60).padStart(2,'0');
- document.querySelector('#timer-label').textContent=state==='complete'?'DIVERGENCIA DETENIDA':'LA DIVERGENCIA';
+ document.querySelector('#timer-label').textContent=state==='complete'?'IGNITIA EN VUELO':'LA DIVERGENCIA';
  const hint=state==='ready'?'Esperando tu entrada':state==='complete'?'Lo lograste':phase==='expired'?'El Dr. Eric llegó primero':phase==='danger'?'¡Apresúrate!':phase==='warning'?'El experimento se acerca':'Tiempo restante';
  document.querySelector('#timer-hint').textContent=hint;
  if(phaseChanged){window.dispatchEvent(new CustomEvent('astralia:urgency',{detail:{phase,remainingSeconds:remaining,musicCue}}));if(phase==='warning'||phase==='danger')document.querySelector('#timer-announcement').textContent='Quedan '+Math.ceil(remaining/60)+' minutos. '+hint;}
 }
 function expireAdventure(){
+ ignitia.reset(rooms[index]);document.querySelector('#ignitia-dialog').hidden=true;
  document.querySelector('#eric-ready').close();boss?.close();
  keys.clear();clearDeath();cannon.close();companions.closeHelp();companions.closeConsole();lab.hologram.hide();lab.dead=true;lab.lock(true);if(lab.shot)lab.shot.done=true;Sound.failure('timeout');
  document.querySelector('#door-status').textContent='TIEMPO AGOTADO';message.textContent='El Dr. Eric ha completado la divergencia.';
@@ -35,7 +37,7 @@ new ResizeObserver(entries=>{const r=entries[0].contentRect;if(r.width&&r.height
 const roulette=new ProblemRoulette(()=>{if(!rooms[index].roulette)return;opened=rooms[index].canUnlock({problemSolved:true});document.querySelector('#door-status').textContent='SELLO ABIERTO';message.textContent='¡Sello roto! Rodea la mesa y atraviesa el portal luminoso.';});
 roulette.canAnswer=()=>canPlay()&&rooms[index].roulette&&companions.consoleOpen&&companions.facing(player,rooms[index].answerSeal,renderer,opened);
 rooms.forEach((room,i)=>{const button=document.createElement('button');button.innerHTML=`<b>${['I','II','III','IV','V','VI'][i]}</b><span>${room.name}<small>${room.challenge.implemented?room.challenge.title:'Por descubrir'}</small></span>`;button.onclick=()=>load(i);nav.append(button);});
-function load(i){Sound.stop('laugh');boss?.close();for(const id of ['boss-mission','boss-panel'])if(document.getElementById(id))document.getElementById(id).hidden=true;document.querySelector('#eric-ready').close();clearDeath();Sound.selectBackground(rooms[i].roulette?'seal':rooms[i].conceptual?'maze':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
+function load(i){ignitia.reset(rooms[i]);document.querySelector('.scene-view').classList.toggle('has-rocket',!!rooms[i].rocket);Sound.stop('laugh');boss?.close();for(const id of ['boss-mission','boss-panel'])if(document.getElementById(id))document.getElementById(id).hidden=true;document.querySelector('#eric-ready').close();clearDeath();Sound.selectBackground(rooms[i].roulette?'seal':rooms[i].conceptual?'maze':rooms[i].corridor?'corridor':rooms[i].boss?'stand':rooms[i].rocket?'phase':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];
  document.querySelector('#room-title').textContent=`UMBRAL ${['I','II','III','IV','V','VI'][i]} / ${room.name.toUpperCase()}`;
  document.querySelector('#door-status').textContent=room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':room.conceptual?'LABERINTO · 1 / 4':room.corridor?'CAMINO A LA SALA PRINCIPAL':'PUERTA BLOQUEADA';
  message.textContent=room.physics?'Mira el cañón y pulsa E o haz clic para preparar tu disparo.':room.roulette?'Gira la rueda. Responde interactuando con el sello de la puerta.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Las puertas equivocadas esconden portales al calabozo.':room.corridor?'Esquiva los símbolos que vienen hacia ti. Shift corre · Espacio salta. ¡Un impacto termina el intento!':room.boss?'Calcula los dos puntos de corte y programa los láseres laterales.':'Acércate a la puerta y ábrela con clic o E.';
@@ -73,7 +75,11 @@ function openNearbyDoor(angle=player.angle,screenY=null){
  if(maze){const door=maze.doorAt(hit.cx,hit.cy);if(door?.stage!==maze.stage)return false;maze.choose(door,player);return true;}
  opened=room.canUnlock({prototypeMode:true});if(opened){Sound.click();document.querySelector('#door-status').textContent='PUERTA ABIERTA';message.textContent='Cruza la puerta para continuar.';}return opened;
 }
-function bossEvent(type){if(type!=='solved')return;opened=rooms[index].canUnlock({parabolaCut:true});Sound.success();companions.toast('¡Dos cortes correctos! La plataforma cede, Eric se retira y la máquina se apaga. Cruza por el puente central.');document.querySelector('#door-status').textContent='SOPORTE CORTADO · PASO ABIERTO';}
+function bossEvent(type){if(type!=='solved')return;Sound.stop('laugh');companions.closeHelp();document.querySelector('#ask-paola').hidden=true;ignitia.startEscape(player);keys.clear();return;}
+function ignitiaEvent(type){
+ if(type==='launch'){keys.clear();camera.release();player.angle=Math.atan2(7.5-player.y,16-player.x);player.pitch=.10;return;}
+ if(type==='complete'){if(mission.finish()){completed=true;keys.clear();document.querySelector('#door-status').textContent='IGNITIA RUMBO A LA LUNA';message.textContent='Has completado las seis pruebas. La persecución continúa.';}return;}
+ if(type!=='escapeDone')return;opened=rooms[index].canUnlock({parabolaCut:true});companions.toast('Eric escapó. Cruza el puente central hacia el cohete de Ignitia.');document.querySelector('#door-status').textContent='SOPORTE CORTADO · PASO ABIERTO';}
 function corridorEvent(type,text){
  if(type==='hit'){die('symbol');return;}
  if(type==='ready'){if(opened)return;keys.clear();camera.release();document.querySelector('#eric-ready').showModal();return;}
@@ -83,6 +89,7 @@ document.querySelector('#eric-ready-yes').onclick=()=>{document.querySelector('#
 document.querySelector('#eric-ready-wait').onclick=()=>{document.querySelector('#eric-ready').close();canvas.focus({preventScroll:true});};
 async function interact(){
  if(!canPlay())return;
+ if(rooms[index].rocket){if(!ignitia.open(player))companions.toast('Acércate al terminal azul de Ignitia y pulsa E.');return;}
  if(rooms[index].physics){if(!cannon.open(player,renderer,opened))companions.toast('Acércate al cañón y míralo para abrir sus controles.');return;}
  if(openNearbyDoor())return;
  if(boss){if(boss.open(player,renderer,rooms[index],opened))keys.clear();else companions.toast('Acércate a uno de los láseres laterales y mira su panel.');return;}
@@ -93,7 +100,9 @@ async function interact(){
  companions.closeConsole();roulette.spin();
 }
 function worldClick(x,y){
+ if(!canPlay())return false;
  companions.closeHelp();
+ if(rooms[index].rocket)return ignitia.open(player);
  const contains=b=>b&&x>b.x&&x<b.x+b.w&&y>b.y&&y<b.y+b.h;
  if(openNearbyDoor(player.angle+Math.atan((x/canvas.width*2-1)*.66),y))return false;
  if(boss&&boss.open(player,renderer,rooms[index],opened)){keys.clear();return true;}
@@ -110,11 +119,11 @@ async function shoot(){if(!canPlay())return;if(rooms[index].roulette||rooms[inde
 function jump(){if(!canPlay()||player.jumpHeight>0||player.jumpVelocity!==0||!supported(player.x,player.y))return;player.jumpVelocity=2.1;}
 window.addEventListener('keydown',e=>{if(!canPlay()||e.target.closest('button,a,input,select,textarea,summary'))return;const key=e.key.toLowerCase();if(['w','a','s','d','arrowleft','arrowright',' ','e','f','h','shift'].includes(key)){e.preventDefault();keys.add(key);if(key===' '&&!e.repeat)jump();if(key==='f'&&!e.repeat)shoot();if(key==='e'&&!e.repeat)interact();if(key==='h'&&!e.repeat)companions.help();}});
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
-window.addEventListener('keydown',e=>{if(e.key==='Escape'){cannon.close();boss?.close();companions.closeHelp();companions.closeConsole();}});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'){ignitia.closeConsole();cannon.close();boss?.close();companions.closeHelp();companions.closeConsole();}});
 document.querySelector('#station-fire').onclick=()=>shoot();
 document.querySelector('#jump').onclick=()=>{jump();canvas.focus({preventScroll:true});};
 document.querySelectorAll('[data-key]').forEach(b=>{b.onpointerdown=e=>{if(!canPlay())return;b.setPointerCapture(e.pointerId);keys.add(b.dataset.key.toLowerCase());};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.key.toLowerCase());});
-function walkable(x,y){const room=rooms[index];if(room.bounds&&(y-.18<room.bounds.minY||y+.18>room.bounds.maxY))return false;if(boss?.lasers.some(l=>Math.hypot(x-l.x,y-l.y)<.45))return false;if(corridor?.blocks(x,y,player.jumpHeight))return false;if(room.answerDesk&&Math.hypot(x-room.answerDesk.x,y-room.answerDesk.y)<.65)return false;if(room.table&&Math.hypot(x-room.table.x,y-room.table.y)<.8)return false;if(room.physics&&Math.hypot(x-room.physics.originX,y-room.physics.originY)<.38)return false;return [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]].every(([dx,dy])=>{const tile=room.map[Math.floor(y+dy)]?.[Math.floor(x+dx)]??1;return tile===0||(tile===2&&opened)||tile===3;});}
+function walkable(x,y){const room=rooms[index];if(room.bounds&&(y-.18<room.bounds.minY||y+.18>room.bounds.maxY))return false;if(rooms[index].rocket&&Math.hypot(x-7.5,y-5.5)<.6)return false;if(boss?.lasers.some(l=>Math.hypot(x-l.x,y-l.y)<.45))return false;if(corridor?.blocks(x,y,player.jumpHeight))return false;if(room.answerDesk&&Math.hypot(x-room.answerDesk.x,y-room.answerDesk.y)<.65)return false;if(room.table&&Math.hypot(x-room.table.x,y-room.table.y)<.8)return false;if(room.physics&&Math.hypot(x-room.physics.originX,y-room.physics.originY)<.38)return false;return [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]].every(([dx,dy])=>{const tile=room.map[Math.floor(y+dy)]?.[Math.floor(x+dx)]??1;return tile===0||(tile===2&&opened)||tile===3;});}
 // El abismo permite caminar: perder el suelo inicia la caída.
 function supported(x,y){const tile=rooms[index].map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===(rooms[index].boss?7:3));}
 function clearDeath(){death=null;camera.release();canvas.style.transform='';canvas.style.opacity='';const dialog=document.querySelector('#death-dialog');if(dialog.open)dialog.close();}
@@ -144,7 +153,8 @@ function respawn(){
 document.querySelector('#respawn').onclick=respawn;
 document.querySelector('#death-dialog').addEventListener('cancel',e=>{e.preventDefault();respawn();});
 
-function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);mission.tick();
+ignitia.canLaunch=()=>canPlay()&&ignitia.near(player);
+function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);mission.tick();ignitia.tick(dt);
  if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0),s=(keys.has('d')?1:0)-(keys.has('a')?1:0),speed=dt*2.3*(keys.has('shift')?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
  if(walkable(nx,player.y))player.x=nx;if(walkable(player.x,ny))player.y=ny;
  // Altura en celdas (2 m en Galileo): salto corto, sin doble salto ni apoyo sobre el vacío.
@@ -152,13 +162,22 @@ function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math
  if(player.jumpHeight===0&&!supported(player.x,player.y))die(rooms[index].boss?'pit':'fall');
  if(!death&&opened&&player.x>(rooms[index].exitX??7.6)){if(index<5)load(index+1);else if(mission.finish()){completed=true;message.textContent='Has cruzado los seis umbrales. ¡Has detenido al Dr. Eric!';document.querySelector('#door-status').textContent='SALIDA ALCANZADA';keys.clear();}}
  }
- if(canPlay()&&maze){maze.tick(dt,player);if(maze.chasing&&!maze.caught)Sound.pursuit(dt,Math.hypot(maze.enemy.x-player.x,maze.enemy.y-player.y));}
+ if(canPlay()&&maze){maze.tick(dt,player);if(maze.chasing&&!maze.caught&&maze.freezeLeft<=0)Sound.pursuit(dt,Math.hypot(maze.enemy.x-player.x,maze.enemy.y-player.y));}
  if(canPlay()&&corridor)corridor.tick(dt,player);
- if(canPlay()&&boss)boss.tick(dt,player,renderer,rooms[index],opened);
+ if((canPlay()||ignitia.mode==='escape')&&boss)boss.tick(dt,player,renderer,rooms[index],opened);
  companions.tick(dt,player,renderer,opened,canPlay());cannon.tick(player,renderer,opened,canPlay());
  if(rooms[index].physics){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||cannon.isOpen;hint.textContent=cannon.near(player,renderer,opened)?'Clic o E · Usar el cañón':'Acércate al cañón para configurar el disparo';}
+ if(maze)document.querySelector('#chase-indicator').classList.toggle('frozen',maze.freezeLeft>0);
+ if(rooms[index].rocket){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||!document.querySelector('#rocket-console').hidden;hint.textContent=ignitia.near(player)?'Clic o E · Programar el cohete':'Acércate al terminal azul de Ignitia';if(!ignitia.near(player)&&!document.querySelector('#rocket-console').hidden)ignitia.closeConsole();}
  if(boss)document.querySelector('#interaction-hint').textContent=boss.near(player,renderer,rooms[index],opened)>=0?'Clic o E · Programar láser':'Busca los láseres a ambos lados';
  if(canPlay()&&rooms[index].physics)lab.tick(dt);if(canPlay()&&rooms[index].roulette)roulette.tick(dt);
- renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);if(corridor)corridor.draw(renderer,player,actors);if(boss)boss.draw(renderer,player,actors);if(rooms[index].environment.kind==='courtyard')renderer.outdoor.draw(renderer,rooms[index],player,actors,time);animateDeath(dt);requestAnimationFrame(tick);
+ renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);if(corridor)corridor.draw(renderer,player,actors);if(boss)boss.draw(renderer,player,actors);if(rooms[index].environment.kind==='courtyard')renderer.outdoor.draw(renderer,rooms[index],player,actors,time);ignitia.draw(renderer,player,actors);animateDeath(dt);requestAnimationFrame(tick);
 }
 document.querySelector('#reset-lab').onclick=()=>load(index);document.querySelector('#reset-roulette').onclick=()=>load(index);load(0);mission.notify();document.querySelector('#adventure-intro').showModal();Sound.enable({automatic:true});requestAnimationFrame(tick);
+
+window.addEventListener('astralia:language',()=>{
+ Object.assign(renderer.art,makeWallArt(),makeScenery());boss?.art.clear();actors.doorArt.clear();
+ if(!prologue.done)prologue.renderPage();
+ if(companions.dialogue){const d=companions.dialogue;d.text=I18n.t(d.source);d.chars=[...d.text];companions.finishDialogue();}
+ if(ignitia.source&&!document.querySelector('#ignitia-dialog').hidden){ignitia.text=I18n.t(ignitia.source);ignitia.reveal();}
+});

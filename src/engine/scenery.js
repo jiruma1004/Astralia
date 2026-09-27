@@ -50,11 +50,17 @@ window.makeScenery=()=>{
  const chalkWall=make(1200,850,c=>{
   // Fondo transparente: la pintura queda directamente sobre los ladrillos.
   const equations=[
-   ['Δx = v₀ cos(θ) cos(φ) t',60,255,-.035,60,'#d9e9d1'],
-   ['F = ma',810,145,.065,72,'#e7dcad'],
-   ['Δy = v₀ sen(θ) t − ½gt²',125,485,.025,60,'#d5e6ed'],
-   ['Eₖ = ½mv²',95,730,-.06,68,'#e7dcad'],
-   ['v = v₀ + at',735,665,.045,60,'#d9e9d1']
+   ['v₀ₓ = v₀ cos(θ) cos(φ)',45,100,-.025,47,'#d9e9d1'],
+   ['v₀ᵧ = v₀ sen(θ)',645,110,.035,47,'#d5e6ed'],
+   ['Δx = v₀ₓ t',60,240,-.035,55,'#d9e9d1'],
+   ['Δy = v₀ᵧt − ½gt²',600,260,.025,50,'#d5e6ed'],
+   ['vᵧ = v₀ᵧ − gt',80,410,-.025,50,'#d5e6ed'],
+   ['t = Δx / v₀ₓ',665,415,.025,50,'#d9e9d1'],
+   ['R = v₀² sen(2θ) / g',70,570,-.025,52,'#e7dcad'],
+   ['Δy = 0, φ = 0°',660,565,.025,37,'#e7dcad'],
+   ['Eₖ = ½mv²',60,735,-.04,49,'#e7dcad'],
+   ['F = ma',515,740,.035,50,'#d9e9d1'],
+   ['v² = v₀² + 2aΔx',780,735,-.025,39,'#d5e6ed']
   ];
   for(const [eq,x,y,angle,size,color] of equations){c.save();c.translate(x,y);c.rotate(angle);c.fillStyle=color;c.globalAlpha=.93;c.font=`italic ${size}px Georgia`;c.fillText(eq,0,0);c.restore();}
   // Desgaste en los trazos, sin añadir una placa ni un recuadro opaco.

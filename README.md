@@ -1,6 +1,6 @@
 # Astralia · Academia de los seis umbrales
 
-Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azul nocturno, cristal, detalles dorados y letras más grandes. Seis habitaciones; las cinco primeras tienen actividades y la última reserva un futuro desafío. Vista 2.5D por raycasting con objetos dibujados en canvas, sin dependencias externas. Las paredes incluyen estandartes, un retrato ilustrado original de Einstein y ecuaciones grafiteadas.
+Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azul nocturno, cristal, detalles dorados y letras más grandes. Seis habitaciones; las seis tienen actividades, incluida la plataforma de lanzamiento de Ignitia. Vista 2.5D por raycasting con objetos dibujados en canvas, sin dependencias externas. Las paredes incluyen estandartes, un retrato ilustrado original de Einstein y ecuaciones grafiteadas.
 
 ## Abrir
 
@@ -8,17 +8,17 @@ Abre `index.html` en un navegador moderno. No requiere instalación ni conexión
 
 ## El castillo del Dr. Eric
 
-La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **corredor de las ideas** (IV), **parábola de Eric** (V) y **laboratorio del Dr. Eric** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. La sala III tiene techo de piedra; IV y V son patios abiertos bajo el cielo.
+La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **corredor de las ideas** (IV), **parábola de Eric** (V) y **plataforma de Ignitia** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. La sala III tiene techo de piedra; IV, V y VI son patios abiertos bajo el cielo.
 
-La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. El reto VI sigue reservado para una futura actividad.
+La galería incluye ilustraciones de Doofenshmirtz, Planck, Tesla, Curie y el Dr. Eric, con marcos y paletas distintas. Los personajes históricos aparecen caracterizados como villanos ficticios dentro de la historia. La sala VI cierra esta etapa con un lanzamiento hacia la Luna.
 
 Resolver la ruleta rompe el sello violeta y activa un portal turquesa atravesable. La mesa está ligeramente desplazada para que se vea la entrada detrás.
 
 Antes de entrar, Epi Paola narra un prólogo de cinco escenas. Los retratos alternan Paola, Eric enfadado con bata de laboratorio, Paola, Iván en un recorte de periódico con el titular «DESAPARECIDO» y Paola. Eric se cansó de que los alumnos no pusieran títulos a las gráficas y prepara la divergencia para unificar la gravedad y el espacio. Iván está desaparecido desde que Eric se fue; se dice que se perdió en un bosque. Al final, Paola recuerda que puedes pedirle ayuda con H. El texto aparece letra por letra; puedes mostrarlo completo, avanzar o saltar el relato. Las paredes son de ladrillo antiguo con juntas alternadas, grietas y humedad; se conservan los cuadros, grafitis y estandartes.
 
-Pulsa **Entrar al mundo** al terminar el prólogo, o **Saltar relato y entrar**, para iniciar una aventura de **30 minutos**. Durante toda la narración el contador permanece detenido. El reloj permanece en la esquina inferior derecha: verde al principio, naranja cuando quedan **10 minutos** y rojo en los últimos **3 minutos**. El texto también indica la urgencia.
+Pulsa **Entrar al mundo** al terminar el prólogo, o **Saltar relato y entrar**, para iniciar una aventura de **60 minutos**. Durante toda la narración el contador permanece detenido. El reloj permanece en la esquina inferior derecha: verde al principio, naranja cuando quedan **10 minutos** y rojo en los últimos **3 minutos**. El texto también indica la urgencia.
 
-El tiempo es global: sigue corriendo al cambiar de habitación, reiniciar un reto, caer, reaparecer o cambiar de pestaña. Al llegar a cero, el Dr. Eric completa la divergencia, se detiene la partida y puedes **Volver a intentarlo** desde la primera sala con otros 30 minutos. Salir por el sexto umbral detiene el reloj. Recargar la página inicia una sesión nueva, con su introducción y sin progreso guardado.
+El tiempo es global: sigue corriendo al cambiar de habitación, reiniciar un reto, caer, reaparecer o cambiar de pestaña. Al llegar a cero, el Dr. Eric completa la divergencia, se detiene la partida y puedes **Volver a intentarlo** desde la primera sala con otros 60 minutos. Completar el despegue de Ignitia detiene el reloj. Recargar la página inicia una sesión nueva, con su introducción y sin progreso guardado.
 
 La música futura de tensión tiene su espacio reservado en `assets/audio/tension/README.md` y sus eventos en `src/engine/adventure.js`; todavía no se añaden pistas ni se cambia la música según la fase.
 
@@ -26,7 +26,7 @@ La música futura de tensión tiene su espacio reservado en `assets/audio/tensio
 
 1. Elige una bala en el estante: Saphir (0.5 kg), Ambre (1 kg), Rubis (2 kg) o Améthyste (4 kg).
 2. Pulsa **Cargar orbe**, o toca el cañón de la escena después de elegirla. La recámara se ilumina con su color. La torreta Prisma tiene una base hexagonal y un cabezal de cristal, sin tubo largo ni ruedas.
-3. Calcula y escribe elevación θ, giro horizontal φ y rapidez o energía en campos numéricos. No hay deslizadores de tiro. Gira hacia atrás desde el inicio: el muro de piedra tiene cinco ecuaciones grafiteadas directamente sobre los ladrillos, sin pizarra ni marco para que elijas las pertinentes. Los campos vacíos o fuera de sus límites no disparan ni consumen el orbe.
+3. Calcula y escribe elevación θ, giro horizontal φ y rapidez o energía en campos numéricos. No hay deslizadores de tiro. Gira hacia atrás desde el inicio: el muro de piedra tiene once expresiones y condiciones de uso grafiteadas directamente sobre los ladrillos, sin pizarra ni marco para que elijas las pertinentes. Los campos vacíos o fuera de sus límites no disparan ni consumen el orbe.
 4. Dispara. Cada lanzamiento consume la bala cargada; hay suministro ilimitado en el estante.
 5. Al alcanzar el botón suspendido, suena el MP3 de victoria y se activa el puente. Cruza por el centro; pisar el vacío provoca una caída a una singularidad. Rodea la torreta: es un objeto sólido.
 6. Si disparas con más de 180 J, la torreta explota y tu personaje queda fuera de combate. Aparece «en papel nada se quema». La capacidad es una regla del equipo ficticio, no un umbral físico universal.
@@ -36,7 +36,7 @@ En **rapidez fijada**, la masa cambia la energía, pero no la trayectoria ideal.
 
 ## Segunda sala · La rueda del destino
 
-Acércate a la mesa y pulsa su cristal o la tecla **E**. Suena una campanada y la rueda gira durante 3.8 segundos. Selecciona sin repetir uno de diez problemas de MRUA, caída libre y tiro parabólico. Dos sectores rojos contienen retos avanzados de intercepción y optimización.
+Acércate a la mesa y pulsa su cristal o la tecla **E**. Suena una campanada y la rueda gira durante 3.8 segundos. Selecciona sin repetir uno de diez problemas de MRUA, caída libre y tiro parabólico. Todos los sectores son normales: los dos avanzados se sustituyen por un arranque de MRUA y una caída desde el reposo.
 
 El enunciado aparece en un globo a la derecha de la vista, que puedes minimizar. Acércate al **sello de la puerta**, míralo y pulsa **E** o haz clic. Solo así se abre el formulario; al apartar la mirada o alejarte se cierra. Introduce las dos respuestas numéricas en las unidades indicadas. Se acepta punto o coma decimal. Resolver un problema abre la puerta; puedes seguir girando para practicar el resto. Cada problema incluye pista y desarrollo. Reiniciar cierra la puerta y restablece la rueda.
 
@@ -106,7 +106,7 @@ Los ZIP independientes del juego se guardan fuera del repositorio, en `../backup
 
 ## IV · El corredor de las ideas
 
-Acceso exterior al castillo: cielo, torres altas al fondo, antorchas de pie y camino central de adoquín. El ancho interior pasa de 7 a 5.6 celdas (20 % menos); las colisiones y los muros visibles usan los mismos límites. Las cajas son saltables y se pueden rodear. Los símbolos π, Σ e ∫ avanzan a 1.6 celdas/s hacia la entrada, por carriles fijos: no persiguen al jugador. Aparecen cada 2.78125 segundos: el doble de la frecuencia media anterior (5.5625 s). Nacen en x=24, cinco celdas antes de la puerta x=29, y se eliminan al salir por la entrada. Los recién creados parpadean durante 0.65 s antes de poder impactar. Esquiva o salta; un impacto inicia Game Over y su música. Reapareces al principio del corredor con una nueva oleada. Shift permite sprint; hay botón táctil.
+Acceso exterior al castillo: cielo, torres altas al fondo, antorchas de pie y camino central de adoquín. El ancho interior pasa de 7 a 5.6 celdas (20 % menos); las colisiones y los muros visibles usan los mismos límites. Las cajas son saltables y se pueden rodear. Los símbolos π, Σ e ∫ avanzan a 1.6 celdas/s hacia la entrada, por carriles fijos: no persiguen al jugador. Aparecen cada 1.986607 segundos: 40 % más emisiones que la versión anterior (2.78125 s), conservando su velocidad. Nacen en x=24, cinco celdas antes de la puerta x=29, y se eliminan al salir por la entrada. Los recién creados parpadean durante 0.65 s antes de poder impactar. Esquiva o salta; un impacto inicia Game Over y su música. Reapareces al principio del corredor con una nueva oleada. Shift permite sprint; hay botón táctil.
 
 La puerta de roble final pregunta «¿Estás listo para enfrentarte al Dr. Eric?». Puedes esperar o abrir y continuar a la sala V. El reloj global sigue corriendo durante ese mensaje.
 
@@ -116,7 +116,7 @@ Patio amplio abierto al cielo, muros de piedra, fosa y máquina tecnológica. Er
 
 El plano del soporte usa **y = x²/4 + 2** y la recta de corte **y = x/2 + 4**. Son coordenadas educativas del soporte, no coordenadas del suelo del motor. Igualarlas da x² − 2x − 8 = 0: raíces −2 y 4, puntos **(−2, 3)** y **(4, 6)**. Cada aparato comprueba pertenencia a ambas curvas, números finitos y la rama que le corresponde (izquierda negativa, derecha positiva), con tolerancia 0.04. Paola ofrece una pista de planteamiento con H.
 
-Un corte ilumina el haz recto hasta su intersección. Dos cortes hacen ceder la parte central, retiran a Eric y apagan la máquina. Se habilita el puente por el centro de la fosa y la puerta a VI. La fosa causa Game Over antes de tener puente; los cortes ya hechos se conservan al reaparecer. La sala VI sigue como boceto. Archivos: `src/rooms/room-05/boss.js`, `src/engine/outdoor.js`; pruebas `tests/boss.cjs` y `tests/corridor.cjs`.
+Un corte ilumina el haz recto hasta su intersección. Dos cortes hacen ceder la parte central. Eric cae; tras 2.5 s se desvanece Final Stand, a los 4 s arranca su cohete y a los 11 s comienza The Transformation y el mensaje de José Luis. Se habilita el puente por el centro de la fosa y la puerta a VI. La fosa causa Game Over antes de tener puente; los cortes ya hechos se conservan al reaparecer. La sala VI contiene el cohete de Ignitia. Archivos: `src/rooms/room-05/boss.js`, `src/engine/outdoor.js`; pruebas `tests/boss.cjs` y `tests/corridor.cjs`.
 
 ### Risas y globos de Eric
 
@@ -124,3 +124,15 @@ Un corte ilumina el haz recto hasta su intersección. Dos cortes hacen ceder la 
 
 ### Controles del cañón dentro del mundo
 Acércate a la torreta y mírala: clic o E abre su panel sobre la escena. «Ajustes y orbes» contiene parámetros numéricos, masas, carga y disparo; «Datos y registro» reúne instrucciones, cuaderno y resultados. X o Escape cierra el panel. F permite disparar una carga ya preparada mientras miras el cañón. Al lanzar, se cierra el panel y aparece la trayectoria; los resultados también se muestran dentro de la escena. La sala II reproduce Sellado Mágico en bucle, con el mismo mezclador y fundidos que el resto del fondo.
+
+
+## VI · Ignitia y el ascenso lunar
+José Luis, líder de Ignitia, avisa que Eric pretende usar la máquina de divergencia en la Luna. Su retrato pixelado acompaña el diálogo. Al terminar el mensaje se habilita el puente de V. En VI, acércate al terminal azul y pulsa E/clic. Modelo de ascenso vertical con masa constante y sin aire: h = 1800 m, v = 120 m/s, m = 1000 kg, g = 9.81 m/s². Introduce aceleración neta, tiempo de encendido y empuje. Solución de referencia: a = 4 m/s², t = 30 s, F = 13810 N. Se comprueban velocidad, altura y balance de fuerzas con tolerancia del 1 %. Este cálculo cubre el despegue; un piloto automático ficticio continúa el viaje lunar. Al terminar la animación se detiene el reloj y concluyen las seis pruebas.
+
+En la tercera galería del laberinto hay una placa azul en (27.5, 8.5). Al pisarla congela a Iván 10 segundos, sin congelar al jugador ni las puertas. Solo se activa una vez por intento; reaparecer restablece la placa.
+
+Música: Juanillo 8 bit en IV, Final Stand en V, The Transformation durante el aviso de Ignitia y Final Phase en VI. Rocket ignition usa el canal de efectos durante los despegues. Los originales aportados por el usuario se conservan sin cambios.
+
+El selector English / Español funciona también desde el prólogo. Cambia interfaz, preguntas, pistas, diálogos y rótulos dibujados; mantiene el progreso y los parámetros. Solo se guarda la preferencia de idioma en localStorage, no la partida. Diccionario: src/ui/translations.js; motor: src/ui/i18n.js. Recursos y prompts de los dos nuevos sprites: assets/sprites/IGNITIA.md.
+
+Pruebas: node tests/physics.cjs, node tests/adventure.cjs, node tests/maze.cjs, node tests/corridor.cjs, node tests/boss.cjs, node tests/rocket.cjs y node tests/i18n.cjs.

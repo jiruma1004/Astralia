@@ -23,7 +23,7 @@ window.DUNGEON_QUESTIONS=[
 window.ConceptMaze=class {
  constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.questionPool=[];this.lastDungeonQuestion=null;this.reset();}
  reset(){
-  this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
+  this.freezeLeft=0;this.freezeUsed=false;this.freezePlate={x:27.5,y:8.5};this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
   this.enemy={x:1.5,y:8.5};
   // Solo la respuesta correcta tiene un pasaje. Las incorrectas son portales sin cuarto detrás.
   this.room.map=Array.from({length:17},()=>Array(51).fill(1));
@@ -93,12 +93,14 @@ window.ConceptMaze=class {
  }
  tick(dt,player){
   this.bite=Math.max(0,this.bite-dt);
+  if(!this.dungeon&&this.stage===2&&!this.freezeUsed&&Math.hypot(player.x-this.freezePlate.x,player.y-this.freezePlate.y)<.8){this.freezeUsed=true;this.freezeLeft=10;this.onEvent('freeze','Placa azul activada. Iván queda congelado durante 10 segundos.');return;}
+  this.freezeLeft=Math.max(0,this.freezeLeft-dt);
   if(!this.dungeon&&!this.caught){
    const portal=this.doors.find(d=>!d.correct&&this.openDoors.has(d.stage+':'+d.choice)&&player.x>=d.x&&player.x<d.x+4&&Math.abs(player.y-(d.y+.5))<1.5);
    if(portal){this.enterDungeon(player,portal);return;}
   }
   if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage===3?48.2:(this.stage+1)*12+1)){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
-  if(!this.chasing||this.finished||this.caught)return;
+  if(!this.chasing||this.finished||this.caught||this.freezeLeft>0)return;
   this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;this.returnGrace=false;
   this.pathClock-=dt;
   const atCenter=Math.hypot(this.enemy.x-Math.floor(this.enemy.x)-.5,this.enemy.y-Math.floor(this.enemy.y)-.5)<.001;
