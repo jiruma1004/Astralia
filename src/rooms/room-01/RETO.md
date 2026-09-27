@@ -2,7 +2,7 @@
 
 Objetivo: explorar elevación, azimut, rapidez, masa y energía mediante predicciones y ensayos.
 
-El cañón se sitúa en (3.5, 3.5) casillas. Boca y botón a 1.2 m sobre la plataforma. Cada casilla equivale a 2 m; el botón está 17 m adelante, sin desplazamiento lateral. Se acierta al cruzar su plano con una desviación radial máxima de 0.5 m, antes de caer por debajo de la plataforma o chocar con una pared lateral. El puente aparece únicamente tras el impacto animado.
+El cañón se sitúa en (3.5, 3.5) casillas. Boca y botón a 1.2 m sobre la plataforma. Cada casilla equivale a 2 m; el botón está 20 m adelante, sin desplazamiento lateral. Se acierta al cruzar su plano con una desviación radial máxima de 0.5 m, antes de caer por debajo de la plataforma o chocar con una pared lateral. El puente aparece únicamente tras el impacto animado.
 
 Elegir bala no basta: hay que cargarla. Cada disparo consume una bala. Masas: 0.5, 1, 2 y 4 kg. A rapidez fijada la masa no modifica el movimiento; a energía fijada v₀ = √(2E/m). No hay rozamiento. φ = 0 apunta al botón; φ positivo desvía a la derecha. Giro limitado a ±60°, elevación de 5° a 80°.
 

@@ -2,7 +2,7 @@
 window.Projectile={
  sample(v,angle,t,p,azimuth=0){const a=angle*Math.PI/180,b=azimuth*Math.PI/180;return {x:v*Math.cos(a)*Math.cos(b)*t,z:v*Math.cos(a)*Math.sin(b)*t,y:p.height+v*Math.sin(a)*t-.5*p.gravity*t*t};},
  evaluate(v,angle,p,azimuth=0){const a=angle*Math.PI/180,b=azimuth*Math.PI/180,vx=v*Math.cos(a)*Math.cos(b),vz=v*Math.cos(a)*Math.sin(b),vy=v*Math.sin(a),distance=(p.targetX-p.originX)*p.metersPerCell;
- const targetTime=distance/vx,groundTime=(vy+Math.sqrt(vy*vy+2*p.gravity*p.height))/p.gravity,wallTime=Math.abs(vz)>1e-8?5/Math.abs(vz):Infinity,endTime=Math.min(groundTime,wallTime,37/vx),target=this.sample(v,angle,targetTime,p,azimuth);
+ const targetTime=distance/vx,groundTime=(vy+Math.sqrt(vy*vy+2*p.gravity*p.height))/p.gravity,wallTime=Math.abs(vz)>1e-8?5/Math.abs(vz):Infinity,endTime=Math.min(groundTime,wallTime,(p.maxDistance??37)/vx),target=this.sample(v,angle,targetTime,p,azimuth);
  return {vx,vy,vz,targetTime,groundTime,endTime,targetY:target.y,targetZ:target.z,distance,hit:targetTime<=endTime&&Math.hypot(target.y-p.targetHeight,target.z)<=p.tolerance,range:v*v*Math.sin(2*a)/p.gravity};}
 };
 window.ProjectileLab=class {
@@ -27,6 +27,6 @@ window.ProjectileLab=class {
  const path=(v,a,az,tmax,dashed)=>{c.save();c.beginPath();c.rect(45,20,w-65,h-55);c.clip();c.strokeStyle=dashed?'#6687b9':'#a0e2ff';c.lineWidth=2;c.setLineDash(dashed?[5,5]:[]);c.beginPath();for(let t=0;t<=tmax+.005;t+=.015){const q=Projectile.sample(v,a,Math.min(t,tmax),p,az);if(q.x>26||q.y<0)break;if(t===0)c.moveTo(X(q.x),Y(q.y));else c.lineTo(X(q.x),Y(q.y));}c.stroke();c.restore();};
  if(!this.room.calculationMode&&this.prediction.checked)path(this.v0,this.angle,this.azimuth,this.result.endTime,true);
  if(this.shot){const s=this.shot;path(s.v,s.angle,s.azimuth,s.t,false);const q=Projectile.sample(s.v,s.angle,s.t,p,s.azimuth);if(q.x<=26&&q.y<=24){c.fillStyle=s.ammo.color;c.beginPath();c.arc(X(q.x),Y(Math.max(0,q.y)),5,0,Math.PI*2);c.fill();}}
- c.fillStyle='#ffd28d';c.fillRect(X(17)-5,Y(p.targetHeight+p.tolerance),10,Math.max(8,Y(p.targetHeight-p.tolerance)-Y(p.targetHeight+p.tolerance)));c.fillText('BOTÓN · x = 17 m · z = 0',X(17)-90,Y(p.targetHeight)-20);
+ c.fillStyle='#ffd28d';c.fillRect(X((p.targetX-p.originX)*p.metersPerCell)-5,Y(p.targetHeight+p.tolerance),10,Math.max(8,Y(p.targetHeight-p.tolerance)-Y(p.targetHeight+p.tolerance)));c.fillText(`BOTÓN · x = ${(p.targetX-p.originX)*p.metersPerCell} m · z = 0`,X((p.targetX-p.originX)*p.metersPerCell)-90,Y(p.targetHeight)-20);
  }
 };

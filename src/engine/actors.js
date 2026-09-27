@@ -29,7 +29,7 @@ window.RoomActors=class {
   if(maze?.bite>0){const c=renderer.ctx;c.fillStyle=`rgba(150,35,65,${maze.bite*.15})`;c.fillRect(0,0,renderer.canvas.width,renderer.canvas.height);}
  }
  drawBridgeRails(renderer,room,player){
-  const c=renderer.ctx,forest=!!room.physics,start=forest?6:17,end=forest?18:24,sides=forest?[3.03,3.97]:[7.03,7.97];
+  const c=renderer.ctx,forest=!!room.physics,{start,end,y}=room.bridge,sides=[y+.03,y+.97];
   const segment=(a,b,color,width)=>{const p=this.project(renderer,player,...a),q=this.project(renderer,player,...b);if(!p||!q)return;const mid=(p.x+q.x)/2;if(mid<0||mid>renderer.canvas.width||Math.min(p.depth,q.depth)>(renderer.depths[Math.floor(mid/3)*3]??Infinity)+.08)return;c.strokeStyle=color;c.lineWidth=Math.min(16,Math.max(1,(p.scale+q.scale)*width/2));c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();};
   c.save();c.lineCap='round';for(const y of sides){for(let x=start;x<=end;x+=1)segment([x,y,0],[x,y,.62],forest?'#a67a47':'#b7ccd5',.045);for(const z of [.28,.58])for(let x=start;x<end;x+=.2)segment([x,y,z],[Math.min(end,x+.2),y,z],forest?'#c19b67':'#77aabd',.025);}c.restore();
  }

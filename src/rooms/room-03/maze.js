@@ -105,7 +105,7 @@ window.ConceptMaze=class {
   this.pathClock-=dt;
   const atCenter=Math.hypot(this.enemy.x-Math.floor(this.enemy.x)-.5,this.enemy.y-Math.floor(this.enemy.y)-.5)<.001;
   if(!this.path.length||(this.pathClock<=0&&atCenter)){this.path=this.routeTo(player);this.pathClock=.6;}
-  const target=this.path[0];if(target){const dx=target.x-this.enemy.x,dy=target.y-this.enemy.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*(.72*1.05*1.05));if(d>0){this.enemy.x+=dx/d*step;this.enemy.y+=dy/d*step;}if(d<=step+.00001){this.enemy.x=target.x;this.enemy.y=target.y;this.path.shift();}}
+  const target=this.path[0];if(target){const dx=target.x-this.enemy.x,dy=target.y-this.enemy.y,d=Math.hypot(dx,dy),step=Math.min(d,dt*(.72*1.05*1.05*1.05));if(d>0){this.enemy.x+=dx/d*step;this.enemy.y+=dy/d*step;}if(d<=step+.00001){this.enemy.x=target.x;this.enemy.y=target.y;this.path.shift();}}
   if(Math.hypot(this.enemy.x-player.x,this.enemy.y-player.y)<.6){this.caught=true;this.bite=1.2;this.onEvent('caught','¡Ñam! EPI Ivan te alcanzó.');}
  }
 };

@@ -4,3 +4,10 @@ assert.equal(p.submit(-1,-2,3),true);assert(!p.solved);assert.equal(p.submit(-1,
 // Solución independiente: x² − 2x − 8 = 0, discriminante 36.
 for(const x of [(2-Math.sqrt(36))/2,(2+Math.sqrt(36))/2]){const y=x/2+4;assert.equal(y,x*x/4+2);}
 console.log('OK: intersecciones de recta/parábola, rama de cada láser, números finitos y dos cortes distintos.');
+
+const events=[],hazards=new w.EricPotions(type=>events.push(type));
+for(let i=0;i<80;i++)hazards.tick(.1,{x:i<68?3:8,y:7.5});hazards.tick(.01,{x:8,y:7.5});assert.equal(hazards.bottles.length,1);assert.equal(hazards.bottles[0].x,3,'Apunta a la posición anterior, no a la actual');
+for(let i=0;i<16;i++)hazards.tick(.1,{x:8,y:7.5});assert.equal(hazards.pools.length,1);assert(events.includes('splash'));assert(!hazards.caught);
+hazards.tick(.1,{x:3,y:7.5,jumpHeight:.3});assert(!hazards.caught,'Se puede saltar sobre el charco');hazards.tick(.1,{x:3,y:7.5,jumpHeight:0});assert(hazards.caught);assert.equal(events.filter(e=>e==='hit').length,1);hazards.tick(1,{x:3,y:7.5});assert.equal(events.filter(e=>e==='hit').length,1);
+hazards.reset();hazards.pools=[{x:3,y:7.5,expires:2}];hazards.tick(1.99,{x:8,y:7.5});assert.equal(hazards.pools.length,1);hazards.tick(.02,{x:3,y:7.5});assert.equal(hazards.pools.length,0);assert(!hazards.caught);assert.equal(hazards.bottles.length,0);
+console.log('OK: pociones con posición retrasada, aviso de vuelo, charco de dos segundos, salto, captura única y reinicio limpio.');

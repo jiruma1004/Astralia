@@ -30,10 +30,10 @@ window.EscapeRenderer = class {
     for(let step=0;step<128;step++){
       let distance,axis;if(sideX<sideY){distance=sideX;sideX+=deltaX;cx+=stepX;axis='x';}else{distance=sideY;sideY+=deltaY;cy+=stepY;axis='y';}
       if(bd>0&&bd<distance)return {distance:bd,tile:1,px:x+dx*bd,py:by,cx:Math.floor(x+dx*bd),cy:Math.floor(by),axis:'y'};
-      if(distance>40)break;const tile=room.map[cy]?.[cx]??1;
+      if(distance>80)break;const tile=room.map[cy]?.[cx]??1;
       if(tile===1||(tile===2&&!opened))return {distance,tile,px:x+dx*distance,py:y+dy*distance,cx,cy,axis};
     }
-    return {distance:40,tile:0,px:0,py:0};
+    return {distance:80,tile:0,px:0,py:0};
   }
   draw(room,player,opened,flash,time,lab,roulette){
     this.tableButton=null;this.cannonBounds=null;this.depths=[];
@@ -49,7 +49,7 @@ window.EscapeRenderer = class {
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.map[Math.floor(wy)]?.[Math.floor(wx)];
           if(tile===3&&room.boss){const bridge=opened&&Math.floor(wy)===7;c.fillStyle=bridge?'#758c8b':((Math.floor(wx*3)+Math.floor(wy*3))%2?'#060c1c':'#091425');}
-          else if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-12)/4.4,by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
+          else if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-13.5)/5.5,by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
           else if(room.environment?.kind==='forest'){const noise=Math.sin(Math.floor(wx*9)*12.9898+Math.floor(wy*9)*78.233)*43758.5453,grain=noise-Math.floor(noise);c.fillStyle=grain>.85?'#405435':grain>.4?'#344a30':'#293f2c';}
           else if(room.environment?.kind==='courtyard'){const center=room.corridor?4.5:7.5,onPath=Math.abs(wy-center)<1.05,seam=((wx%0.55)+.55)%.55<.04||((wy%0.45)+.45)%.45<.035;c.fillStyle=onPath?(seam?'#776445':'#b19b75'):(seam?'#29313b':'#495052');}
           else {const seam=wx%1<.035||wy%1<.035;c.fillStyle=seam?'#151b25':(Math.floor(wx)+Math.floor(wy))%2?'#3b3c40':'#303339';}

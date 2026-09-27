@@ -634,3 +634,5 @@ Object.assign(ENGLISH,{
 });
 
 Object.assign(ENGLISH,{'Relaciona altura, rapidez y tiempo. Recuerda que el empuje también debe vencer el peso. Los datos están en el terminal azul.':'Relate height, speed and time. Remember that thrust must also overcome weight. The blue terminal has the data.','CONTROL DE VUELO':'FLIGHT CONTROL'});
+
+Object.assign(ENGLISH,{'¡Ja, ja! ¡Cuidado con la mezcla!':'Ha, ha! Watch out for the mixture!','¡Una pequeña reacción para tus cálculos!':'A little reaction for your calculations!','¡La poción de Eric te alcanzó!':'Eric’s potion got you!','POCIÓN':'POTION','Una reacción inesperada.':'An unexpected reaction.','Evita los charcos verdes: desaparecen en dos segundos.':'Avoid the green puddles: they disappear in two seconds.'});

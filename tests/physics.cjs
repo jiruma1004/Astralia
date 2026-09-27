@@ -5,7 +5,7 @@ for(const file of ['src/rooms/room-01/room.js','src/rooms/room-01/projectile.js'
 const {Projectile:P,PHYSICS_PROBLEMS:qs}=world,p=world.ESCAPE_ROOMS[0].physics;
 const close=(a,b,tol=1e-7)=>assert.ok(Math.abs(a-b)<=tol,`${a} != ${b}`);
 assert.equal(qs.length,10);assert.equal(qs.filter(q=>q.hard).length,0);
-assert.ok(P.evaluate(13,45,p).hit);assert.ok(!P.evaluate(13,45,p,15).hit);assert.ok(!P.evaluate(10,35,p).hit);assert.ok(!P.evaluate(18,45,p).hit);
+assert.ok(P.evaluate(Math.sqrt(20*9.81),45,p).hit);assert.ok(!P.evaluate(13,45,p,15).hit);assert.ok(!P.evaluate(10,35,p).hit);assert.ok(!P.evaluate(18,45,p).hit);
 const q=P.sample(13,45,1,p,30);close(Math.hypot(q.x,q.z),13*Math.cos(Math.PI/4));close(q.y,1.2+13/Math.sqrt(2)-4.905);
 close(Math.sqrt(2*85/.5)/Math.sqrt(2*85/2),2);close(P.evaluate(16,30,p).range,P.evaluate(16,60,p).range);
 const a=i=>qs[i-1].fields.map(f=>f[2]),g=9.81,r=d=>d*Math.PI/180;
@@ -20,3 +20,5 @@ const a=i=>qs[i-1].fields.map(f=>f[2]),g=9.81,r=d=>d*Math.PI/180;
 {const[v,d]=a(9);close(v,2*6);close(d,.5*2*6**2);}
 {const[t,v]=a(10);close(19.62,.5*g*t*t);close(v,g*t);}
 console.log('OK: proyectiles y diez problemas sin avanzados.');
+
+assert.equal(world.ESCAPE_ROOMS[0].map[3].filter(t=>t===3).length,15);assert.equal(p.targetX-p.originX,10);assert(.5*Math.sqrt(20*9.81)**2<180,'Solución de 1 kg dentro de capacidad');
