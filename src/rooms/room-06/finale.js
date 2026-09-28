@@ -2,8 +2,19 @@
 // El control queda desajustado por la carga descentrada y su desprendimiento.
 window.RocketFinaleScene={
  releaseAt:19,
- dialogueAt:27,
+ diveAt:27,
+ impactAt:30.5,
+ dialogueAt:33,
  state(time){
+  if(time>=this.diveAt){
+   const start=this.state(this.diveAt-.000001),t=Math.min(time,this.dialogueAt)-this.diveAt;
+   const progress=Math.min(1,t/(this.impactAt-this.diveAt));
+   return {...start,phase:time<this.impactAt?'dive':'impact',attached:false,
+    rocketZ:start.rocketZ*(1-progress*progress),rotation:start.rotation+t*2,
+    y:start.y+Math.sin(t)*.5,visible:time<this.impactAt,
+    // Conserva la mirada al cielo mientras el cohete cae fuera de cuadro.
+    pitch:start.pitch,caption:''};
+  }
   const t=Math.min(time,this.dialogueAt),rise=Math.max(0,t-8.5);
   const loose=Math.max(0,t-this.releaseAt),spin=Math.max(0,loose-.7);
   const blend=Math.min(1,spin/1.5),drift=Math.max(0,spin-4);

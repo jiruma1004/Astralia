@@ -8,3 +8,10 @@
 #completion-card{position:absolute;z-index:15;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,calc(100% - 32px));max-height:85%;overflow:auto;padding:26px;background:linear-gradient(135deg,#172d70f5,#071735fa);border:3px solid #d3d9e7;border-radius:8px;text-align:center;box-shadow:0 12px 40px #0009;color:#f7f4df}
 #completion-card summary{cursor:pointer;font-size:22px;font-weight:600;line-height:1.4}#completion-card strong{display:block;font-size:52px;color:#bdffd1;margin:20px 0 10px}#completion-card p{font-size:21px;line-height:1.6;margin:12px 0}
 @media(max-width:750px){#completion-card{padding:20px}#completion-card summary{font-size:18px}#completion-card p{font-size:18px}}
+#completion-continue{margin-top:14px;padding:12px 28px;font-size:20px}
+#chapter-ending{position:absolute;inset:0;z-index:40;display:grid;place-items:center;isolation:isolate;overflow:hidden;border-radius:inherit}
+#chapter-ending::before{content:'';position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse at 50% 45%,#10162afc 0%,#03050bfE 58%,#000 100%);animation:chapter-darken 2s ease forwards}
+#chapter-ending p{margin:0;padding:28px;max-width:90%;text-align:center;font-size:clamp(24px,4vw,46px);line-height:1.5;color:#f4ead2;text-shadow:0 0 25px #acb9ef45;opacity:0;animation:chapter-title 1.4s ease 1.8s forwards}
+@keyframes chapter-darken{from{opacity:0}to{opacity:1}}
+@keyframes chapter-title{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#chapter-ending::before{animation-duration:.3s}#chapter-ending p{animation-duration:.3s;animation-delay:.3s}}

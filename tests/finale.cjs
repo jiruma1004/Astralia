@@ -14,7 +14,13 @@ assert.equal(ivan.state(24).visible,false);
 assert.equal(flight.state(19).rotation,0);
 assert(flight.state(25).rotation>Math.PI*4,'Da varias vueltas completas');
 assert(flight.state(24).y!==flight.state(25).y,'Pierde la trayectoria recta');
-for(let t=16;t<=27;t+=.1){const s=flight.state(t),center=.5+s.pitch-(s.rocketZ+2)/(s.x-3);assert(center>.15&&center<.6,'La cámara mantiene visible el cohete');}
-assert.deepEqual(flight.state(27),flight.state(60),'Fondo estable durante diálogo y captura');
+for(let t=16;t<27;t+=.1){const s=flight.state(t),center=.5+s.pitch-(s.rocketZ+2)/(s.x-3);assert(center>.15&&center<.6,'La cámara mantiene visible el cohete durante el giro');}
+const dive=flight.state(27);assert.equal(dive.phase,'dive');
+assert(Math.abs(dive.rocketZ-flight.state(26.99999).rocketZ)<.001,'La caída empieza sin salto');
+assert(flight.state(29).rocketZ<dive.rocketZ,'El cohete cae');
+assert.equal(flight.state(29).pitch,dive.pitch,'La cámara permanece en el cielo');
+const impact=flight.state(flight.impactAt);assert.equal(impact.rocketZ,0);assert.equal(impact.visible,false);
+assert.equal(impact.pitch,dive.pitch);
+assert.deepEqual(flight.state(33),flight.state(60),'Fondo estable durante diálogo y captura');
 for(const t of [18,19.1,22])assert(w.ENGLISH[flight.state(t).caption],'Avisos traducidos');
 console.log('OK: desprendimiento continuo, caída por gravedad, giro múltiple, seguimiento de cámara, cierre estable y traducciones.');

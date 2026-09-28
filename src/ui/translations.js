@@ -1,4 +1,6 @@
 window.ENGLISH={
+  "Epílogo": "Epilogue",
+  "Continuará en semana 10…": "To be continued in week 10…",
   "¡Muchas felicidades! Has completado todas las pruebas. Toma una captura de esta pantalla y súbela a la actividad junto con tus apuntes y los procedimientos de los ejercicios.": "Congratulations! You have completed every challenge. Take a screenshot of this screen and upload it to the assignment together with your notes and worked solutions.",
   "Ese era nuestro mejor cohete… La carga inesperada de Iván alteró el centro de masa y, al soltarse, dejó desajustado el control de vuelo. Sin querer, ha echado a perder nuestros planes. Tus cálculos eran correctos; ahora tendremos que diseñar un cohete nuevo. ¡Ignitia no se rinde!": "That was our best rocket… Iván’s unexpected weight shifted the center of mass, and when he came loose, the flight control was left out of balance. He has accidentally ruined our plans. Your calculations were correct; now we will have to design a new rocket. Ignitia never gives up!",
   "¡Iván se ha soltado!": "Iván has come loose!",
