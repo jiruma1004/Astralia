@@ -16,7 +16,7 @@ window.RoomCompanions=class {
   document.querySelector('#question-fold').setAttribute('aria-label','Minimizar o mostrar la pregunta');
   document.querySelector('#roulette-panel').hidden=true;
   view.insertAdjacentHTML('beforeend','<button id="ask-paola" class="paola-bubble" aria-controls="paola-dialog" aria-expanded="false"><span aria-hidden="true">···</span> <b id="helper-name">Epi Paola</b> <small>Una pista · H</small></button>');
-  this.paolaPortrait=new Image();this.paolaPortrait.src='assets/sprites/epi-paola.png';this.josePortrait=new Image();this.josePortrait.src='assets/sprites/jose-luis-talk.png';this.portrait=this.paolaPortrait;this.dialogue=null;
+  this.paolaPortrait=new Image();this.paolaPortrait.src='assets/sprites/epi-paola-teacher.png';this.josePortrait=new Image();this.josePortrait.src='assets/sprites/jose-luis-talk.png';this.portrait=this.paolaPortrait;this.dialogue=null;
   document.querySelector('#ask-paola').onclick=()=>this.help();
   document.querySelector('#paola-close').onclick=()=>this.closeHelp();
   document.querySelector('#paola-skip').onclick=()=>{if(this.dialogue?.speaking)this.finishDialogue();else this.closeHelp();};
