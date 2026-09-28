@@ -1,0 +1,20 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const w={};w.window=w;vm.createContext(w);
+for(const path of ['src/rooms/room-06/finale.js','src/rooms/room-06/rocket.js','src/ui/translations.js'])vm.runInContext(fs.readFileSync(path,'utf8'),w);
+const flight=w.RocketFinaleScene,ivan=w.IvanLaunchScene;
+const before=ivan.state(19-.000001),released=ivan.state(19);
+assert.equal(flight.state(18.99).attached,true);
+assert.equal(flight.state(19).attached,false);
+assert.equal(released.phase,'fall');
+assert(Math.abs(before.footZ-released.footZ)<.0001,'No salta de posición al soltarse');
+assert(Math.abs(before.rotation-released.rotation)<.0001,'Conserva orientación al soltarse');
+assert(ivan.state(19.1).footZ>released.footZ,'Conserva algo de velocidad ascendente');
+assert(ivan.state(21).footZ<released.footZ,'La gravedad lo hace caer');
+assert.equal(ivan.state(24).visible,false);
+assert.equal(flight.state(19).rotation,0);
+assert(flight.state(25).rotation>Math.PI*4,'Da varias vueltas completas');
+assert(flight.state(24).y!==flight.state(25).y,'Pierde la trayectoria recta');
+for(let t=16;t<=27;t+=.1){const s=flight.state(t),center=.5+s.pitch-(s.rocketZ+2)/(s.x-3);assert(center>.15&&center<.6,'La cámara mantiene visible el cohete');}
+assert.deepEqual(flight.state(27),flight.state(60),'Fondo estable durante diálogo y captura');
+for(const t of [18,19.1,22])assert(w.ENGLISH[flight.state(t).caption],'Avisos traducidos');
+console.log('OK: desprendimiento continuo, caída por gravedad, giro múltiple, seguimiento de cámara, cierre estable y traducciones.');

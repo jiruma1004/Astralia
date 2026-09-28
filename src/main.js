@@ -77,8 +77,8 @@ function openNearbyDoor(angle=player.angle,screenY=null){
 }
 function bossEvent(type){if(type==='potion'){die('potion');return;}if(type!=='solved')return;Sound.stop('laugh');companions.closeHelp();document.querySelector('#ask-paola').hidden=true;ignitia.startEscape(player);keys.clear();return;}
 function ignitiaEvent(type){
- if(type==='launch'){keys.clear();camera.release();companions.closeHelp();Object.assign(player,{x:3,y:7.5,angle:0,pitch:.10,jumpHeight:0,jumpVelocity:0});return;}
- if(type==='complete'){if(mission.finish()){completed=true;keys.clear();document.querySelector('#door-status').textContent='IGNITIA RUMBO A LA LUNA';message.textContent='Has completado las seis pruebas. La persecución continúa.';}return;}
+ if(type==='launch'){mission.finish();keys.clear();camera.release();companions.closeHelp();Object.assign(player,{x:3,y:7.5,angle:0,pitch:.10,jumpHeight:0,jumpVelocity:0});return;}
+ if(type==='complete'){if(mission.state==='complete'||mission.finish()){completed=true;keys.clear();document.querySelector('#door-status').textContent='SEIS PRUEBAS COMPLETADAS';message.textContent='Entrega tu captura y tus apuntes con los procedimientos de los ejercicios.';}return;}
  if(type!=='escapeDone')return;opened=rooms[index].canUnlock({parabolaCut:true});companions.toast('Eric escapó. Cruza el puente central hacia el cohete de Ignitia.');document.querySelector('#door-status').textContent='SOPORTE CORTADO · PASO ABIERTO';}
 function corridorEvent(type,text){
  if(type==='hit'){die('symbol');return;}
@@ -173,7 +173,7 @@ function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math
  if(rooms[index].rocket){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||!document.querySelector('#rocket-console').hidden;hint.textContent=ignitia.near(player)?'Clic o E · Programar el cohete':'Acércate al terminal azul de Ignitia';if(!ignitia.near(player)&&!document.querySelector('#rocket-console').hidden)ignitia.closeConsole();}
  if(boss)document.querySelector('#interaction-hint').textContent=boss.near(player,renderer,rooms[index],opened)>=0?'Clic o E · Programar láser':'Busca los láseres a ambos lados';
  if(canPlay()&&rooms[index].physics)lab.tick(dt);if(canPlay()&&rooms[index].roulette)roulette.tick(dt);
- renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);if(corridor)corridor.draw(renderer,player,actors);if(boss)boss.draw(renderer,player,actors);if(rooms[index].environment.kind==='courtyard')renderer.outdoor.draw(renderer,rooms[index],player,actors,time);ignitia.draw(renderer,player,actors);animateDeath(dt);requestAnimationFrame(tick);
+ ignitia.updateCamera(player);renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);if(corridor)corridor.draw(renderer,player,actors);if(boss)boss.draw(renderer,player,actors);if(rooms[index].environment.kind==='courtyard')renderer.outdoor.draw(renderer,rooms[index],player,actors,time);ignitia.draw(renderer,player,actors);animateDeath(dt);requestAnimationFrame(tick);
 }
 document.querySelector('#reset-lab').onclick=()=>load(index);document.querySelector('#reset-roulette').onclick=()=>load(index);load(0);mission.notify();document.querySelector('#adventure-intro').showModal();Sound.enable({automatic:true});requestAnimationFrame(tick);
 
