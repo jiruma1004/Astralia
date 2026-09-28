@@ -5,3 +5,6 @@
 @media(max-width:750px){#ignitia-dialog{gap:10px;padding:12px;bottom:90px}#ignitia-dialog img{width:70px}#ignitia-dialog p{font-size:14px}#rocket-console{left:10px;width:calc(100% - 20px)}.scene-view.has-rocket #game{height:730px}}
 
 #rocket-console{padding:16px 18px}#rocket-console h2{font-size:24px;margin:8px 0}#rocket-console p{font-size:14px;margin:9px 0;line-height:1.4}#rocket-form{gap:7px}#rocket-form label{font-size:14px}#rocket-form button{position:sticky;bottom:-16px;margin-top:6px}.story-language{float:right;font-size:13px;padding:6px 10px}
+#completion-card{position:absolute;z-index:15;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,calc(100% - 32px));max-height:85%;overflow:auto;padding:26px;background:linear-gradient(135deg,#172d70f5,#071735fa);border:3px solid #d3d9e7;border-radius:8px;text-align:center;box-shadow:0 12px 40px #0009;color:#f7f4df}
+#completion-card summary{cursor:pointer;font-size:22px;font-weight:600;line-height:1.4}#completion-card strong{display:block;font-size:52px;color:#bdffd1;margin:20px 0 10px}#completion-card p{font-size:21px;line-height:1.6;margin:12px 0}
+@media(max-width:750px){#completion-card{padding:20px}#completion-card summary{font-size:18px}#completion-card p{font-size:18px}}

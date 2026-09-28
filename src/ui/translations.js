@@ -1,4 +1,7 @@
 window.ENGLISH={
+  "espera, algo se acerca por detrás del cohete": "wait, something is approaching from behind the rocket",
+  "ASTRALIA · DESAFÍO COMPLETADO": "ASTRALIA · CHALLENGE COMPLETED",
+  "Muchas felicidades has completado el desafio, puedes tomar una captura de pantalla y subirla a la actividad para dar por concluida": "Congratulations! You have completed the challenge. You can take a screenshot and upload it to the assignment to mark it as complete.",
   "El puente de Galileo": "Galileo’s bridge",
   "La parábola de Eric": "Eric’s parabola",
   "La plataforma de Ignitia": "Ignitia launchpad",
