@@ -16,7 +16,7 @@ window.RoomCompanions=class {
   document.querySelector('#question-fold').setAttribute('aria-label','Minimizar o mostrar la pregunta');
   document.querySelector('#roulette-panel').hidden=true;
   view.insertAdjacentHTML('beforeend','<button id="ask-paola" class="paola-bubble" aria-controls="paola-dialog" aria-expanded="false"><span aria-hidden="true">···</span> <b id="helper-name">Epi Paola</b> <small>Una pista · H</small></button>');
-  this.paolaPortrait=new Image();this.paolaPortrait.src='assets/sprites/epi-paola-rpg.png';this.josePortrait=new Image();this.josePortrait.src='assets/sprites/jose-luis-talk.png';this.portrait=this.paolaPortrait;this.dialogue=null;
+  this.paolaPortrait=new Image();this.paolaPortrait.src='assets/sprites/epi-paola-a-talk.png';this.josePortrait=new Image();this.josePortrait.src='assets/sprites/jose-luis-talk.png';this.portrait=this.paolaPortrait;this.dialogue=null;
   document.querySelector('#ask-paola').onclick=()=>this.help();
   document.querySelector('#paola-close').onclick=()=>this.closeHelp();
   document.querySelector('#paola-skip').onclick=()=>{if(this.dialogue?.speaking)this.finishDialogue();else this.closeHelp();};
@@ -74,6 +74,6 @@ window.RoomCompanions=class {
   if(d.speaking&&d.clock<=0){const char=d.chars[d.index++];document.querySelector('#paola-text').textContent=d.chars.slice(0,d.index).join('');if(/[^\s.,…:;!?¿¡]/u.test(char)&&d.index%2===0)Sound.dialogueBlip(d.index);d.clock=/[.!?…]/.test(char)?.22:/[,;:]/.test(char)?.1:.028;if(d.index>=d.chars.length)this.finishDialogue();}
   this.drawPortrait(d.speaking?Math.floor(d.elapsed/.13)%2:0);
  }
- drawPortrait(frame){const canvas=document.querySelector('#paola-portrait'),c=canvas.getContext('2d');c.clearRect(0,0,128,128);if(this.portrait.complete&&this.portrait.naturalWidth){c.imageSmoothingEnabled=false;const fw=this.portrait.naturalWidth/2;c.drawImage(this.portrait,frame*fw,0,fw,this.portrait.naturalHeight,0,0,128,128);}}
+ drawPortrait(frame){const canvas=document.querySelector('#paola-portrait'),c=canvas.getContext('2d');if(this.portrait===this.paolaPortrait){PaolaPortrait.draw(canvas,this.portrait,!!this.dialogue?.speaking,this.dialogue?.elapsed||0);return;}c.clearRect(0,0,128,128);if(this.portrait.complete&&this.portrait.naturalWidth){c.imageSmoothingEnabled=false;const fw=this.portrait.naturalWidth/2;c.drawImage(this.portrait,frame*fw,0,fw,this.portrait.naturalHeight,0,0,128,128);}}
  toast(text){document.querySelector('#world-toast').textContent=text;document.querySelector('#world-toast').hidden=false;this.toastTime=8;}
 };
