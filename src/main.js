@@ -183,3 +183,12 @@ window.addEventListener('astralia:language',()=>{
  if(companions.dialogue){const d=companions.dialogue;d.text=I18n.t(d.source);d.chars=[...d.text];companions.finishDialogue();}
  if(ignitia.source&&!document.querySelector('#ignitia-dialog').hidden){ignitia.text=I18n.t(ignitia.source);ignitia.reveal();}
 });
+
+// Fullscreen keeps the HUD and all response panels inside the same document.
+(()=>{
+ const root=document.documentElement,button=document.createElement('button');button.id='fullscreen-toggle';button.type='button';button.setAttribute('aria-pressed','false');document.querySelector('.controls').append(button);
+ const active=()=>!!document.fullscreenElement||root.classList.contains('expanded-game');
+ const sync=()=>{const on=active();button.textContent=I18n.t(on?'⛶ Salir de pantalla completa':'⛶ Pantalla completa');button.setAttribute('aria-pressed',String(on));};
+ button.onclick=async()=>{keys.clear();camera.release();if(document.fullscreenElement){try{await document.exitFullscreen();}catch{};}else if(root.classList.contains('expanded-game'))root.classList.remove('expanded-game');else{root.classList.add('expanded-game');sync();if(root.requestFullscreen&&document.fullscreenEnabled){try{await root.requestFullscreen();}catch{/* The expanded layout remains available when native fullscreen is denied. */}}}sync();canvas.focus({preventScroll:true});};
+ document.addEventListener('fullscreenchange',()=>{if(document.fullscreenElement)root.classList.remove('expanded-game');keys.clear();sync();});window.addEventListener('astralia:language',sync);window.addEventListener('keydown',e=>{if(e.key==='Escape'&&root.classList.contains('expanded-game')){root.classList.remove('expanded-game');sync();}});sync();
+})();

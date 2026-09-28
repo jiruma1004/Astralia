@@ -106,7 +106,7 @@ Los ZIP independientes del juego se guardan fuera del repositorio, en `../backup
 
 ## IV · El corredor de las ideas
 
-Acceso exterior al castillo: cielo, torres altas al fondo, antorchas de pie y camino central de adoquín. El ancho interior pasa de 7 a 5.6 celdas (20 % menos); las colisiones y los muros visibles usan los mismos límites. Las cajas son saltables y se pueden rodear. Los símbolos π, Σ, ∫, dy/dx, Δx y eˣ avanzan a 1.6 celdas/s hacia la entrada, desde posiciones dispersas por todo el ancho, en línea recta: no persiguen al jugador. Aparecen cada 1.324405 segundos: 50 % más emisiones que la versión anterior (1.986607 s), conservando su velocidad. Nacen en x=51, cinco celdas antes de la puerta x=56, y se eliminan al salir por la entrada. Los recién creados parpadean durante 0.65 s antes de poder impactar. Esquiva o salta; un impacto inicia Game Over y su música. Reapareces al principio del corredor con una nueva oleada. Shift permite sprint; hay botón táctil.
+Acceso exterior al castillo: cielo, torres altas al fondo, antorchas de pie y camino central de adoquín. El ancho interior pasa de 7 a 5.6 celdas (20 % menos); las colisiones y los muros visibles usan los mismos límites. Las cajas son saltables y se pueden rodear. Los símbolos π, Σ, ∫, dy/dx, Δx y eˣ avanzan a 1.6 celdas/s hacia la entrada, desde posiciones dispersas por todo el ancho, en línea recta: no persiguen al jugador. Aparecen cada 1.324405 segundos: 50 % más emisiones que la versión anterior (1.986607 s), conservando su velocidad. Nacen en x=46, cinco celdas antes de la puerta x=51, y se eliminan al salir por la entrada. Los recién creados parpadean durante 0.65 s antes de poder impactar. Esquiva o salta; un impacto inicia Game Over y su música. Reapareces al principio del corredor con una nueva oleada. Shift permite sprint; hay botón táctil.
 
 La puerta de roble final pregunta «¿Estás listo para enfrentarte al Dr. Eric?». Puedes esperar o abrir y continuar a la sala V. El reloj global sigue corriendo durante ese mensaje.
 
@@ -147,11 +147,13 @@ José Luis mueve la boca mientras aparecen las letras y queda en reposo al mostr
 ### Ajustes de ritmo y claridad
 Diez obstáculos bajos alternados en el corredor. Risa de Eric recortada a 1.5 s con salida suave. Barandillas sólidas de madera en el puente del bosque y metálicas en el patio. La sala VI no muestra arma ni admite disparo con F; José Luis ofrece una pista breve. El sello y los láseres cierran su panel al validar una respuesta correcta.
 
-El corredor recorre ahora 54 celdas entre la entrada y el centro de la puerta, el doble que antes. El abismo de Galileo tiene 15 celdas de largo (25 % más) y el botón está a 20 m del cañón. Las barandillas bloquean el movimiento lateral, incluso al saltar, solo después de desplegar el puente.
+El corredor recorre ahora 48.6 celdas entre la entrada y el centro de la puerta, un 10 % menos que las 54 anteriores. El abismo de Galileo tiene 15 celdas de largo (25 % más) y el botón está a 20 m del cañón. Las barandillas bloquean el movimiento lateral, incluso al saltar, solo después de desplegar el puente.
 
 Eric lanza una poción a los 8 s y después cada 9 s. Apunta a la posición de hace 1.5 s, con vuelo de 1.6 s y un círculo de aviso. Al caer ríe y deja un charco verde de radio 0.7 celdas durante 2 s: tocarlo sin saltar causa Game Over. Los peligros desaparecen al vencerlo o reaparecer.
 
 ### Legibilidad y pasajero inesperado
+El botón «Pantalla completa» amplía el mundo con sus paneles y reloj. El mismo botón permite salir; cuando el navegador no admite pantalla completa nativa se usa una vista ampliada dentro de la pestaña, que también se cierra con Escape.
+
 La fuente local Oxanium sustituye a Pixelify Sans en la interfaz, con cifras más claras y campos numéricos grandes. Licencia OFL en `assets/fonts/Oxanium-OFL.txt`; fuente oficial: https://github.com/google/fonts/tree/main/ofl/oxanium. Los paneles de respuestas, láseres, cohete y cañón se adaptan a móvil, con foco visible y reloj compacto al escribir.
 
 El prólogo conserva la pista de Eric durante la siguiente intervención de Paola. Cambia a `missing` al presentar a Iván desaparecido y vuelve a `music` con la última intervención de Paola.

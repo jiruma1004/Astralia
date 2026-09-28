@@ -1,4 +1,7 @@
 window.ENGLISH={
+  "¡Espera! Algo se mueve detrás del cohete…": "Wait! Something is moving behind the rocket…",
+  "⛶ Pantalla completa": "⛶ Full screen",
+  "⛶ Salir de pantalla completa": "⛶ Exit full screen",
   "espera, algo se acerca por detrás del cohete": "wait, something is approaching from behind the rocket",
   "ASTRALIA · DESAFÍO COMPLETADO": "ASTRALIA · CHALLENGE COMPLETED",
   "Muchas felicidades has completado el desafio, puedes tomar una captura de pantalla y subirla a la actividad para dar por concluida": "Congratulations! You have completed the challenge. You can take a screenshot and upload it to the assignment to mark it as complete.",
