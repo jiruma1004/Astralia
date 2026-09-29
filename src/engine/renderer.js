@@ -31,7 +31,7 @@ window.EscapeRenderer = class {
       let distance,axis;if(sideX<sideY){distance=sideX;sideX+=deltaX;cx+=stepX;axis='x';}else{distance=sideY;sideY+=deltaY;cy+=stepY;axis='y';}
       if(bd>0&&bd<distance)return {distance:bd,tile:1,px:x+dx*bd,py:by,cx:Math.floor(x+dx*bd),cy:Math.floor(by),axis:'y'};
       if(distance>80)break;const tile=room.map[cy]?.[cx]??1;
-      if(tile===1||(tile===2&&!opened))return {distance,tile,px:x+dx*distance,py:y+dy*distance,cx,cy,axis};
+      if(tile===1||tile===4||(tile===2&&!opened))return {distance,tile,px:x+dx*distance,py:y+dy*distance,cx,cy,axis};
     }
     return {distance:80,tile:0,px:0,py:0};
   }
@@ -71,6 +71,7 @@ window.EscapeRenderer = class {
         if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,wallTop,3,wallHeight);c.globalAlpha=1;}
         c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
       }
+      if(hit.tile===4||(hit.tile===2&&room.measurement)){const along=side?hit.py:hit.px,u=((along%1)+1)%1,art=this.measurementArt||(this.measurementArt=MeasurementArt.texture());c.drawImage(art,Math.min(899,Math.floor(u*900)),0,1,800,x,top,3,height);continue;}
       if(hit.tile===2&&room.oakDoor&&hit.cx===room.oakDoor.x&&hit.cy===room.oakDoor.y){const u=((hit.py%1)+1)%1;c.drawImage(this.art.oak,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}
       if(hit.tile===2&&room.maze){const door=room.maze.doorAt(hit.cx,hit.cy);if(door){const art=this.actors.doorTexture(door),u=((hit.py%1)+1)%1;c.drawImage(art,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}}
       if(hit.tile===2&&room.environment?.portal){const u=hit.py-Math.floor(hit.py);c.drawImage(this.art.portalSealed,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}
@@ -123,7 +124,7 @@ window.EscapeRenderer = class {
       return;
     }
     if(room.roulette){this.drawTable(room,player,opened,roulette,time);return;}
-    if(room.conceptual||room.corridor||room.boss||room.rocket)return;
+    if(room.conceptual||room.corridor||room.boss||room.rocket||room.measurement)return;
     // Retícula y silueta del cañón; sustituibles por sprites en assets/.
     c.strokeStyle='#dbe8c3';c.lineWidth=2;c.beginPath();c.moveTo(w/2-10,h/2);c.lineTo(w/2-4,h/2);c.moveTo(w/2+4,h/2);c.lineTo(w/2+10,h/2);c.moveTo(w/2,h/2-10);c.lineTo(w/2,h/2-4);c.stroke();
     const recoil=flash>0?18:0;

@@ -7,7 +7,8 @@ const spawnPlayer=room=>({...room.spawn,pitch:0,jumpHeight:0,jumpVelocity:0});
 const message=document.querySelector('#message'),nav=document.querySelector('#rooms');
 const mission=new AdventureClock({onChange:updateCountdown,onExpire:expireAdventure});
 const ignitia=new IgnitiaMission(ignitiaEvent);
-const canPlay=()=>!ignitia.blocking&&mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
+const measurement=new MeasurementRoom(()=>{opened=true;Sound.success();document.querySelector('#door-status').textContent='MEDICIÓN ACEPTADA';companions.toast('¡Medición aceptada! Cruza la puerta real para llegar a la sala II.');},returnFromMeasurement);
+const canPlay=()=>!measurement.isOpen&&!ignitia.blocking&&mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
 const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>keys.clear()});
 window.addEventListener('astralia:ui-open',()=>camera.release());
 function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
@@ -19,7 +20,7 @@ function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
  if(phaseChanged){window.dispatchEvent(new CustomEvent('astralia:urgency',{detail:{phase,remainingSeconds:remaining,musicCue}}));if(phase==='warning'||phase==='danger')document.querySelector('#timer-announcement').textContent='Quedan '+Math.ceil(remaining/60)+' minutos. '+hint;}
 }
 function expireAdventure(){
- ignitia.reset(rooms[index]);document.querySelector('#ignitia-dialog').hidden=true;
+ measurement.close();ignitia.reset(rooms[index]);document.querySelector('#ignitia-dialog').hidden=true;
  document.querySelector('#eric-ready').close();boss?.close();
  keys.clear();clearDeath();cannon.close();companions.closeHelp();companions.closeConsole();lab.hologram.hide();lab.dead=true;lab.lock(true);if(lab.shot)lab.shot.done=true;Sound.failure('timeout');
  document.querySelector('#door-status').textContent='TIEMPO AGOTADO';message.textContent='El Dr. Eric ha completado la divergencia.';
@@ -36,19 +37,21 @@ setInterval(()=>mission.tick(),250);
 new ResizeObserver(entries=>{const r=entries[0].contentRect;if(r.width&&r.height){canvas.width=960;canvas.height=Math.round(960*r.height/r.width);}}).observe(canvas);
 const roulette=new ProblemRoulette(()=>{if(!rooms[index].roulette)return;opened=rooms[index].canUnlock({problemSolved:true});companions.closeConsole();document.querySelector('#door-status').textContent='SELLO ABIERTO';message.textContent='¡Sello roto! Rodea la mesa y atraviesa el portal luminoso.';});
 roulette.canAnswer=()=>canPlay()&&rooms[index].roulette&&companions.consoleOpen&&companions.facing(player,rooms[index].answerSeal,renderer,opened);
-rooms.forEach((room,i)=>{const button=document.createElement('button');button.innerHTML=`<b>${['I','II','III','IV','V','VI'][i]}</b><span>${room.name}<small>${room.challenge.implemented?room.challenge.title:'Por descubrir'}</small></span>`;button.onclick=()=>load(i);nav.append(button);});
-function load(i){ignitia.reset(rooms[i]);document.querySelector('.scene-view').classList.toggle('has-rocket',!!rooms[i].rocket);Sound.stop('laugh');boss?.close();for(const id of ['boss-mission','boss-panel'])if(document.getElementById(id))document.getElementById(id).hidden=true;document.querySelector('#eric-ready').close();clearDeath();Sound.selectBackground(rooms[i].roulette?'seal':rooms[i].conceptual?'maze':rooms[i].corridor?'corridor':rooms[i].boss?'stand':rooms[i].rocket?'phase':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];document.querySelector('#fire-shortcut').hidden=!!room.rocket;document.querySelector('#station-fire').disabled=!!room.rocket;
- document.querySelector('#room-title').textContent=`UMBRAL ${['I','II','III','IV','V','VI'][i]} / ${room.name.toUpperCase()}`;
- document.querySelector('#door-status').textContent=room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':room.conceptual?'LABERINTO · 1 / 4':room.corridor?'CAMINO A LA SALA PRINCIPAL':'PUERTA BLOQUEADA';
- message.textContent=room.physics?'Mira el cañón y pulsa E o haz clic para preparar tu disparo.':room.roulette?'Gira la rueda. Responde interactuando con el sello de la puerta.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Las puertas equivocadas esconden portales al calabozo.':room.corridor?'Esquiva los símbolos que vienen hacia ti. Shift corre · Espacio salta. ¡Un impacto termina el intento!':room.boss?'Calcula los dos puntos de corte y programa los láseres laterales.':'Acércate a la puerta y ábrela con clic o E.';
+rooms.forEach((room,i)=>{const button=document.createElement('button');button.innerHTML=`<b>${room.label||['I','II','III','IV','V','VI'][i]}</b><span>${room.name}<small>${room.challenge.implemented?room.challenge.title:'Por descubrir'}</small></span>`;button.onclick=()=>load(i);button.dataset.room=String(i);if(room.optional)nav.insertBefore(button,nav.children[1]);else nav.append(button);});
+function returnFromMeasurement(){load(0);opened=true;Object.assign(player,{x:23.5,y:1.8,angle:Math.PI/2});document.querySelector('#door-status').textContent='PUENTE ACTIVADO';}
+function bonusInteraction(angle=player.angle){const room=rooms[index],target=room.measurementEntrance||(room.measurement?{x:.99,y:3.5}:null);if(!target||Math.hypot(player.x-target.x,player.y-target.y)>1.8||Math.cos(Math.atan2(target.y-player.y,target.x-player.x)-angle)<.9)return false;if(room.measurement)returnFromMeasurement();else load(rooms.findIndex(r=>r.measurement));return true;}
+function load(i){measurement.reset(rooms[i]);ignitia.reset(rooms[i]);document.querySelector('.scene-view').classList.toggle('has-rocket',!!rooms[i].rocket);document.querySelector('.scene-view').classList.toggle('has-measurement',!!rooms[i].measurement);Sound.stop('laugh');boss?.close();for(const id of ['boss-mission','boss-panel'])if(document.getElementById(id))document.getElementById(id).hidden=true;document.querySelector('#eric-ready').close();clearDeath();Sound.selectBackground(rooms[i].roulette?'seal':rooms[i].conceptual?'maze':rooms[i].corridor?'corridor':rooms[i].boss?'stand':rooms[i].rocket?'phase':'music');Sound.recover(true);index=i;player=spawnPlayer(rooms[i]);opened=false;completed=false;keys.clear();flash=0;const room=rooms[i];document.querySelector('#fire-shortcut').hidden=!!(room.rocket||room.measurement);document.querySelector('#station-fire').disabled=!!(room.rocket||room.measurement);
+ document.querySelector('#room-title').textContent=`UMBRAL ${room.label||['I','II','III','IV','V','VI'][i]} / ${room.name.toUpperCase()}`;
+ document.querySelector('#door-status').textContent=room.measurement?'SELLO DE MEDICIÓN':room.physics?'PUENTE DESACTIVADO':room.roulette?'SELLO CERRADO':room.conceptual?'LABERINTO · 1 / 4':room.corridor?'CAMINO A LA SALA PRINCIPAL':'PUERTA BLOQUEADA';
+ message.textContent=room.measurement?'Mide la abertura de la puerta real. Acércate y pulsa E para examinar las reglas.':room.physics?'Mira el cañón y pulsa E o haz clic para preparar tu disparo.':room.roulette?'Gira la rueda. Responde interactuando con el sello de la puerta.':room.conceptual?'Explora las puertas: clic o E cerca de ellas. Las puertas equivocadas esconden portales al calabozo.':room.corridor?'Esquiva los símbolos que vienen hacia ti. Shift corre · Espacio salta. ¡Un impacto termina el intento!':room.boss?'Calcula los dos puntos de corte y programa los láseres laterales.':'Acércate a la puerta y ábrela con clic o E.';
  cannon.load(room);document.querySelector('#trajectory-toggle').hidden=!room.physics;lab.hologram.hide();document.querySelector('#roulette-panel').hidden=true;
- document.querySelector('.scene-layout').classList.remove('has-station');document.querySelector('#equipment').textContent=room.physics?'CAÑÓN ASTRAL':room.roulette?'MESA DEL DESTINO':room.conceptual?'LABERINTO CONCEPTUAL':room.corridor?'SALTO Y SPRINT':room.boss?'DOS LÁSERES · DOS RAÍCES':'CONTROL DE VUELO';
+ document.querySelector('.scene-layout').classList.remove('has-station');document.querySelector('#equipment').textContent=room.measurement?'REGLAS · ÁREA E INCERTIDUMBRE':room.physics?'CAÑÓN ASTRAL':room.roulette?'MESA DEL DESTINO':room.conceptual?'LABERINTO CONCEPTUAL':room.corridor?'SALTO Y SPRINT':room.boss?'DOS LÁSERES · DOS RAÍCES':'CONTROL DE VUELO';
 
  if(room.physics)lab.reset(room);if(room.roulette)roulette.reset();
  boss=room.boss?new EricEncounter(bossEvent):null;if(boss)boss.canFire=()=>canPlay()&&boss.active===boss.near(player,renderer,rooms[index],opened);
  corridor=room.corridor?new RelaxCorridor(corridorEvent):null;
  maze=room.conceptual?new ConceptMaze(room,mazeEvent):null;room.maze=maze;companions.load(room,roulette,maze);checkpoint={room:index,stage:0,position:spawnPlayer(room)};
- [...nav.children].forEach((b,j)=>{b.classList.toggle('active',j===i);b.setAttribute('aria-current',j===i?'true':'false');});
+ [...nav.children].forEach(b=>{const selected=Number(b.dataset.room)===i;b.classList.toggle('active',selected);b.setAttribute('aria-current',selected?'true':'false');});
 }
 function mazeEvent(type,text){
  if(type==='caught'){die('ivan');return;}
@@ -89,6 +92,8 @@ document.querySelector('#eric-ready-yes').onclick=()=>{document.querySelector('#
 document.querySelector('#eric-ready-wait').onclick=()=>{document.querySelector('#eric-ready').close();canvas.focus({preventScroll:true});};
 async function interact(){
  if(!canPlay())return;
+ if(bonusInteraction())return;
+ if(rooms[index].measurement){if(!measurement.open(player))companions.toast('Acércate a la puerta real y pulsa E.');return;}
  if(rooms[index].rocket){if(!ignitia.open(player))companions.toast('Acércate al terminal azul de Ignitia y pulsa E.');return;}
  if(rooms[index].physics){if(!cannon.open(player,renderer,opened))companions.toast('Acércate al cañón y míralo para abrir sus controles.');return;}
  if(maze?.activateFreeze(player,renderer))return;
@@ -103,6 +108,8 @@ async function interact(){
 function worldClick(x,y){
  if(!canPlay())return false;
  companions.closeHelp();
+ if(bonusInteraction(player.angle+Math.atan((x/canvas.width*2-1)*.66)))return true;
+ if(rooms[index].measurement)return measurement.open(player);
  if(rooms[index].rocket)return ignitia.open(player);
  const contains=b=>b&&x>b.x&&x<b.x+b.w&&y>b.y&&y<b.y+b.h;
  if(maze&&contains(actors.freezeButtonBounds)&&maze.activateFreeze({...player,angle:player.angle+Math.atan((x/canvas.width*2-1)*.66)},renderer))return true;
@@ -115,13 +122,13 @@ function worldClick(x,y){
  if(rooms[index].physics){if(contains(renderer.cannonBounds)&&cannon.open(player,renderer,opened))return true;cannon.close();}
  return false;
 }
-async function shoot(){if(!canPlay()||rooms[index].rocket)return;if(rooms[index].roulette||rooms[index].conceptual){await interact();return;}if(rooms[index].physics){if(!cannon.near(player,renderer,opened)){companions.toast('Vuelve al cañón para preparar el disparo.');return;}if(!cannon.isOpen&&(!lab.loaded||!lab.valid)){cannon.open(player,renderer,opened);return;}if(cannon.isOpen)cannon.showTab('settings');if(opened){message.textContent='El puente está activo. Cruza por el centro.';return;}const launched=lab.launch(()=>{opened=rooms[index].canUnlock({targetHit:true});document.querySelector('#door-status').textContent='PUENTE ACTIVADO';message.textContent='¡Acertaste! Rodea la torreta y cruza por el centro del puente.';},()=>die('explosion'));if(launched)cannon.close();else if(!death)companions.toast(document.querySelector('#feedback').textContent);return;}
+async function shoot(){if(!canPlay()||rooms[index].rocket||rooms[index].measurement)return;if(rooms[index].roulette||rooms[index].conceptual){await interact();return;}if(rooms[index].physics){if(!cannon.near(player,renderer,opened)){companions.toast('Vuelve al cañón para preparar el disparo.');return;}if(!cannon.isOpen&&(!lab.loaded||!lab.valid)){cannon.open(player,renderer,opened);return;}if(cannon.isOpen)cannon.showTab('settings');if(opened){message.textContent='El puente está activo. Cruza por el centro.';return;}const launched=lab.launch(()=>{opened=rooms[index].canUnlock({targetHit:true});document.querySelector('#door-status').textContent='PUENTE ACTIVADO';message.textContent='¡Acertaste! Rodea la torreta y cruza por el centro del puente.';},()=>die('explosion'));if(launched)cannon.close();else if(!death)companions.toast(document.querySelector('#feedback').textContent);return;}
  interact();
 }
 function jump(){if(!canPlay()||player.jumpHeight>0||player.jumpVelocity!==0||!supported(player.x,player.y))return;player.jumpVelocity=2.1;}
 window.addEventListener('keydown',e=>{if(!canPlay()||e.target.closest('button,a,input,select,textarea,summary'))return;const key=e.key.toLowerCase();if(['w','a','s','d','arrowleft','arrowright',' ','e','f','h','shift'].includes(key)){e.preventDefault();keys.add(key);if(key===' '&&!e.repeat)jump();if(key==='f'&&!e.repeat)shoot();if(key==='e'&&!e.repeat)interact();if(key==='h'&&!e.repeat)companions.help();}});
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
-window.addEventListener('keydown',e=>{if(e.key==='Escape'){ignitia.closeConsole();cannon.close();boss?.close();companions.closeHelp();companions.closeConsole();}});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'){measurement.close();ignitia.closeConsole();cannon.close();boss?.close();companions.closeHelp();companions.closeConsole();}});
 document.querySelector('#station-fire').onclick=()=>shoot();
 document.querySelector('#jump').onclick=()=>{jump();canvas.focus({preventScroll:true});};
 document.querySelectorAll('[data-key]').forEach(b=>{b.onpointerdown=e=>{if(!canPlay())return;b.setPointerCapture(e.pointerId);keys.add(b.dataset.key.toLowerCase());};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.key.toLowerCase());});
@@ -158,13 +165,14 @@ document.querySelector('#death-dialog').addEventListener('cancel',e=>{e.preventD
 companions.canHelp=()=>canPlay();
 window.addEventListener('astralia:help-open',()=>{ignitia.speaking=false;document.querySelector('#ignitia-dialog').hidden=true;ignitia.closeConsole();});
 ignitia.canLaunch=()=>canPlay()&&ignitia.near(player);
+measurement.canSubmit=()=>mission.state==='running'&&!death&&rooms[index].measurement&&measurement.near(player);
 function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);mission.tick();ignitia.tick(dt);
  if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0),s=(keys.has('d')?1:0)-(keys.has('a')?1:0),speed=dt*2.3*(keys.has('shift')?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
  if(walkable(nx,player.y))player.x=nx;if(walkable(player.x,ny))player.y=ny;
  // Altura en celdas (2 m en Galileo): salto corto, sin doble salto ni apoyo sobre el vacío.
  if(player.jumpHeight>0||player.jumpVelocity>0){player.jumpVelocity-=4.905*dt;player.jumpHeight=Math.max(0,player.jumpHeight+player.jumpVelocity*dt);if(player.jumpHeight===0)player.jumpVelocity=0;}
  if(player.jumpHeight===0&&!supported(player.x,player.y))die(rooms[index].boss?'pit':'fall');
- if(!death&&opened&&player.x>(rooms[index].exitX??7.6)){if(index<5)load(index+1);else if(mission.finish()){completed=true;message.textContent='Has cruzado los seis umbrales. ¡Has detenido al Dr. Eric!';document.querySelector('#door-status').textContent='SALIDA ALCANZADA';keys.clear();}}
+ if(!death&&opened&&player.x>(rooms[index].exitX??7.6)){if(rooms[index].measurement)load(1);else if(index<5)load(index+1);else if(mission.finish()){completed=true;message.textContent='Has cruzado los seis umbrales. ¡Has detenido al Dr. Eric!';document.querySelector('#door-status').textContent='SALIDA ALCANZADA';keys.clear();}}
  }
  if(canPlay()&&maze){maze.tick(dt,player);if(maze.chasing&&!maze.caught&&maze.freezeLeft<=0)Sound.pursuit(dt,Math.hypot(maze.enemy.x-player.x,maze.enemy.y-player.y));}
  if(canPlay()&&corridor)corridor.tick(dt,player);
@@ -173,6 +181,8 @@ function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math
  if(rooms[index].physics){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||cannon.isOpen;hint.textContent=cannon.near(player,renderer,opened)?'Clic o E · Usar el cañón':'Acércate al cañón para configurar el disparo';}
  if(maze)document.querySelector('#chase-indicator').classList.toggle('frozen',maze.freezeLeft>0);
  if(rooms[index].rocket){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||!document.querySelector('#rocket-console').hidden;hint.textContent=ignitia.near(player)?'Clic o E · Programar el cohete':'Acércate al terminal azul de Ignitia';if(!ignitia.near(player)&&!document.querySelector('#rocket-console').hidden)ignitia.closeConsole();}
+ if(rooms[index].measurement){const h=document.querySelector('#interaction-hint');h.hidden=!canPlay();h.textContent=opened?'Cruza la puerta real para continuar.':'Clic o E junto a la puerta · Medir';}
+ if(rooms[index].measurementEntrance&&opened){const h=document.querySelector('#interaction-hint');h.hidden=!canPlay();h.textContent='Puerta lateral al norte · Sala 1.5 opcional';}
  if(boss)document.querySelector('#interaction-hint').textContent=boss.near(player,renderer,rooms[index],opened)>=0?'Clic o E · Programar láser':'Busca los láseres a ambos lados';
  if(canPlay()&&rooms[index].physics)lab.tick(dt);if(canPlay()&&rooms[index].roulette)roulette.tick(dt);
  ignitia.updateCamera(player);renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);actors.draw(renderer,rooms[index],player,opened,time,maze);if(corridor)corridor.draw(renderer,player,actors);if(boss)boss.draw(renderer,player,actors);if(rooms[index].environment.kind==='courtyard')renderer.outdoor.draw(renderer,rooms[index],player,actors,time);ignitia.draw(renderer,player,actors);animateDeath(dt);requestAnimationFrame(tick);
