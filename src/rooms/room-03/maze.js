@@ -23,7 +23,7 @@ window.DUNGEON_QUESTIONS=[
 window.ConceptMaze=class {
  constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.questionPool=[];this.lastDungeonQuestion=null;this.reset();}
  reset(){
-  this.freezeLeft=0;this.freezeUsed=false;this.freezePlate={x:27.5,y:8.5};this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
+  this.freezeLeft=0;this.usedFreezeButtons=new Set();this.dungeonVisit=0;this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
   this.enemy={x:1.5,y:8.5};
   // Solo la respuesta correcta tiene un pasaje. Las incorrectas son portales sin cuarto detrás.
   this.room.map=Array.from({length:17},()=>Array(51).fill(1));
@@ -40,6 +40,10 @@ window.ConceptMaze=class {
   });
  }
  get question(){return this.dungeon?this.dungeonQuestion:CONCEPT_QUESTIONS[Math.min(this.stage,3)];}
+ get freezeButton(){if(this.finished)return null;if(this.dungeon)return {id:'dungeon-'+this.dungeonVisit,x:8.5,y:1.02};return this.stage>=1&&this.stage<=3?{id:'stage-'+this.stage,x:this.stage*12+6.5,y:1.02}:null;}
+ get freezeUsed(){const b=this.freezeButton;return !!b&&this.usedFreezeButtons.has(b.id);}
+ nearFreezeButton(player,renderer){const b=this.freezeButton;if(!b||this.caught)return false;const dx=b.x-player.x,dy=b.y-player.y,d=Math.hypot(dx,dy),angle=Math.atan2(dy,dx);return d<2&&Math.cos(angle-player.angle)>.94&&renderer.cast(this.room,player.x,player.y,angle,false).distance+.08>=d;}
+ activateFreeze(player,renderer){if(!this.nearFreezeButton(player,renderer))return false;if(this.freezeUsed){this.onEvent('freeze','Este botón ya se usó. Busca otro en la siguiente galería.');return true;}this.usedFreezeButtons.add(this.freezeButton.id);this.freezeLeft=7;this.onEvent('freeze','Botón azul activado. Iván queda congelado durante 7 segundos.');return true;}
  nextDungeonQuestion(){
   // Bolsa barajada: agotar el banco antes de repetir, incluso después de morir.
   if(!this.questionPool.length){
@@ -51,7 +55,7 @@ window.ConceptMaze=class {
   this.lastDungeonQuestion=this.questionPool.pop();return DUNGEON_QUESTIONS[this.lastDungeonQuestion];
  }
  enterDungeon(player,door){
-  this.savedWorld={map:this.room.map,doors:this.doors};this.dungeon=true;this.dungeonQuestion=this.nextDungeonQuestion();this.returnGrace=false;
+  this.savedWorld={map:this.room.map,doors:this.doors};this.dungeon=true;this.dungeonVisit++;this.freezeLeft=0;this.dungeonQuestion=this.nextDungeonQuestion();this.returnGrace=false;
   this.room.environment={kind:'interior',label:'Calabozo del error',tint:'#395338',moss:true,portraits:[]};
   this.room.map=Array.from({length:13},(_,y)=>Array.from({length:15},(_,x)=>x===0||x===14||y===0||y===12?1:0));
   this.doors=this.dungeonQuestion.answers.map((text,choice)=>({x:13,y:choice===0?3:9,stage:this.stage,choice,text,letter:'AB'[choice],correct:choice===this.dungeonQuestion.correct,dungeon:true}));
@@ -61,7 +65,7 @@ window.ConceptMaze=class {
   this.onEvent('dungeon','El portal te arrastra al calabozo. Resuelve el sello de dos puertas para volver al inicio. Cuidado, alguien te persigue.');
  }
  leaveDungeon(){
-  this.room.map=this.savedWorld.map;this.doors=this.savedWorld.doors;this.room.environment=this.baseEnvironment;this.dungeon=false;this.stage=0;this.savedWorld=null;
+  this.room.map=this.savedWorld.map;this.doors=this.savedWorld.doors;this.room.environment=this.baseEnvironment;this.dungeon=false;this.freezeLeft=0;this.stage=0;this.savedWorld=null;
   this.enemy={x:1.5,y:8.5};this.path=[];this.pathClock=0;this.grace=5;this.returnGrace=true;
   this.onEvent('return','Sello resuelto. Regresas al inicio del laberinto; las puertas que abriste siguen abiertas. Iván esperará 5 segundos: aprovecha para alejarte.');
  }
@@ -93,7 +97,6 @@ window.ConceptMaze=class {
  }
  tick(dt,player){
   this.bite=Math.max(0,this.bite-dt);
-  if(!this.dungeon&&this.stage===2&&!this.freezeUsed&&Math.abs(player.x-this.freezePlate.x)<.6&&Math.abs(player.y-this.freezePlate.y)<.6){this.freezeUsed=true;this.freezeLeft=20;this.onEvent('freeze','Placa azul activada. Iván queda congelado durante 20 segundos.');return;}
   this.freezeLeft=Math.max(0,this.freezeLeft-dt);
   if(!this.dungeon&&!this.caught){
    const portal=this.doors.find(d=>!d.correct&&this.openDoors.has(d.stage+':'+d.choice)&&player.x>=d.x&&player.x<d.x+4&&Math.abs(player.y-(d.y+.5))<1.5);

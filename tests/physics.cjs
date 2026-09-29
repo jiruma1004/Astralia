@@ -21,4 +21,4 @@ const a=i=>qs[i-1].fields.map(f=>f[2]),g=9.81,r=d=>d*Math.PI/180;
 {const[t,v]=a(10);close(19.62,.5*g*t*t);close(v,g*t);}
 console.log('OK: proyectiles y diez problemas sin avanzados.');
 
-assert.equal(world.ESCAPE_ROOMS[0].map[3].filter(t=>t===3).length,15);assert.equal(p.targetX-p.originX,10);assert(.5*Math.sqrt(20*9.81)**2<180,'Solución de 1 kg dentro de capacidad');
+assert.equal(world.ESCAPE_ROOMS[0].bridge.end-world.ESCAPE_ROOMS[0].bridge.start,11.25);assert.equal(p.targetX-p.originX,10);assert(.5*Math.sqrt(20*9.81)**2<180,'Solución de 1 kg dentro de capacidad');

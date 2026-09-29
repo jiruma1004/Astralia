@@ -13,7 +13,7 @@ window.RoomActors=class {
   const objects=[];if(room.answerDesk)objects.push({...room.answerDesk,kind:'desk'});if(maze&&!maze.dungeon)for(const d of maze.doors)if(!d.correct&&maze.openDoors.has(d.stage+':'+d.choice))objects.push({x:d.x+.5,y:d.y+.5,kind:'rift'});if(maze?.chasing)objects.push({...maze.enemy,kind:'ivan'});
   objects.sort((a,b)=>Math.hypot(b.x-player.x,b.y-player.y)-Math.hypot(a.x-player.x,a.y-player.y));
   this.deskBounds=this.guideBounds=null;
-  if(maze&&!maze.dungeon&&maze.stage===2)this.drawFreezePlate(renderer,player,maze,time);
+  this.freezeButtonBounds=null;if(maze?.freezeButton)this.drawFreezePlate(renderer,player,maze,time);
   if(maze)this.drawDoorLabels(renderer,room,player,maze);
   for(const obj of objects){const p=this.project(renderer,player,obj.x,obj.y,0);if(!p)continue;const c=renderer.ctx;
    if(obj.kind==='rift'){this.drawRift(renderer,p,time);continue;}
@@ -34,9 +34,11 @@ window.RoomActors=class {
   c.save();c.lineCap='round';for(const y of sides){for(let x=start;x<=end;x+=1)segment([x,y,0],[x,y,.62],forest?'#a67a47':'#b7ccd5',.045);for(const z of [.28,.58])for(let x=start;x<end;x+=.2)segment([x,y,z],[Math.min(end,x+.2),y,z],forest?'#c19b67':'#77aabd',.025);}c.restore();
  }
  drawFreezePlate(renderer,player,maze,time){
-  const c=renderer.ctx,p=this.project(renderer,player,maze.freezePlate.x,maze.freezePlate.y,.015);if(!p||p.depth<.3)return;
+  const b=maze.freezeButton,c=renderer.ctx,p=this.project(renderer,player,b.x,b.y,.65);if(!p||p.depth<.3)return;
   if(p.depth>(renderer.depths[Math.round(p.x/3)*3]??Infinity)+.1)return;
-  c.save();c.fillStyle=maze.freezeUsed?'#364f67':'#168fe8';c.strokeStyle='#a1f3ff';c.lineWidth=3;const corners=[[-.6,-.6],[.6,-.6],[.6,.6],[-.6,.6]].map(([x,y])=>this.project(renderer,player,maze.freezePlate.x+x,maze.freezePlate.y+y,.015));if(corners.some(q=>!q)){c.restore();return;}c.beginPath();corners.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fill();c.stroke();c.fillStyle='#e7ffff';c.font=`bold ${Math.max(15,p.scale*.22)}px Georgia`;c.textAlign='center';c.fillText(maze.freezeUsed?'✓':'❄ 20 s',p.x,p.y-5);c.restore();
+  const corners=[[-.32,.97],[.32,.97],[.32,.33],[-.32,.33]].map(([x,z])=>this.project(renderer,player,b.x+x,b.y,z));if(corners.some(q=>!q))return;
+  c.save();c.fillStyle=maze.freezeUsed?'#364f67':'#168fe8';c.strokeStyle='#a1f3ff';c.lineWidth=3;c.beginPath();corners.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fill();c.stroke();c.fillStyle='#e7ffff';c.font=`bold ${Math.max(12,p.scale*.13)}px Georgia`;c.textAlign='center';c.fillText(maze.freezeUsed?'✓':'❄ 7 s',p.x,p.y);c.font=`${Math.max(10,p.scale*.09)}px Georgia`;c.fillText('E',p.x,p.y+p.scale*.17);c.restore();
+  const xs=corners.map(q=>q.x),ys=corners.map(q=>q.y);this.freezeButtonBounds={x:Math.min(...xs),y:Math.min(...ys),w:Math.max(...xs)-Math.min(...xs),h:Math.max(...ys)-Math.min(...ys)};
  }
  drawRift(renderer,p,time){
   const c=renderer.ctx,size=p.scale*.9,left=p.x-size*.36,top=p.y-size,w=size*.72;

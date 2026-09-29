@@ -91,6 +91,7 @@ async function interact(){
  if(!canPlay())return;
  if(rooms[index].rocket){if(!ignitia.open(player))companions.toast('Acércate al terminal azul de Ignitia y pulsa E.');return;}
  if(rooms[index].physics){if(!cannon.open(player,renderer,opened))companions.toast('Acércate al cañón y míralo para abrir sus controles.');return;}
+ if(maze?.activateFreeze(player,renderer))return;
  if(openNearbyDoor())return;
  if(boss){if(boss.open(player,renderer,rooms[index],opened))keys.clear();else companions.toast('Acércate a uno de los láseres laterales y mira su panel.');return;}
  if(maze){companions.toast('Acércate a una puerta. Ábrela con clic o E para explorar su respuesta.');return;}
@@ -104,6 +105,7 @@ function worldClick(x,y){
  companions.closeHelp();
  if(rooms[index].rocket)return ignitia.open(player);
  const contains=b=>b&&x>b.x&&x<b.x+b.w&&y>b.y&&y<b.y+b.h;
+ if(maze&&contains(actors.freezeButtonBounds)&&maze.activateFreeze({...player,angle:player.angle+Math.atan((x/canvas.width*2-1)*.66)},renderer))return true;
  if(openNearbyDoor(player.angle+Math.atan((x/canvas.width*2-1)*.66),y))return false;
  if(boss&&boss.open(player,renderer,rooms[index],opened)){keys.clear();return true;}
  if(rooms[index].roulette){
@@ -125,7 +127,7 @@ document.querySelector('#jump').onclick=()=>{jump();canvas.focus({preventScroll:
 document.querySelectorAll('[data-key]').forEach(b=>{b.onpointerdown=e=>{if(!canPlay())return;b.setPointerCapture(e.pointerId);keys.add(b.dataset.key.toLowerCase());};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.key.toLowerCase());});
 function walkable(x,y){const room=rooms[index];if(opened&&room.bridge){const b=room.bridge;if(x>b.start-.18&&x<b.end+.18&&[b.y+.03,b.y+.97].some(edge=>Math.abs(y-edge)<.20))return false;}if(room.bounds&&(y-.18<room.bounds.minY||y+.18>room.bounds.maxY))return false;if(rooms[index].rocket&&Math.hypot(x-7.5,y-5.5)<.6)return false;if(boss?.lasers.some(l=>Math.hypot(x-l.x,y-l.y)<.45))return false;if(corridor?.blocks(x,y,player.jumpHeight))return false;if(room.answerDesk&&Math.hypot(x-room.answerDesk.x,y-room.answerDesk.y)<.65)return false;if(room.table&&Math.hypot(x-room.table.x,y-room.table.y)<.8)return false;if(room.physics&&Math.hypot(x-room.physics.originX,y-room.physics.originY)<.38)return false;return [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]].every(([dx,dy])=>{const tile=room.map[Math.floor(y+dy)]?.[Math.floor(x+dx)]??1;return tile===0||(tile===2&&opened)||tile===3;});}
 // El abismo permite caminar: perder el suelo inicia la caída.
-function supported(x,y){const tile=rooms[index].map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===(rooms[index].boss?7:3));}
+function supported(x,y){const room=rooms[index],tile=room.floorTile?room.floorTile(x,y):room.map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===(rooms[index].boss?7:3));}
 function clearDeath(){death=null;camera.release();canvas.style.transform='';canvas.style.opacity='';const dialog=document.querySelector('#death-dialog');if(dialog.open)dialog.close();}
 function die(type){if(death)return;cannon.close();boss?.close();death={type,t:0,shown:false,startedAt:performance.now()};camera.release();companions.closeHelp();companions.closeConsole();lab.hologram.hide();keys.clear();lab.dead=true;lab.lock(true);if(lab.shot&&!lab.shot.done){lab.shot.done=true;lab.history.push('Lanzamiento interrumpido por el fin del intento.');lab.renderHistory();}Sound.failure(type);message.textContent=type==='fall'?'Has perdido pie…':type==='ivan'?'¡EPI Ivan te alcanzó!':type==='symbol'?'¡Un símbolo te alcanzó!':type==='potion'?'¡La poción de Eric te alcanzó!':type==='pit'?'Has caído en la fosa.':'¡Sobrecarga de la torreta!';}
 function checkpointLabel(){return rooms[checkpoint.room].name+(checkpoint.room===2?` · tramo ${checkpoint.stage+1}`:'');}

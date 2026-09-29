@@ -1,4 +1,9 @@
 window.ENGLISH={
+  "Botón azul activado. Iván queda congelado durante 7 segundos.": "Blue button activated. Iván is frozen for 7 seconds.",
+  "Este botón ya se usó. Busca otro en la siguiente galería.": "This button has already been used. Look for another in the next gallery.",
+  "Pulsa el botón azul de la pared con clic o E: congela a Iván durante 7 segundos. Cada botón se usa una vez; en el calabozo se renueva en cada visita.": "Click the blue wall button or press E: it freezes Iván for 7 seconds. Each button works once; the dungeon button resets on each visit.",
+  "BOTÓN AGOTADO": "BUTTON DEPLETED",
+  "Clic o E · Congelar a Iván · 7 s": "Click or E · Freeze Iván · 7 s",
   "Epílogo": "Epilogue",
   "Continuará en semana 10…": "To be continued in week 10…",
   "¡Muchas felicidades! Has completado todas las pruebas. Toma una captura de esta pantalla y súbela a la actividad junto con tus apuntes y los procedimientos de los ejercicios.": "Congratulations! You have completed every challenge. Take a screenshot of this screen and upload it to the assignment together with your notes and worked solutions.",
