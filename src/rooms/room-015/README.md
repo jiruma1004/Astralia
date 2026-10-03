@@ -1,5 +1,7 @@
 # Sala 1.5 · La medida del rey
 
+**Archivada y desactivada.** Para recuperarla, cambia `window.MEASUREMENT_ENABLED` a `true` en `room.js`. Se conservan el escenario, las reglas, la validación y las pruebas.
+
 Sala opcional entre Galileo y la ruleta. Entrada por la puerta lateral norte del bosque, después del puente; también figura como I.5 en el selector. Volver al bosque conserva el puente abierto. Al resolver el sello y atravesar la puerta real, se llega a la sala II. No cambia los índices ni la culminación 6/6 del recorrido principal.
 
 Para retirarla, poner `window.MEASUREMENT_ENABLED=false` en `room.js`. La puerta lateral y la entrada del selector desaparecen al recargar.
