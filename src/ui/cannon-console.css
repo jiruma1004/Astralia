@@ -15,7 +15,13 @@
 
 #station.cannon-console .ammo-shelf{padding:7px 0 4px;margin-top:7px;border-bottom-width:2px}
 #station.cannon-console .ammo-shelf .eyebrow{margin-bottom:4px}
-#station.cannon-console .cannon-actions{display:flex;gap:8px;position:sticky;bottom:-16px;background:#14283e;padding:8px 0;margin-top:6px}
+#station.cannon-console .cannon-actions{display:block;position:sticky;bottom:-16px;background:#14283e;padding:8px 0;margin-top:6px;z-index:1}
+#station.cannon-console .cannon-action-buttons{display:flex;gap:8px}
+#station.cannon-console #cannon-feedback{font-size:13px;line-height:1.4;color:#ffe0a0;margin:0 0 8px}
+#station.cannon-console .cannon-energy-note{padding:8px 10px;border:1px solid #709198;border-radius:5px;background:#102e37}
+#station.cannon-console .cannon-energy-note p:first-child{font:18px/1.5 sans-serif!important;color:#c8ffe5}
+.scene-view:has(#station.cannon-console:not([hidden])) #world-toast{display:none}
+.world-toast{pointer-events:none}
 #station.cannon-console .cannon-actions button{flex:1;width:auto;margin:0!important}
 #station.cannon-console .numeric-settings{gap:7px 12px;margin:8px 0}
 #station.cannon-console .numeric-settings input{height:34px;margin-top:3px}

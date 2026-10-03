@@ -17,7 +17,7 @@ window.RoomActors=class {
   if(maze)this.drawDoorLabels(renderer,room,player,maze);
   for(const obj of objects){const p=this.project(renderer,player,obj.x,obj.y,0);if(!p)continue;const c=renderer.ctx;
    if(obj.kind==='rift'){this.drawRift(renderer,p,time);continue;}
-   if(obj.kind==='ivan'){this.drawIvan(renderer,p,maze.freezeLeft>0?0:time,maze.bite>0);if(maze.freezeLeft>0){c.fillStyle='#62dfff';c.font='24px Georgia';c.textAlign='center';c.fillText('❄',p.x,p.y-p.scale);}continue;}
+   if(obj.kind==='ivan'){this.drawIvan(renderer,p,maze.freezeLeft>0?0:time,maze.bite>0);this.drawIvanSpeech(renderer,p,maze);if(maze.freezeLeft>0){c.fillStyle='#62dfff';c.font='24px Georgia';c.textAlign='center';c.fillText('❄',p.x,p.y-p.scale);}continue;}
    const hit=renderer.cast(room,player.x,player.y,Math.atan2(obj.y-player.y,obj.x-player.x),opened);if(hit.distance+.1<Math.hypot(obj.x-player.x,obj.y-player.y))continue;
    c.save();c.translate(p.x,p.y);const s=p.scale/350;c.scale(s,s);
    if(obj.kind==='desk'){
@@ -49,6 +49,22 @@ window.RoomActors=class {
    c.fillStyle='#50286bcc';c.fillRect(x,top+(size-height)/2,3,height);
    c.fillStyle=`rgba(179,126,245,${.65+.25*Math.sin(time/210+u*8)})`;c.fillRect(x,top+(size-height)/2,3,Math.min(height,5));c.fillRect(x,top+(size+height)/2-5,3,5);
   }c.restore();
+ }
+ drawIvanSpeech(renderer,p,maze){
+  const w=renderer.canvas.width,h=renderer.canvas.height,headY=p.y-p.scale*.84;
+  if(!maze.chasing||maze.finished||maze.caught||maze.freezeLeft>0||maze.grace>0||maze.speechLeft<=0||!maze.speech||p.depth>8||p.x<0||p.x>w||headY<0||headY>h)return false;
+  if(p.depth>(renderer.depths[Math.floor(p.x/3)*3]??Infinity)+.05)return false;
+  const c=renderer.ctx,unit=w/Math.max(320,renderer.canvas.clientWidth),font=15*unit,pad=11*unit;
+  const text=window.I18n?I18n.t(maze.speech):maze.speech;
+  c.save();c.font=`${font}px Georgia`;const width=Math.min(w*.65,270*unit,Math.max(150*unit,c.measureText(text).width+2*pad)),lines=[];let line='';
+  for(const word of text.split(' ')){const next=(line+' '+word).trim();if(line&&c.measureText(next).width>width-2*pad){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);
+  const height=lines.length*font*1.35+pad*2,left=Math.max(8,Math.min(w-width-8,p.x-width-18*unit));let top=Math.max(8,Math.min(h-height-8,headY-height*.7));
+  for(const selector of ['#question-bubble','#chase-indicator']){const panel=document.querySelector(selector);
+   if(panel&&!panel.hidden){const q=panel.getBoundingClientRect(),r=renderer.canvas.getBoundingClientRect(),qx=(q.left-r.left)*w/r.width,qy=(q.top-r.top)*h/r.height,qw=q.width*w/r.width,qh=q.height*h/r.height;if(left<qx+qw&&left+width>qx&&top<qy+qh&&top+height>qy)top=Math.min(h-height-8,qy+qh+12*unit);}
+  }
+  c.fillStyle='#f3e4c7';c.strokeStyle='#725047';c.lineWidth=2*unit;c.beginPath();c.roundRect(left,top,width,height,11*unit);c.fill();c.stroke();
+  c.beginPath();c.moveTo(left+width-12*unit,top+height*.65);c.lineTo(p.x,headY+8*unit);c.lineTo(left+width-24*unit,top+height*.85);c.fill();c.stroke();
+  c.fillStyle='#342439';c.textAlign='left';lines.forEach((s,i)=>c.fillText(s,left+pad,top+pad+font+i*font*1.35));c.restore();return true;
  }
  drawIvan(renderer,p,time,biting){
   if(!this.ivan.complete||!this.ivan.naturalWidth)return;

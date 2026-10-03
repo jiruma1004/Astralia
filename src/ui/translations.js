@@ -1,4 +1,9 @@
 window.ENGLISH={
+  "Soy inevitable": "I am inevitable",
+  "¡Todavía falta justificar tu respuesta!": "You still need to justify your answer!",
+  "Puedes correr, pero no saltarte los pasos.": "You can run, but you cannot skip the steps.",
+  "¡Te alcanzaré antes de que termine el examen!": "I will catch you before the exam ends!",
+  "Eₖ es la energía de lanzamiento en J; m, la masa en kg; v₀, la rapidez inicial en m/s. A igual energía, una masa mayor sale más despacio.": "Eₖ is launch energy in J; m is mass in kg; v₀ is initial speed in m/s. At the same energy, a heavier mass launches more slowly.",
   "Eric avanza hacia la Luna. Intercéptalo antes de que llegue o será game over.": "Eric is heading for the Moon. Intercept him before he arrives or it is game over.",
   "RADAR · EN DIRECTO": "RADAR · LIVE",
   "Tiempo hasta la llegada lunar": "Time until lunar arrival",

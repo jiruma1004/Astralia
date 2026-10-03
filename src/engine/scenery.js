@@ -59,8 +59,8 @@ window.makeScenery=()=>{
    ['R = v₀² sen(2θ) / g',70,570,-.025,52,'#e7dcad'],
    ['Δy = 0, φ = 0°',660,565,.025,37,'#e7dcad'],
    ['Eₖ = ½mv²',60,735,-.04,49,'#e7dcad'],
-   ['F = ma',515,740,.035,50,'#d9e9d1'],
-   ['v² = v₀² + 2aΔx',780,735,-.025,39,'#d5e6ed']
+   ['v₀ = √(2Eₖ/m)',440,740,.035,42,'#d9e9d1'],
+   ['v² = v₀² + 2aΔx',820,735,-.025,35,'#d5e6ed']
   ];
   for(const [eq,x,y,angle,size,color] of equations){c.save();c.translate(x,y);c.rotate(angle);c.fillStyle=color;c.globalAlpha=.93;c.font=`italic ${size}px Georgia`;c.fillText(eq,0,0);c.restore();}
   // Desgaste en los trazos, sin añadir una placa ni un recuadro opaco.

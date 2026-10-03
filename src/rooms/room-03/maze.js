@@ -23,6 +23,7 @@ window.DUNGEON_QUESTIONS=[
 window.ConceptMaze=class {
  constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.questionPool=[];this.lastDungeonQuestion=null;this.reset();}
  reset(){
+  this.speech=null;this.speechLeft=0;this.tauntClock=0;this.tauntIndex=0;
   this.freezeLeft=0;this.usedFreezeButtons=new Set();this.dungeonVisit=0;this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
   this.enemy={x:1.5,y:8.5};
   // Solo la respuesta correcta tiene un pasaje. Las incorrectas son portales sin cuarto detrás.
@@ -96,6 +97,7 @@ window.ConceptMaze=class {
   return path.slice(1);
  }
  tick(dt,player){
+  this.speechLeft=Math.max(0,this.speechLeft-dt);
   this.bite=Math.max(0,this.bite-dt);
   this.freezeLeft=Math.max(0,this.freezeLeft-dt);
   if(!this.dungeon&&!this.caught){
@@ -105,6 +107,7 @@ window.ConceptMaze=class {
   if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage===3?48.2:(this.stage+1)*12+1)){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
   if(!this.chasing||this.finished||this.caught||this.freezeLeft>0)return;
   this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;this.returnGrace=false;
+  this.tauntClock-=dt;if(this.tauntClock<=0){const lines=['Soy inevitable','¡Todavía falta justificar tu respuesta!','Puedes correr, pero no saltarte los pasos.','¡Te alcanzaré antes de que termine el examen!'];this.speech=lines[this.tauntIndex++%lines.length];this.speechLeft=3.5;this.tauntClock=10;}
   this.pathClock-=dt;
   const atCenter=Math.hypot(this.enemy.x-Math.floor(this.enemy.x)-.5,this.enemy.y-Math.floor(this.enemy.y)-.5)<.001;
   if(!this.path.length||(this.pathClock<=0&&atCenter)){this.path=this.routeTo(player);this.pathClock=.6;}
