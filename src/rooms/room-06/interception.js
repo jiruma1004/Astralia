@@ -1,16 +1,16 @@
 /* A local, uniform-gravity training model, in km and seconds. Not orbital mechanics. */
 window.InterceptionPhysics = {
- g: .00981, tolerance: 3,
+ g: .00981, tolerance: 3, moonTime: 600,
  limits: {speed:[.8,3], angle:[5,85], delay:[0,60], duration:[40,140]},
  initial: {speed:1.8, angle:48, delay:10, duration:90},
  valid(p){return Object.entries(this.limits).every(([k,[min,max]])=>Number.isFinite(p[k])&&p[k]>=min&&p[k]<=max);},
  eric(t){return {x:120+.22*t,y:60+.10*t};},
  rocket(p,t){const a=p.angle*Math.PI/180;return {x:p.speed*Math.cos(a)*t,y:p.speed*Math.sin(a)*t-.5*this.g*t*t};},
  groundTime(p){return 2*p.speed*Math.sin(p.angle*Math.PI/180)/this.g;},
- evaluate(p){
-  if(!this.valid(p))return {hit:false,valid:false,distance:Infinity};
-  const ours=this.rocket(p,p.duration),target=this.eric(p.delay+p.duration),distance=Math.hypot(ours.x-target.x,ours.y-target.y),ground=this.groundTime(p)<p.duration;
-  return {valid:true,hit:!ground&&distance<=this.tolerance,distance,ground,ours,target,time:p.delay+p.duration};
+ evaluate(p,epoch=0){
+  if(!this.valid(p)||!Number.isFinite(epoch)||epoch<0)return {hit:false,valid:false,distance:Infinity};
+  const time=epoch+p.delay+p.duration,ours=this.rocket(p,p.duration),target=this.eric(time),distance=Math.hypot(ours.x-target.x,ours.y-target.y),ground=this.groundTime(p)<p.duration,late=time>=this.moonTime;
+  return {valid:true,hit:!ground&&!late&&distance<=this.tolerance,distance,ground,late,ours,target,time};
  },
  aimAt(p,x,y){
   const vx=x/p.duration,vy=(y+.5*this.g*p.duration*p.duration)/p.duration;
@@ -23,9 +23,9 @@ window.InterceptionConsole = class {
  constructor(panel,ericArt,rocketArt,onReady){
   this.panel=panel;this.ericArt=ericArt;this.rocketArt=rocketArt;this.onReady=onReady;
   panel.innerHTML=`<button id="rocket-close" class="bubble-fold" aria-label="Cerrar panel">×</button>
-   <header><p class="eyebrow">IGNITIA · NAVEGACIÓN TÁCTICA</p><h2>Intercepta a Eric</h2><p class="intercept-intro">Mismo lugar. Mismo instante. Traza una ruta y ensáyala antes del despegue real.</p></header>
+   <header><p class="eyebrow">IGNITIA · NAVEGACIÓN TÁCTICA</p><h2>Intercepta a Eric</h2><p class="intercept-intro">Eric avanza hacia la Luna. Intercéptalo antes de que llegue o será game over.</p></header>
    <div class="intercept-workspace"><div class="intercept-map">
-    <div class="intercept-map-top"><span>RADAR · SIMULACIÓN</span><output id="intercept-clock" aria-label="Tiempo de misión" aria-live="off">t = 0 s</output></div>
+    <div class="intercept-map-top"><span>RADAR · EN DIRECTO</span><output id="intercept-clock" aria-label="Tiempo hasta la llegada lunar" aria-live="off">600 s</output></div>
     <canvas id="intercept-canvas" width="1000" height="480" aria-label="Trayectorias de Ignitia y Eric. Arrastra el punto verde para ajustar rapidez y ángulo; también puedes usar los controles deslizantes."></canvas>
     <div class="intercept-legend"><span class="ours-key">Ignitia</span><span class="eric-key">Eric</span><span class="future-key">Posición prevista al encuentro</span></div>
     <p class="intercept-drag">Arrastra el punto verde de la trayectoria o usa los controles.</p>
@@ -37,8 +37,8 @@ window.InterceptionConsole = class {
    </div></div>
    <section class="intercept-equations" aria-label="Ecuaciones del movimiento">
     <div><b>Tu cohete · tiro parabólico</b><p class="intercept-formula" data-no-translate>x = v₀ cos(θ) τ<br>y = v₀ sin(θ) τ − ½gτ²</p><p>τ es el tiempo desde tu salida. v₀ es la rapidez inicial y θ el ángulo sobre la horizontal. g = 0.00981 km/s².</p></div>
-    <div><b>Eric · velocidad constante</b><p class="intercept-formula" data-no-translate>xᴱ = 120 + 0.22t<br>yᴱ = 60 + 0.10t; t = d + τ</p><p>t es el reloj de misión; d, tu retraso de salida. Eric parte de (120, 60) km y avanza a (0.22, 0.10) km/s.</p></div>
-   </section><p class="intercept-model">Tramo balístico 2D: Ignitia vuela sin motor, con gravedad uniforme y sin aire. No simula órbitas. Luna fuera de escala. Intercepta a ≤ 3 km en el instante elegido. Cada ensayo reinicia el reloj.</p>`;
+    <div><b>Eric · velocidad constante</b><p class="intercept-formula" data-no-translate>xᴱ = 120 + 0.22t<br>yᴱ = 60 + 0.10t; t = t₀ + d + τ</p><p>t₀ es el instante al iniciar el ensayo; d, el retraso de salida. Eric parte de (120, 60) km y avanza a (0.22, 0.10) km/s. Su reloj nunca se reinicia entre ensayos.</p></div>
+   </section><p class="intercept-model">Modelo balístico 2D, sin motor ni aire, con gravedad uniforme; Luna fuera de escala. Encuentro a ≤ 3 km. Llegada lunar: t = 600 s. Reloj ×1 al planear, ×20 al ensayar; sigue al cerrar el panel.</p>`;
   this.canvas=panel.querySelector('canvas');this.ctx=this.canvas.getContext('2d');
   this.clock=panel.querySelector('#intercept-clock');this.feedback=panel.querySelector('#rocket-feedback');
   this.trialButton=panel.querySelector('#intercept-trial');this.launchButton=panel.querySelector('#intercept-launch');
@@ -50,8 +50,8 @@ window.InterceptionConsole = class {
    input.oninput=()=>{this.params[key]=Number(input.value);this.edited();};
   }
   this.trialButton.onclick=()=>this.startTrial();
-  panel.querySelector('#intercept-reset').onclick=()=>this.reset();
-  this.launchButton.onclick=()=>{if(this.ready&&InterceptionPhysics.evaluate(this.params).hit&&this.canRun?.())this.onReady();};
+  panel.querySelector('#intercept-reset').onclick=()=>this.resetControls();
+  this.launchButton.onclick=()=>{if(this.ready&&InterceptionPhysics.evaluate(this.params,this.launchEpoch).hit&&this.canRun?.())this.onReady();};
   this.canvas.addEventListener('pointerdown',e=>{
    if(this.running)return;const p=this.point(e),end=this.project(InterceptionPhysics.rocket(this.params,this.params.duration));
    if(Math.hypot(p.x-end.x,p.y-end.y)>35)return;
@@ -67,7 +67,9 @@ window.InterceptionConsole = class {
   window.addEventListener('astralia:language',()=>{this.sync();this.draw();});
   this.reset();
  }
- reset(){this.params={...InterceptionPhysics.initial};this.attempts=0;this.running=false;this.ready=false;this.elapsed=0;this.dragging=false;this.result=null;this.feedback.textContent='Ajusta tu ruta. La silueta de Eric marca dónde estará al terminar tu vuelo.';this.sync();this.draw();}
+ reset(){this.missionTime=0;this.launchEpoch=0;this.failed=false;this.active=false;this.attempts=0;this.resetControls();}
+ resetControls(){this.params={...InterceptionPhysics.initial};this.running=false;this.ready=false;this.elapsed=0;this.dragging=false;this.result=null;this.feedback.textContent='Ajusta tu ruta. Eric sigue avanzando; restablecer los controles no reinicia su reloj.';this.sync();this.draw();}
+ get predictionEpoch(){return this.running||this.ready?this.launchEpoch:this.missionTime;}
  cancel(){if(this.running){this.elapsed=0;this.feedback.textContent='Ensayo cancelado. Puedes ajustar la ruta y volver a probar.';}this.running=false;this.dragging=false;this.sync();}
  show(){this.draw();this.panel.querySelector('#intercept-speed').focus({preventScroll:true});}
  edited(){this.running=false;this.ready=false;this.elapsed=0;this.result=null;this.feedback.textContent='Ruta actualizada. Ensaya para comprobar si coinciden en el mismo instante.';this.sync();this.draw();}
@@ -80,17 +82,19 @@ window.InterceptionConsole = class {
  }
  startTrial(){
   if(this.running||!this.canRun?.()||!InterceptionPhysics.valid(this.params))return;
-  this.elapsed=0;this.running=true;this.ready=false;this.result=null;this.attempts++;
-  this.feedback.textContent='Ensayo en curso · reloj acelerado ×20. Puedes restablecer o cerrar para cancelar.';this.sync();
+  this.launchEpoch=this.missionTime;this.elapsed=0;this.running=true;this.ready=false;this.result=null;this.attempts++;
+  this.feedback.textContent='Ensayo en curso · reloj ×20. Eric también avanza: los intentos consumen tiempo de misión.';this.sync();
  }
  tick(dt){
-  if(this.panel.hidden)return;
+  if(!this.active||this.failed||this.ready||!this.canAdvance?.()){this.draw();return;}
+  const finish=this.running?this.launchEpoch+this.params.delay+Math.min(this.params.duration,InterceptionPhysics.groundTime(this.params)):Infinity;
+  this.missionTime=Math.min(InterceptionPhysics.moonTime,finish,this.missionTime+dt*(this.running?20:1));
+  if(this.missionTime>=InterceptionPhysics.moonTime){this.failed=true;this.running=false;this.ready=false;this.sync();this.draw();this.onFail?.();return;}
   if(this.running){
-   this.elapsed=Math.min(this.params.delay+this.params.duration,this.elapsed+dt*20);
-   const flight=Math.max(0,this.elapsed-this.params.delay),landed=flight>InterceptionPhysics.groundTime(this.params);
-   if(landed||this.elapsed>=this.params.delay+this.params.duration){
-    if(landed)this.elapsed=this.params.delay+InterceptionPhysics.groundTime(this.params);
-    this.result=InterceptionPhysics.evaluate(this.params);this.running=false;this.ready=this.result.hit;
+   this.elapsed=this.missionTime-this.launchEpoch;
+   const landed=InterceptionPhysics.groundTime(this.params)<this.params.duration;
+   if(this.missionTime>=finish){
+    this.result=InterceptionPhysics.evaluate(this.params,this.launchEpoch);this.running=false;this.ready=this.result.hit;
     if(this.ready)this.feedback.textContent='¡Intercepción lograda! La ruta está lista. Confirma para iniciar el despegue real.';
     else if(landed)this.feedback.textContent='El cohete vuelve al suelo antes del encuentro. Prueba más rapidez, otro ángulo o menos tiempo de vuelo.';
     else this.feedback.textContent='Separación al encuentro: '+this.result.distance.toFixed(1)+' km. Ajusta la ruta y vuelve a ensayar. No pierdes vidas.';
@@ -107,8 +111,8 @@ window.InterceptionConsole = class {
   this.width=r.width;this.height=r.height;const dpr=Math.min(2,window.devicePixelRatio||1),w=Math.round(r.width*dpr),h=Math.round(r.height*dpr);
   if(this.canvas.width!==w||this.canvas.height!==h){this.canvas.width=w;this.canvas.height=h;}
   const c=this.ctx;c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,this.width,this.height);
-  const p=this.params,preview=Array.from({length:101},(_,i)=>InterceptionPhysics.rocket(p,p.duration*i/100)),target=InterceptionPhysics.eric(p.delay+p.duration),original=InterceptionPhysics.eric(0);
-  if(!this.dragging||!this.bounds)this.bounds={x:Math.ceil(Math.max(190,target.x+25,...preview.map(q=>q.x+15))/50)*50,y:Math.ceil(Math.max(95,target.y+25,...preview.map(q=>q.y+15))/25)*25};
+  const p=this.params,preview=Array.from({length:101},(_,i)=>InterceptionPhysics.rocket(p,p.duration*i/100)),target=InterceptionPhysics.eric(this.predictionEpoch+p.delay+p.duration),original=InterceptionPhysics.eric(0),moon=InterceptionPhysics.eric(InterceptionPhysics.moonTime);
+  if(!this.dragging||!this.bounds)this.bounds={x:Math.ceil(Math.max(moon.x+35,target.x+25,...preview.map(q=>q.x+15))/50)*50,y:Math.ceil(Math.max(moon.y+30,target.y+25,...preview.map(q=>q.y+15))/25)*25};
   c.fillStyle='#031a16';c.fillRect(0,0,this.width,this.height);
   c.font='12px sans-serif';c.lineWidth=1;c.textAlign='center';
   for(let i=0;i<=4;i++){
@@ -117,13 +121,13 @@ window.InterceptionConsole = class {
    c.fillStyle='#8abbaa';c.fillText(String(x),px.x,this.height-14);c.textAlign='right';c.fillText(String(y),41,py.y+4);c.textAlign='center';
   }
   c.fillStyle='#acd4c1';c.textAlign='left';c.fillText('y · km',8,15);c.textAlign='right';c.fillText('x · km',this.width-3,this.height-1);
-  // The Moon is narrative context, not an incorrectly scaled point on these axes.
-  c.fillStyle='#cfebcf';c.beginPath();c.arc(this.width-33,42,12,0,Math.PI*2);c.fill();c.fillStyle='#031a16';c.beginPath();c.arc(this.width-28,37,11,0,Math.PI*2);c.fill();
+  // A pixel-art destination on the explicitly reduced, fictional mission map.
+  this.drawMoon(this.project(moon));
   const path=(points,color,dash=[])=>{c.strokeStyle=color;c.lineWidth=2;c.setLineDash(dash);c.beginPath();let started=false;for(const q of points){if(q.y<0)break;const xy=this.project(q);if(!started){c.moveTo(xy.x,xy.y);started=true;}else c.lineTo(xy.x,xy.y);}c.stroke();c.setLineDash([]);};
   c.save();c.beginPath();c.rect(47,21,this.width-68,this.height-52);c.clip();
-  path([original,target],'#f5c579',[6,5]);path(preview,'#65eab18a',[5,5]);
-  const flight=Math.max(0,this.elapsed-p.delay),ours=InterceptionPhysics.rocket(p,flight),current=InterceptionPhysics.eric(this.elapsed);
-  if(this.elapsed>0){path(preview.filter((q,i)=>p.duration*i/100<=flight),'#7bffb9');path([original,current],'#ffd699');}
+  path([original,moon],'#f5c57966',[6,5]);path(preview,'#65eab18a',[5,5]);
+  const flight=this.running||this.ready?Math.max(0,this.elapsed-p.delay):0,ours=InterceptionPhysics.rocket(p,flight),current=InterceptionPhysics.eric(this.missionTime);
+  if(flight>0)path(preview.filter((q,i)=>p.duration*i/100<=flight),'#7bffb9');path([original,current],'#ffd699');
   const end=this.project(preview[100]),ep=this.project(target),real=this.project(current);
   c.strokeStyle='#f5c579';c.lineWidth=1.5;c.setLineDash([3,4]);c.beginPath();c.arc(ep.x,ep.y,13,0,Math.PI*2);c.stroke();c.setLineDash([]);
   this.miniature(this.ericArt,ep,Math.atan2(.22,.10),.23);
@@ -133,7 +137,17 @@ window.InterceptionConsole = class {
   if(this.ready){c.strokeStyle='#b8ffbd';c.beginPath();c.arc(ep.x,ep.y,22+Math.sin(this.elapsed)*2,0,Math.PI*2);c.stroke();}
   c.restore();
   c.fillStyle='#ffd699';c.textAlign='left';c.font='bold 12px sans-serif';c.fillText('ERIC',Math.min(this.width-47,real.x+16),Math.max(32,real.y-17));
-  const clockText=`t = ${this.elapsed.toFixed(1)} s / ${(p.delay+p.duration).toFixed(0)} s`;if(this.clock.textContent!==clockText)this.clock.textContent=clockText;
+  const clockText=`t = ${this.missionTime.toFixed(1)} s · ${Math.ceil(InterceptionPhysics.moonTime-this.missionTime)} s → ☾`;if(this.clock.textContent!==clockText)this.clock.textContent=clockText;
+  this.clock.classList.toggle('urgent',InterceptionPhysics.moonTime-this.missionTime<120);
+ }
+ drawMoon(at){
+  const c=this.ctx,px=2,r=10;c.save();
+  for(let y=-r;y<=r;y++)for(let x=-r;x<=r;x++){
+   if(x*x+y*y>r*r)continue;
+   const crater=(x+4)**2+(y+3)**2<8||(x-3)**2+(y-3)**2<12||(x-1)**2+(y+6)**2<4;
+   c.fillStyle=crater?'#7e978d':x>5?'#94ac9f':x<-3?'#e0eace':'#bacfba';c.fillRect(Math.round(at.x+x*px),Math.round(at.y+y*px),px,px);
+  }
+  c.fillStyle='#dceacb';c.textAlign='center';c.font='bold 11px sans-serif';c.fillText('LUNA',at.x,at.y-25);c.restore();
  }
  miniature(art,at,angle,alpha){
   const c=this.ctx;c.save();c.translate(at.x,at.y);c.rotate(angle);c.globalAlpha=alpha;c.imageSmoothingEnabled=false;

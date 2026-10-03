@@ -17,3 +17,11 @@ const limited=physics.aimAt(physics.initial,1e5,1e5);assert(physics.valid(limite
 const p=physics.aimAt({...physics.initial,delay:0,duration:80},137.6,68);assert(physics.evaluate(p).hit);
 assert(Math.abs(physics.rocket(p,0).x)<1e-10);assert.equal(physics.eric(0).x,120);
 console.log('OK: intercepción simultánea, retraso, soluciones analíticas, arrastre, límites, caída y entradas inválidas.');
+for(const epoch of [50,150,350,479]){
+ const params={...physics.initial,delay:0,duration:120},target=physics.eric(epoch+120),aimed=physics.aimAt(params,target.x,target.y);
+ assert(physics.evaluate(aimed,epoch).hit);assert(!physics.evaluate(aimed,0).hit,'El tiempo anterior al ensayo cambia el punto de encuentro');
+}
+const lunarTarget=physics.eric(600),late=physics.aimAt({...physics.initial,delay:0,duration:120},lunarTarget.x,lunarTarget.y);
+assert(physics.evaluate(late,480).valid);assert(physics.evaluate(late,480).late);assert(!physics.evaluate(late,480).hit);
+assert(!physics.evaluate(physics.initial,NaN).valid);assert(!physics.evaluate(physics.initial,-1).valid);
+console.log('OK: época de salida, encuentro antes de la Luna y rechazo de llegada tardía.');

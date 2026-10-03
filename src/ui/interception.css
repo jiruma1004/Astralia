@@ -8,3 +8,5 @@
 @media(min-width:851px){#intercept-canvas{height:230px}#intercept-sliders{gap:6px}#intercept-sliders label{line-height:1.2;gap:0 6px}#intercept-sliders output{line-height:1.2}#intercept-sliders input[type=range]{height:18px;min-height:18px;margin:0}#rocket-console .intercept-actions button{min-height:38px}.intercept-map-top{padding:6px 12px}}
 @media(max-width:850px){.intercept-workspace{grid-template-columns:minmax(0,1fr) 240px;gap:12px}#rocket-console{padding:12px}#intercept-canvas{height:270px}.intercept-equations{gap:12px}}
 @media(max-width:600px){#rocket-console{width:calc(100% - 16px);max-height:calc(100% - 48px);left:50%;top:8px}.intercept-workspace{grid-template-columns:1fr;gap:12px}#intercept-canvas{height:240px}#intercept-sliders{grid-template-columns:1fr 1fr;gap:12px}#intercept-sliders label{grid-template-columns:1fr}#intercept-sliders output{grid-row:2}.intercept-equations{grid-template-columns:1fr}.intercept-map-top{font-size:10px}#rocket-console h2{font-size:23px}#rocket-console .intercept-intro{font-size:14px}}
+
+#intercept-clock.urgent{color:#ffad8f;font-weight:bold}
