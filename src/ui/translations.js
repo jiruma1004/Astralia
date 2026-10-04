@@ -807,3 +807,30 @@ Object.assign(ENGLISH,{'Relaciona altura, rapidez y tiempo. Recuerda que el empu
 Object.assign(ENGLISH,{'¡Ja, ja! ¡Cuidado con la mezcla!':'Ha, ha! Watch out for the mixture!','¡Una pequeña reacción para tus cálculos!':'A little reaction for your calculations!','¡La poción de Eric te alcanzó!':'Eric’s potion got you!','POCIÓN':'POTION','Una reacción inesperada.':'An unexpected reaction.','Evita los charcos verdes: desaparecen en dos segundos.':'Avoid the green puddles: they disappear in two seconds.'});
 
 Object.assign(ENGLISH,{"Iván: «¿Eric? ¿Dónde te metiste?»": "Iván: “Eric? Where did you go?”", "Iván: «Un momento… ¿qué es este cable?»": "Iván: “Wait… what is this cable?”", "¡Pasajero inesperado! Iván va rumbo a las estrellas.": "An unexpected passenger! Iván is heading for the stars.", "¡Despegue confirmado! El piloto automático toma el control. Ignitia va rumbo a la Luna para alcanzar al Dr. Eric. Has completado las seis pruebas. La persecución continúa entre las estrellas… ¡Y parece que Iván se ha colado en la expedición!": "Liftoff confirmed! Autopilot is taking over. Ignitia is heading for the Moon to catch Dr. Eric. You have completed all six challenges. The chase continues among the stars… and it seems Iván has joined the expedition!"});
+
+Object.assign(ENGLISH,{
+  "Se cansó de escuchar «eso no lo vimos».": "She grew tired of hearing “we never covered that”.",
+  "Definitivamente, tú y la gravedad no os lleváis.": "You and gravity definitely do not get along.",
+  "La gravedad ya te reconoce. Quizá sea hora de negociar con el puente.": "Gravity recognizes you now. Perhaps it is time to negotiate with the bridge.",
+  "Ceremonia de Ignitia": "Ignitia ceremony",
+  "Angélica y EPI Paola celebran el final de las seis pruebas.": "Angélica and EPI Paola celebrate the six completed challenges.",
+  "Continuar a la ceremonia": "Continue to the ceremony",
+  "En nombre del Departamento de Ciencias, te damos la bienvenida. Hoy celebramos tu ingenio y tu perseverancia.": "On behalf of the Department of Sciences, welcome. Today we celebrate your ingenuity and perseverance.",
+  "Superaste seis desafíos, pusiste a prueba tus ideas y no dejaste de intentarlo. ¡Ha sido un gusto acompañarte!": "You overcame six challenges, tested your ideas and kept trying. It has been a pleasure to guide you!",
+  "Gracias por detener al Dr. Eric antes de que distorsionara el tiempo y el espacio. Ignitia está en deuda contigo.": "Thank you for stopping Dr. Eric before he could distort time and space. Ignitia owes you a debt of gratitude.",
+  "Esperemos que no pase nada por poner a un químico en una celda de aluminio y óxido…": "Let us hope nothing happens after putting a chemist in a cell made of aluminum and rust…",
+  "Por ahora, celebremos. ¡Felicidades por completar las seis pruebas!": "For now, let us celebrate. Congratulations on completing all six challenges!",
+  "ANGÉLICA · DIRECTORA DE CIENCIAS": "ANGÉLICA · DIRECTOR OF SCIENCES",
+  "Ceremonia de reconocimiento · Departamento de Ciencias": "Recognition ceremony · Department of Sciences",
+  "Gracias por formar parte de Ignitia.": "Thank you for being part of Ignitia.",
+  "VISTA PREVIA · PARTIDA SIN COMPLETAR": "PREVIEW · GAME NOT COMPLETED",
+  "DEPARTAMENTO DE CIENCIAS": "DEPARTMENT OF SCIENCES",
+  "Certificado de aventura": "Adventure certificate",
+  "PRUEBAS COMPLETADAS": "CHALLENGES COMPLETED",
+  "Por tu ingenio, perseverancia y por proteger el tiempo y el espacio.": "For your ingenuity, perseverance and protection of time and space.",
+  "Puedes tomar una captura de esta imagen y subirla a la actividad, junto con tus apuntes de los ejercicios, para validar tu trabajo.": "Take a screenshot of this image and submit it to the activity, along with your exercise notes, to validate your work.",
+  "Vista previa: completa las seis pruebas para obtener tu certificado de la actividad.": "Preview: complete all six challenges to earn your activity certificate.",
+  "Directora de Ciencias": "Director of Sciences",
+  "Tu guía en Astralia": "Your guide in Astralia",
+  "El emporio arcano": "The arcane emporium"
+});

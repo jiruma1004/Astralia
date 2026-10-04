@@ -1,9 +1,10 @@
 /* Motor visual compartido: raycasting de una cuadrícula, sin dependencias. */
 window.EscapeRenderer = class {
-  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.castleGate=new CastleGate(); this.art={...makeWallArt(),...makeScenery(),oak:makeOakDoor()};
+  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.castleGate=new CastleGate(); this.art={...makeWallArt(),...makeScenery(),...makeInteriorArt(),oak:makeOakDoor()};
     const moss=document.createElement('canvas');moss.width=moss.height=512;const m=moss.getContext('2d');m.drawImage(this.art.brick,0,0,512,512);m.fillStyle='#22362688';m.fillRect(0,0,512,512);
     for(let i=0;i<900;i++){const x=(i*173)%512,y=(i*97+Math.floor(i/7)*31)%512;m.fillStyle=['#42613a99','#67804c88','#1a3026aa'][i%3];m.fillRect(x,y,3+i%13,5+i%27);}this.art.moss=moss; }
   decorate(room,hit,x,top,height){
+    if(room.environment?.shop)return;
     if(room.environment?.kind==='forest'){
       if(hit.axis==='x'&&hit.cx===0&&hit.py>=3.25&&hit.py<=4.75){const art=this.art.chalkWall,u=(4.75-hit.py)/1.5;this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top-height*.1,3,height);}
       return;
@@ -51,6 +52,7 @@ window.EscapeRenderer = class {
           if(room.lava?.contains(wx,wy)){c.fillStyle=room.lava.color(wx,wy,time);}
           else if(tile===3&&room.boss){const bridge=opened&&Math.floor(wy)===7;c.fillStyle=bridge?'#758c8b':((Math.floor(wx*3)+Math.floor(wy*3))%2?'#060c1c':'#091425');}
           else if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-(room.bridge.start+room.bridge.end)/2)/((room.bridge.end-room.bridge.start)*.367),by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
+          else if(room.environment?.shop)c.fillStyle=InteriorAtmosphere.shopFloor(wx,wy);
           else if(room.environment?.kind==='forest'){const noise=Math.sin(Math.floor(wx*9)*12.9898+Math.floor(wy*9)*78.233)*43758.5453,grain=noise-Math.floor(noise);c.fillStyle=grain>.85?'#405435':grain>.4?'#344a30':'#293f2c';}
           else if(room.environment?.kind==='courtyard'){const center=room.corridor?4.5:7.5,onPath=Math.abs(wy-center)<1.05,seam=((wx%0.55)+.55)%.55<.04||((wy%0.45)+.45)%.45<.035;c.fillStyle=onPath?(seam?'#776445':'#b19b75'):(seam?'#29313b':'#495052');}
           else {const seam=wx%1<.035||wy%1<.035;c.fillStyle=seam?'#151b25':(Math.floor(wx)+Math.floor(wy))%2?'#3b3c40':'#303339';}
@@ -66,12 +68,13 @@ window.EscapeRenderer = class {
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       if(hit.tile===1){
-        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x)?this.art.forest:room.environment?.moss?this.art.moss:this.art.brick;
-        const castleEnd=room.castleGate&&hit.cx>=room.castleGate.x;const forest=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x),wallTop=castleEnd?horizon-(2.8-eye)*height:forest?horizon-(2.6-eye)*height:room.corridor?horizon-(.65-eye)*height:room.boss?horizon-(3-eye)*height:top,wallHeight=castleEnd?height*2.8:forest?height*2.6:room.corridor?height*.65:room.boss?height*3:height;
+        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x)?this.art.forest:room.environment?.shop?((hit.cx+hit.cy)%3===0?this.art.shopWall:this.art.shopShelf):room.environment?.moss||(room.environment?.abandoned&&(hit.cx*3+hit.cy)%4!==0)?this.art.moss:this.art.brick;
+        const castleEnd=room.castleGate&&hit.cx>=room.castleGate.x;const forest=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x),wallTop=castleEnd?horizon-(2.8-eye)*height:forest?horizon-(2.6-eye)*height:room.corridor?horizon-(.65-eye)*height:room.boss?horizon-(3-eye)*height:room.environment?.ceilingHeight?horizon-(room.environment.ceilingHeight-eye)*height:top,wallHeight=castleEnd?height*2.8:forest?height*2.6:room.corridor?height*.65:room.boss?height*3:height*(room.environment?.ceilingHeight||1);
         c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,wallTop,3,wallHeight);
         if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,wallTop,3,wallHeight);c.globalAlpha=1;}
-        c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
+        c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);if(room.environment?.abandoned&&(hit.cx*7+hit.cy*3)%4===0)c.drawImage(this.art.vines,u*511,0,1,512,x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
       }
+      if(hit.tile===2&&room.environment?.ceilingHeight>1){const u=(((hit.axis==='x'?hit.py:hit.px)%1)+1)%1,art=room.environment.shop?this.art.shopWall:this.art.moss;c.drawImage(art,u*511,0,1,170,x,horizon-(room.environment.ceilingHeight-eye)*height,3,(room.environment.ceilingHeight-1)*height);}
       if(hit.tile===2&&room.castleGate){c.fillStyle='#15212a';c.fillRect(x,horizon-(2.8-eye)*height,3,height*2.8);continue;}
       if(hit.tile===4||(hit.tile===2&&room.measurement)){const along=side?hit.py:hit.px,u=((along%1)+1)%1,art=this.measurementArt||(this.measurementArt=MeasurementArt.texture());c.drawImage(art,Math.min(899,Math.floor(u*900)),0,1,800,x,top,3,height);continue;}
       if(hit.tile===2&&room.oakDoor&&hit.cx===room.oakDoor.x&&hit.cy===room.oakDoor.y){const u=((hit.py%1)+1)%1;c.drawImage(this.art.oak,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}
@@ -138,7 +141,7 @@ window.EscapeRenderer = class {
   drawCeiling(room,player,horizon,eye){
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height;
     c.fillStyle='#151922';c.fillRect(0,0,w,horizon);
-    for(let sy=0;sy<horizon-1;sy+=5){const depth=h*(1-eye)/(horizon-sy);
+    for(let sy=0;sy<horizon-1;sy+=5){const depth=h*((room.environment.ceilingHeight||1)-eye)/(horizon-sy);
       for(let sx=0;sx<w;sx+=7){const lateral=(sx/w*2-1)*.66,wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
         const beam=((wx%2)+2)%2<.16||((wy%2)+2)%2<.12;
         c.fillStyle=beam?'#161b23':(Math.floor(wx*2)+Math.floor(wy*2))%2?'#30333c':'#2a2c34';c.fillRect(sx,sy,7,5);

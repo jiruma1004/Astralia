@@ -57,7 +57,7 @@ window.ConceptMaze=class {
  }
  enterDungeon(player,door){
   this.savedWorld={map:this.room.map,doors:this.doors};this.dungeon=true;this.dungeonVisit++;this.freezeLeft=0;this.dungeonQuestion=this.nextDungeonQuestion();this.returnGrace=false;
-  this.room.environment={kind:'interior',label:'Calabozo del error',tint:'#395338',moss:true,portraits:[]};
+  this.room.environment={kind:'interior',label:'Calabozo del error',tint:'#395338',moss:true,abandoned:true,ceilingHeight:1.5,portraits:[]};
   this.room.map=Array.from({length:13},(_,y)=>Array.from({length:15},(_,x)=>x===0||x===14||y===0||y===12?1:0));
   this.doors=this.dungeonQuestion.answers.map((text,choice)=>({x:13,y:choice===0?3:9,stage:this.stage,choice,text,letter:'AB'[choice],correct:choice===this.dungeonQuestion.correct,dungeon:true}));
   for(const d of this.doors)this.room.map[d.y][d.x]=2;

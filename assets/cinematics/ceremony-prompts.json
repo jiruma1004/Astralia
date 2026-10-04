@@ -1,0 +1,19 @@
+{
+  "tool": "Built-in image_gen",
+  "date": "2026-10-04",
+  "requests": [
+    {
+      "key": "ceremony-characters",
+      "prompt": "Create a transparent pixel-art sprite sheet for Astralia, a warm fantasy RPG. Reference 1 is Angélica, head of the science department: retain glasses, long dark hair, welcoming expression, mustard gold blazer over navy blouse; use stylized adult proportions. Reference 2 is the approved fictionalized Epi Paola design: preserve this face and hair, brown cardigan and white teacher blouse, add cream trousers and brown shoes. Layout strictly 2 columns by 2 rows, four equal cells: TOP ROW Angélica standing full body, left mouth closed, right mouth slightly open talking; BOTTOM ROW Paola standing full body, left mouth closed, right mouth slightly open talking. Same exact stance, scale, feet baseline and body position across each pair; change only mouth expression. Both women look toward viewer, slight welcoming hand gesture, friendly dignified educators at an awards ceremony. Pixel-art game sprites, crisp pixels, tasteful detailed RPG proportions, not chibi. Entire bodies and shoes visible with 8% transparent margin per cell. TRUE TRANSPARENT background, no grid, no writing, no extra characters, no floor. Asset must be immediately usable by cropping exact quadrants.",
+      "referenced_image_paths": [
+        "/tmp/codex-clipboard-693243fa-0d56-4847-bb3e-40dc582170bd.png",
+        "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/sprites/epi-paola-a-talk.png"
+      ]
+    },
+    {
+      "key": "ceremony-hall",
+      "prompt": "A wide 16:9 pixel-art fantasy RPG awards ceremony hall background for Astralia. Welcoming academy of sciences celebration, elegant pale stone arches, indigo and gold drapes, warm candles, restrained blue magical lamps, polished floor and broad royal blue carpet leading to a shallow raised stage. Frontal symmetrical view, eye level. Stage floor clearly visible in lower third, empty spaces at left and right for two standing women sprites that will be added in code. Large blank dark navy banner at back center in upper quarter reserved for Ignitia star logo and lettering added later. Warm triumphant mood after saving time and space. Crisp atmospheric pixel-art, rich but uncluttered, no people, no text, no symbols or logos, no confetti (animated later), no furniture blocking stage. Game-ready background filling entire image."
+    }
+  ],
+  "refinement": "Edit this sprite sheet only: remove ALL the brown/black glow and background surrounding the four women, leaving genuinely transparent alpha everywhere outside their bodies. No halo, no drop shadow, no checkerboard painted into image. Preserve the exact character faces, clothes, poses, talking-mouth pairs and illustration style. Strict 2x2 equal-cell atlas; keep each full body including shoes fully inside its own quadrant, leave 4% clear transparent margin at top and bottom of each cell so no pixels overlap neighboring row. Top row Angélica, bottom row Paola. Do not add or remove any character, no text."
+}

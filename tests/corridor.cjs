@@ -6,3 +6,8 @@ const s=c.symbols[0];c.tick(0,{x:s.x,y:s.y,jumpHeight:.4});assert(!c.caught,'Sal
 const waves=new w.RelaxCorridor(()=>{});waves.symbols=[];const oldCycle=(28.5-1.8)/1.6;assert(Math.abs(waves.spawnInterval-oldCycle/6/1.4/1.5)<1e-10,'50 % más emisiones respecto al intervalo anterior');for(let t=0;t<oldCycle+.01;t+=.01)waves.tick(.01,{x:2,y:7,jumpHeight:0});assert.equal(waves.nextLane,12);assert.equal(waves.spawnX,46);assert(waves.symbols.every(s=>s.x<=46),'Nunca nace un símbolo en la puerta x=51');assert(waves.symbols.every(s=>s.y>=2.2&&s.y<=6.7));assert(new Set(waves.symbols.map(s=>s.y)).size>3);assert(waves.glyphs.includes('dy/dx')&&waves.glyphs.includes('Δx')&&waves.glyphs.includes('eˣ'));console.log('OK: doce emisiones durante un antiguo ciclo (12.6 previstas), origen cinco celdas antes de la puerta y posiciones dispersas dentro del corredor.');
 
 assert.equal(room.oakDoor.x+.5-room.spawn.x,54*.9,'Recorrido reducido un 10 %');
+
+const forgiving=new w.RelaxCorridor(()=>{});forgiving.symbols=[{x:10,y:4,age:1,text:'π'}];forgiving.spawnClock=100;
+forgiving.tick(0,{x:10.46,y:4,jumpHeight:0});assert(!forgiving.caught,'El borde anterior ya no impacta: 5 % menos por lado');
+forgiving.tick(0,{x:10.43,y:4,jumpHeight:0});assert(forgiving.caught,'La zona central del símbolo sigue causando impacto');
+const obstacle=forgiving.obstacles[0];assert(!forgiving.blocks(obstacle.x+.30,obstacle.y,0));assert(forgiving.blocks(obstacle.x+.28,obstacle.y,0));

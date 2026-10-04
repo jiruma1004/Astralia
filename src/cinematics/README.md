@@ -17,3 +17,11 @@ El reproductor ofrece pausa, repetición y salto. Cerrar o saltar durante el ep�
 Recursos y prompts: `assets/cinematics/README.md`. Verificaciones: `tests/cinematics.cjs`, `tests/space-cinematic.cjs`, `tests/adventure.cjs` y `tests/physics.cjs`. Las pruebas de navegador comprueban disparo y acceso a la segunda sala, galería sin cambios de progreso, tres películas, ruta del alumno, reloj lunar en pausa, repetición/salto, carteles y diálogos bilingües, móvil y ausencia de errores JavaScript.
 
 La intercepción utiliza ahora el emblema de estrella de Ignitia en el cohete y una prisión moderna: paneles de aluminio, ventana de barrotes oxidados y reja delantera animada. El cartel de Karla resume su motivo: «Se cansó de escuchar “eso no lo vimos” y tener que explicar todo desde cero».
+
+## Ceremonia de Ignitia
+
+Cuarta película: `ceremonia-ignitia`, 46 segundos. Tras **Intercepción espacial**, el botón **Continuar a la ceremonia** abre el reconocimiento de Angélica y EPI Paola. También está disponible directamente desde la lista. El final anterior de Iván se conserva.
+
+Angélica y Paola aparecen de pie a izquierda/derecha, con fotogramas de boca alineados. Los cinco mensajes duran 38 segundos; el penúltimo incluye la broma de Paola sobre el químico, el aluminio y el óxido. Después aparece el certificado 6/6, que permanece visible al terminar, listo para captura. Incluye confeti y el emblema de Ignitia.
+
+La galería mantiene su carácter de vista previa: no modifica el progreso. Si no se ha completado la partida, el certificado lleva una marca visible de vista previa. Al completar los seis retos, muestra las instrucciones de entrega de captura y apuntes sin esa marca. Admite español e inglés, reproducción, pausa y salto al certificado.

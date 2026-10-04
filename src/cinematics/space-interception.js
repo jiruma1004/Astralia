@@ -72,7 +72,7 @@ window.SpaceCinematic=class {
    c.save();if(u>.78)c.globalAlpha=Math.max(0,1-(u-.78)/.22);this.parachute(x,feet,body,Math.min(1,.5+u*4));c.restore();
    caption='El paracaídas se abre. Una corriente lo lleva directo al patio de una prisión.';speech=t>21.2?'¡Esto no termina aquí!':'';
   }else{
-   this.prison(1);const u=Math.min(1,(t-27)/4),body=size*.32,feet=-body*.3+(h*.85+body*.3)*(1-(1-u)**2),x=w*.5;
+   this.prison(1);const u=Math.min(1,(t-27)/4),body=Math.min(h*.62,w*.72),feet=-body*.3+(h*.85+body*.3)*(1-(1-u)**2),x=w*.5;
    if(t<32)this.parachute(x,feet,body,Math.max(0,Math.min(1,(32-t)/1.2))); else this.sprite('ericBody',x,h*.85-body/2+Math.sin(t*4)*2,body);
    // La reja cae por delante del personaje, sin cambiar la imagen de la celda.
    if(t>=31){const closed=Math.min(1,(t-31)/1.1),top=-h*(1-closed);c.save();c.translate(0,top);const bar=Math.max(5,size*.012),gap=w*.095;

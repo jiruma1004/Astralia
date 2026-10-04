@@ -10,11 +10,11 @@ window.RelaxCorridor=class {
   this.glyphs=['π','∑','∫','dy/dx','Δx','eˣ'];
   this.symbols=Array.from({length:9},(_,i)=>({y:2.2+(i%3)*1.55+Math.random()*1.4,text:this.glyphs[i%6],x:2.9+(8+i*5-2.5)*.9,age:1}));this.art=new Map();
  }
- blocks(x,y,height){return height<.25&&this.obstacles.some(o=>Math.abs(x-o.x)<.32&&Math.abs(y-o.y)<o.width/2+.18);}
+ blocks(x,y,height){return height<.25*.9&&this.obstacles.some(o=>Math.abs(x-o.x)<.32*.9&&Math.abs(y-o.y)<(o.width/2+.18)*.9);}
  tick(dt,player){if(this.caught)return;this.time+=dt;
   this.spawnClock-=dt;while(this.spawnClock<=0){const band=this.nextLane%3;this.symbols.push({y:2.2+band*1.55+Math.random()*1.4,text:this.glyphs[this.nextLane++%this.glyphs.length],x:this.spawnX,age:0});this.spawnClock+=this.spawnInterval;}
   for(const s of this.symbols){s.age+=dt;s.x-=1.6*dt;
-   if(s.age>=.65&&player.jumpHeight<.30&&Math.hypot(player.x-s.x,player.y-s.y)<.48){this.caught=true;this.onEvent('hit');return;}
+   if(s.age>=.65&&player.jumpHeight<.30*.9&&Math.hypot(player.x-s.x,player.y-s.y)<.48*.9){this.caught=true;this.onEvent('hit');return;}
   }
   this.symbols=this.symbols.filter(s=>s.x>=1.8);
   if(!this.readyShown&&Math.hypot(player.x-51,player.y-4.5)<2.4){this.readyShown=true;this.onEvent('ready');}

@@ -1,7 +1,12 @@
 // Un respiro entre el laberinto y las salas finales del castillo.
 window.CORRIDOR_LAVA={
  start:20,end:33,minY:1.7,maxY:7.3,
- platforms:[{x:21.1,y:4.2,size:1.7},{x:23.8,y:4.8,size:1.7},{x:26.5,y:4.2,size:1.7},{x:29.2,y:4.8,size:1.7},{x:31.9,y:4.5,size:1.7}],
+ // Dos recorridos laterales, con una isla central para cambiar de ruta.
+ platforms:[
+  {id:'L1',x:21.1,y:3.6,size:1.7},{id:'L2',x:23.8,y:2.75,size:1.7},{id:'L3',x:26.5,y:2.75,size:1.7},{id:'L4',x:29.2,y:3.3,size:1.7},
+  {id:'R1',x:21.1,y:5.4,size:1.7},{id:'R2',x:23.8,y:6.25,size:1.7},{id:'R3',x:26.5,y:6.25,size:1.7},{id:'R4',x:29.2,y:5.7,size:1.7},
+  {id:'cross',x:26.5,y:4.5,size:1.35},{id:'exit',x:31.9,y:4.5,size:1.9}],
+ routes:[['L1','L2','L3','L4','exit'],['R1','R2','R3','R4','exit'],['L1','L2','L3','cross','R3','R4','exit']],
  contains(x,y){return x>=this.start&&x<this.end&&y>=this.minY&&y<=this.maxY;},
  platformAt(x,y){return this.platforms.find(p=>Math.abs(x-p.x)<=p.size/2&&Math.abs(y-p.y)<=p.size/2);},
  supports(x,y){return !this.contains(x,y)||!!this.platformAt(x,y);},

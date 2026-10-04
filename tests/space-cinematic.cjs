@@ -10,5 +10,5 @@ const cinema=Object.create(w.CinematicLibrary.prototype);cinema.item={id:'interc
 const artOld={complete:true,naturalWidth:200,naturalHeight:100},artRight={complete:true,naturalWidth:200,naturalHeight:100};let drawn;
 cinema.images={ivan:artOld,ivanRight:artRight};cinema.ctx={save(){},restore(){},translate(){},rotate(){},drawImage(...args){drawn=args;}};cinema.time=6.44;
 cinema.ivan(0,100,80,{walk:true});assert.equal(drawn[0],artRight);assert.equal(drawn[1],100);cinema.ivan(0,100,80);assert.equal(drawn[0],artOld,'La caída conserva su sprite anterior');
-assert.equal(w.CINEMATICS.length,3);assert.equal(new Set(w.CINEMATICS.map(c=>c.id)).size,3);
+assert.equal(w.CINEMATICS.length,4);assert.equal(new Set(w.CINEMATICS.map(c=>c.id)).size,4);
 console.log('OK: ruta real y ejemplo, reloj compartido, copia sin mutación, intercepción, fases, audio único y pasos derechos sin alterar la caída.');

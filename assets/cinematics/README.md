@@ -26,3 +26,11 @@ El sprite de aterrizaje de Iván, los cohetes y el cuerpo del Dr. Eric se reutil
 - `lava-prison-prompts.json`: prompts completos y referencias de estas dos imágenes, generadas con la herramienta integrada `image_gen`. Los PNG originales se conservan en la carpeta de imágenes generadas.
 
 La lava y sus cinco plataformas se dibujan en Canvas sobre el suelo del corredor, sin imágenes externas.
+
+## Ceremonia de Ignitia
+
+- `ceremony-hall.webp`: salón ceremonial de la academia, con espacio para el emblema dibujado en Canvas.
+- `ceremony-teachers.webp`: Angélica (fila superior) y la versión A de EPI Paola (inferior), de pie, con boca cerrada/abierta. El recorte de cada fotograma se registra en `src/cinematics/ceremony.js` para mantener alineados los cuerpos al hablar.
+- `ceremony-prompts.json`: prompts y referencias de las imágenes, creadas con la herramienta integrada `image_gen`. La foto aportada de Angélica guía su aspecto; Paola conserva el personaje ilustrado aprobado anteriormente.
+
+Los PNG originales se conservan en la carpeta de imágenes generadas. El emblema de Ignitia, el confeti y el certificado bilingüe se dibujan en Canvas/HTML, por separado, para conservar nitidez y legibilidad.
