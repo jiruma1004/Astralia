@@ -44,3 +44,7 @@ Generados con la herramienta integrada `image_gen`, usando los sprites anteriore
 - `paola-gesture.webp` y `.gif`: libro, saludo hacia la derecha y regreso al libro.
 
 El juego anima los atlas en Canvas mediante `src/cinematics/gesture-sprites.js`, anclados a los pies para evitar saltos entre poses. Los GIF son exportaciones transparentes de la misma animación, a 12 fps. Las profesoras gesticulan mientras hablan y sostienen el libro al escuchar.
+
+## Paola con tablet
+
+`paola-tablet-gesture.webp` sustituye únicamente los libros por una tablet en las tres poses de la ceremonia. Mantiene los anclajes de `gesture-sprites.js`, el rostro, el vestuario y la animación de brazos. Edición con la herramienta integrada `image_gen`; prompt en `tablet-prompt.json`. Se conserva `paola-gesture.webp` como versión anterior.

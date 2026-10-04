@@ -16,3 +16,5 @@ Secuencia didáctica: predecir, cargar, disparar, comparar el registro, cambiar 
 La torreta Prisma tiene `physics.maxEnergy = 180` J. Se calcula E = ½mv² en ambos modos. El indicador avisa antes de disparar; más de 180 J consume la bala y provoca explosión y derrota. 180 J exactos siguen dentro de capacidad. La frase de derrota es «en papel nada se quema».
 
 El jugador puede entrar en las casillas del abismo; perder el suelo inicia una animación de caída. El puente soporta únicamente la fila central cuando está activo. Reaparecer conserva progreso e intentos, repara la torreta y cancela cualquier lanzamiento que estuviera en vuelo al morir. La física del disparo ideal sigue siendo independiente de la masa a velocidad fija; la sobrecarga es una regla de capacidad del equipo del juego.
+
+Pista actual: seis ecuaciones pintadas en el muro posterior al punto de inicio. Incluyen la trayectoria y `v₀ = √(2E/m)`, sin explicación de parámetros. La trayectoria escrita corresponde al tiro alineado (`φ = 0°`). Paola señala que una de ellas permite calcular la trayectoria al botón; la física y la posición del blanco no cambian.

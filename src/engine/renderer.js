@@ -6,7 +6,7 @@ window.EscapeRenderer = class {
   decorate(room,hit,x,top,height){
     if(room.environment?.shop)return;
     if(room.environment?.kind==='forest'){
-      if(hit.axis==='x'&&hit.cx===0&&hit.py>=3.25&&hit.py<=4.75){const art=this.art.chalkWall,u=(4.75-hit.py)/1.5;this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top-height*.1,3,height);}
+      if(hit.axis==='x'&&hit.cx===0&&hit.py>=2.5&&hit.py<=5.5){const art=this.art.chalkWall,u=(5.5-hit.py)/3;this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top+height*.08,3,height*.84);}
       return;
     }
     if(hit.tile!==1||room.environment?.moss)return;

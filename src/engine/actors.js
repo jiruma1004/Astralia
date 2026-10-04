@@ -37,7 +37,7 @@ window.RoomActors=class {
   const b=maze.freezeButton,c=renderer.ctx,p=this.project(renderer,player,b.x,b.y,.65);if(!p||p.depth<.3)return;
   if(p.depth>(renderer.depths[Math.round(p.x/3)*3]??Infinity)+.1)return;
   const corners=[[-.32,.97],[.32,.97],[.32,.33],[-.32,.33]].map(([x,z])=>this.project(renderer,player,b.x+x,b.y,z));if(corners.some(q=>!q))return;
-  c.save();c.fillStyle=maze.freezeUsed?'#364f67':'#168fe8';c.strokeStyle='#a1f3ff';c.lineWidth=3;c.beginPath();corners.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fill();c.stroke();c.fillStyle='#e7ffff';c.font=`bold ${Math.max(12,p.scale*.13)}px Georgia`;c.textAlign='center';c.fillText(maze.freezeUsed?'✓':'❄ 7 s',p.x,p.y);c.font=`${Math.max(10,p.scale*.09)}px Georgia`;c.fillText('E',p.x,p.y+p.scale*.17);c.restore();
+  c.save();c.fillStyle=maze.freezeUsed?'#364f67':'#168fe8';c.strokeStyle='#a1f3ff';c.lineWidth=3;c.beginPath();corners.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fill();c.stroke();c.fillStyle='#e7ffff';c.font=`bold ${Math.max(12,p.scale*.13)}px Georgia`;c.textAlign='center';c.fillText(maze.freezeUsed?'✓':'❄ 10 s',p.x,p.y);c.font=`${Math.max(10,p.scale*.09)}px Georgia`;c.fillText('E',p.x,p.y+p.scale*.17);c.restore();
   const xs=corners.map(q=>q.x),ys=corners.map(q=>q.y);this.freezeButtonBounds={x:Math.min(...xs),y:Math.min(...ys),w:Math.max(...xs)-Math.min(...xs),h:Math.max(...ys)-Math.min(...ys)};
  }
  drawRift(renderer,p,time){

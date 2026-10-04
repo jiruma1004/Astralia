@@ -1,0 +1,6 @@
+{
+  "mode": "built-in image_gen",
+  "prompt": "Use case: precise-object-edit. Edit target: the attached three-frame sprite sheet of EPI Paola. Replace ONLY the stack of green books in ALL THREE frames with one modern dark graphite tablet computer, held vertically in the same position, her hands still naturally overlapping the tablet. Show a subtle teal screen glow and slim smooth bezel, no book pages or book spine. Preserve EXACTLY her identity, face, outfit, size, 3 poses, positions, arm direction, feet alignment and transparent background. Keep the existing sheet dimensions and layout. No other edits, no text.",
+  "reference": "assets/cinematics/paola-gesture.webp",
+  "output": "assets/cinematics/paola-tablet-gesture.webp"
+}

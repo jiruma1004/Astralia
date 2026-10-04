@@ -78,7 +78,7 @@ window.InterceptionConsole = class {
    const input=this.panel.querySelector('#intercept-'+key);input.value=this.params[key];input.disabled=this.running;
    this.panel.querySelector('#intercept-'+key+'-value').textContent=`${this.params[key].toFixed(key==='speed'?2:key==='angle'?1:0)} ${input.dataset.unit}`;
   }
-  this.trialButton.disabled=this.running;this.trialButton.textContent=this.running?'Simulando…':'Ensayar trayectoria';this.launchButton.hidden=!this.ready;
+  this.trialButton.disabled=this.running;this.trialButton.textContent=this.running?'Simulando…':'Ensayar trayectoria';this.launchButton.hidden=true;
  }
  startTrial(){
   if(this.running||!this.canRun?.()||!InterceptionPhysics.valid(this.params))return;
@@ -95,10 +95,10 @@ window.InterceptionConsole = class {
    const landed=InterceptionPhysics.groundTime(this.params)<this.params.duration;
    if(this.missionTime>=finish){
     this.result=InterceptionPhysics.evaluate(this.params,this.launchEpoch);this.running=false;this.ready=this.result.hit;
-    if(this.ready)this.feedback.textContent='¡Intercepción lograda! La ruta está lista. Confirma para iniciar el despegue real.';
+    if(this.ready)this.feedback.textContent='¡Intercepción lograda! Iniciando el despegue con tu trayectoria.';
     else if(landed)this.feedback.textContent='El cohete vuelve al suelo antes del encuentro. Prueba más rapidez, otro ángulo o menos tiempo de vuelo.';
     else this.feedback.textContent='Separación al encuentro: '+this.result.distance.toFixed(1)+' km. Ajusta la ruta y vuelve a ensayar. No pierdes vidas.';
-    this.sync();
+    this.sync();if(this.ready)this.onReady();
    }
   }
   this.draw();

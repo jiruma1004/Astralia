@@ -47,25 +47,21 @@ window.makeScenery=()=>{
   else{c.fillStyle=frame;for(const [x,y] of [[20,20],[300,20],[20,318],[300,318]]){c.beginPath();c.moveTo(x,y-13);c.lineTo(x+10,y);c.lineTo(x,y+13);c.lineTo(x-10,y);c.closePath();c.fill();}}
   c.textAlign='center';c.fillStyle='#f0dfba';c.font=(name.length>16?'18':'21')+'px Trebuchet MS';c.fillText(name,160,339);c.fillStyle='#b3afc5';c.font='12px Trebuchet MS';c.fillText('GALERÍA DEL DR. ERIC · FICCIÓN',160,360);
  });
- const chalkWall=make(1200,850,c=>{
+ const chalkWall=make(1600,500,c=>{
   // Fondo transparente: la pintura queda directamente sobre los ladrillos.
   const equations=[
-   ['v₀ₓ = v₀ cos(θ) cos(φ)',45,100,-.025,47,'#d9e9d1'],
-   ['v₀ᵧ = v₀ sen(θ)',645,110,.035,47,'#d5e6ed'],
-   ['Δx = v₀ₓ t',60,240,-.035,55,'#d9e9d1'],
-   ['Δy = v₀ᵧt − ½gt²',600,260,.025,50,'#d5e6ed'],
-   ['vᵧ = v₀ᵧ − gt',80,410,-.025,50,'#d5e6ed'],
-   ['t = Δx / v₀ₓ',665,415,.025,50,'#d9e9d1'],
-   ['R = v₀² sen(2θ) / g',70,570,-.025,52,'#e7dcad'],
-   ['Δy = 0, φ = 0°',660,565,.025,37,'#e7dcad'],
-   ['Eₖ = ½mv²',60,735,-.04,49,'#e7dcad'],
-   ['v₀ = √(2Eₖ/m)',440,740,.035,42,'#d9e9d1'],
-   ['v² = v₀² + 2aΔx',820,735,-.025,35,'#d5e6ed']
+   ['y = y₀ + x tan(θ) − gx²/(2v₀² cos²θ)',40,80,-.008,64,'#d9e9d1'],
+   ['v₀ = √(2E/m)',60,195,-.015,64,'#e7dcad'],
+   ['x = v₀ cos(θ)t',830,195,.015,62,'#d5e6ed'],
+   ['y = y₀ + v₀ sen(θ)t − ½gt²',60,320,-.008,62,'#d5e6ed'],
+   ['vᵧ = v₀ sen(θ) − gt',50,455,-.010,52,'#e7dcad'],
+   ['yₘáx = y₀ + v₀² sen²(θ)/(2g)',770,455,.008,50,'#d9e9d1']
   ];
+  c.fillStyle='#d9e9d1';c.font='italic 30px Georgia';c.fillText('φ = 0°',1410,140);
   for(const [eq,x,y,angle,size,color] of equations){c.save();c.translate(x,y);c.rotate(angle);c.fillStyle=color;c.globalAlpha=.93;c.font=`italic ${size}px Georgia`;c.fillText(eq,0,0);c.restore();}
   // Desgaste en los trazos, sin añadir una placa ni un recuadro opaco.
   c.globalCompositeOperation='destination-out';
-  for(let i=0;i<3500;i++){c.fillStyle='#00000055';c.fillRect(rnd()*1200,rnd()*850,1+rnd()*3,1+rnd()*2);}
+  for(let i=0;i<3500;i++){c.fillStyle='#00000055';c.fillRect(rnd()*1600,rnd()*500,1+rnd()*3,1+rnd()*2);}
   c.globalCompositeOperation='source-over';
  });
  return {forest,chalkWall,portalSealed:portal(false),portalOpen:portal(true),doof:portrait('doof','DOOFENSHMIRTZ','#b091c9','#49306c'),planck:portrait('planck','MAX PLANCK','#c0a16c','#345c45'),tesla:portrait('tesla','NIKOLA TESLA','#91aebe','#303d75'),curie:portrait('curie','MARIE CURIE','#987565','#496737'),eric:portrait('eric','DR. ERIC','#b4a477','#633d61')};

@@ -44,7 +44,7 @@ window.ConceptMaze=class {
  get freezeButton(){if(this.finished)return null;if(this.dungeon)return {id:'dungeon-'+this.dungeonVisit,x:8.5,y:1.02};return this.stage>=1&&this.stage<=3?{id:'stage-'+this.stage,x:this.stage*12+6.5,y:1.02}:null;}
  get freezeUsed(){const b=this.freezeButton;return !!b&&this.usedFreezeButtons.has(b.id);}
  nearFreezeButton(player,renderer){const b=this.freezeButton;if(!b||this.caught)return false;const dx=b.x-player.x,dy=b.y-player.y,d=Math.hypot(dx,dy),angle=Math.atan2(dy,dx);return d<2&&Math.cos(angle-player.angle)>.94&&renderer.cast(this.room,player.x,player.y,angle,false).distance+.08>=d;}
- activateFreeze(player,renderer){if(!this.nearFreezeButton(player,renderer))return false;if(this.freezeUsed){this.onEvent('freeze','Este botón ya se usó. Busca otro en la siguiente galería.');return true;}this.usedFreezeButtons.add(this.freezeButton.id);this.freezeLeft=7;this.onEvent('freeze','Botón azul activado. Iván queda congelado durante 7 segundos.');return true;}
+ activateFreeze(player,renderer){if(!this.nearFreezeButton(player,renderer))return false;if(this.freezeUsed){this.onEvent('freeze','Este botón ya se usó. Busca otro en la siguiente galería.');return true;}this.usedFreezeButtons.add(this.freezeButton.id);this.freezeLeft=10;this.onEvent('freeze','Botón azul activado. Iván queda congelado durante 10 segundos.');return true;}
  nextDungeonQuestion(){
   // Bolsa barajada: agotar el banco antes de repetir, incluso después de morir.
   if(!this.questionPool.length){
@@ -99,6 +99,7 @@ window.ConceptMaze=class {
  tick(dt,player){
   this.speechLeft=Math.max(0,this.speechLeft-dt);
   this.bite=Math.max(0,this.bite-dt);
+  const pursuitDt=Math.max(0,dt-this.freezeLeft);
   this.freezeLeft=Math.max(0,this.freezeLeft-dt);
   if(!this.dungeon&&!this.caught){
    const portal=this.doors.find(d=>!d.correct&&this.openDoors.has(d.stage+':'+d.choice)&&player.x>=d.x&&player.x<d.x+4&&Math.abs(player.y-(d.y+.5))<1.5);
@@ -106,6 +107,7 @@ window.ConceptMaze=class {
   }
   if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage===3?48.2:(this.stage+1)*12+1)){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
   if(!this.chasing||this.finished||this.caught||this.freezeLeft>0)return;
+  dt=pursuitDt;if(dt<=0)return;
   this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;this.returnGrace=false;
   this.tauntClock-=dt;if(this.tauntClock<=0){const lines=['Soy inevitable','¡Todavía falta justificar tu respuesta!','Puedes correr, pero no saltarte los pasos.','¡Te alcanzaré antes de que termine el examen!'];this.speech=lines[this.tauntIndex++%lines.length];this.speechLeft=3.5;this.tauntClock=10;}
   this.pathClock-=dt;

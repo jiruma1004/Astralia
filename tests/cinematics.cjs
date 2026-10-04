@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const w={document:{hidden:false}};w.window=w;vm.createContext(w);vm.runInContext(fs.readFileSync('src/cinematics/library.js','utf8'),w);
 let draws=0,audio=0,closes=0;const cinema=Object.create(w.CinematicLibrary.prototype);
-Object.assign(cinema,{active:true,item:w.CINEMATICS[1],time:16,paused:true,finished:false,draw(){draws++},audio(){audio++},refresh(){},close(finish){assert(finish);closes++;this.active=false;}});
+Object.assign(cinema,{active:true,item:w.CINEMATICS.find(c=>c.id==='ivan-descenso'),time:16,paused:true,finished:false,draw(){draws++},audio(){audio++},refresh(){},close(finish){assert(finish);closes++;this.active=false;}});
 cinema.tick(12);assert.equal(cinema.time,16);assert.equal(audio,0);assert.equal(draws,1);
 w.document.hidden=true;cinema.paused=false;cinema.tick(12);assert.equal(cinema.time,16);w.document.hidden=false;
 w.Sound={stop(){}};cinema.story=true;cinema.time=34.99;cinema.tick(.02);assert.equal(cinema.time,35);assert.equal(closes,1);assert.equal(cinema.active,false);cinema.tick(1);assert.equal(closes,1,'El epílogo finaliza una sola vez');

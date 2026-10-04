@@ -149,11 +149,11 @@ window.ENGLISH={
   "Cruza la puerta real para continuar.": "Cross the royal door to continue.",
   "Clic o E junto a la puerta · Medir": "Click or E near the door · Measure",
   "Puerta lateral al norte · Sala 1.5 opcional": "Side door to the north · Optional room 1.5",
-  "Botón azul activado. Iván queda congelado durante 7 segundos.": "Blue button activated. Iván is frozen for 7 seconds.",
+  "Botón azul activado. Iván queda congelado durante 10 segundos.": "Blue button activated. Iván is frozen for 10 seconds.",
   "Este botón ya se usó. Busca otro en la siguiente galería.": "This button has already been used. Look for another in the next gallery.",
-  "Pulsa el botón azul de la pared con clic o E: congela a Iván durante 7 segundos. Cada botón se usa una vez; en el calabozo se renueva en cada visita.": "Click the blue wall button or press E: it freezes Iván for 7 seconds. Each button works once; the dungeon button resets on each visit.",
+  "Pulsa el botón azul de la pared con clic o E: congela a Iván durante 10 segundos. Cada botón se usa una vez; en el calabozo se renueva en cada visita.": "Click the blue wall button or press E: it freezes Iván for 10 seconds. Each button works once; the dungeon button resets on each visit.",
   "BOTÓN AGOTADO": "BUTTON DEPLETED",
-  "Clic o E · Congelar a Iván · 7 s": "Click or E · Freeze Iván · 7 s",
+  "Clic o E · Congelar a Iván · 10 s": "Click or E · Freeze Iván · 10 s",
   "Epílogo": "Epilogue",
   "Continuará en semana 10…": "To be continued in week 10…",
   "¡Muchas felicidades! Has completado todas las pruebas. Toma una captura de esta pantalla y súbela a la actividad junto con tus apuntes y los procedimientos de los ejercicios.": "Congratulations! You have completed every challenge. Take a screenshot of this screen and upload it to the assignment together with your notes and worked solutions.",
@@ -183,7 +183,7 @@ window.ENGLISH={
   "Calcula sus dos intersecciones (x, y). Ve a cada láser lateral y pulsa E para programar el corte de su rama.": "Calculate both intersections (x, y). Approach each side laser and press E to program its cut.",
   "X aumenta hacia la derecha; Y es altura. Unidades del plano del soporte.": "X increases to the right; Y is height. Coordinates use the support’s plane units.",
   "Punto de corte": "Intersection point",
-  "Iguala x²/4 + 2 = x/2 + 4. Escribe las coordenadas de la intersección de esta rama.": "Set x²/4 + 2 = x/2 + 4. Enter this branch’s intersection coordinates.",
+  "Iguala x²/3 + 1 = x/3 + 5. Escribe las coordenadas de la intersección de esta rama.": "Set x²/3 + 1 = x/3 + 5. Enter this branch’s intersection coordinates.",
   "Coordenada x": "x coordinate",
   "Coordenada y": "y coordinate",
   "Disparar láser": "Fire laser",
@@ -405,7 +405,7 @@ window.ENGLISH={
   "Entendido · A explorar": "Understood · Explore",
   "Al cruzar el umbral sientes una presencia. El eco de tus pasos parece llegar un instante tarde…": "As you cross the threshold, you sense a presence. The echo of your footsteps seems a moment late…",
   "Cuatro tramos, tres puertas en cada uno. Abre una puerta con clic o E cuando estés cerca. Elegir una puerta equivocada te envía inmediatamente a un calabozo: resuelve otra pregunta para regresar al inicio, conservando las puertas abiertas. No te detengas más de lo necesario. Cada puerta correcta que cruces guarda un punto seguro.": "Four stages, three doors each. Open a nearby door with a click or E. A wrong choice immediately sends you to a dungeon: solve another question to return to the start, keeping opened doors. Keep moving. Each correct door you cross saves a checkpoint.",
-  "Iguala la parábola y la recta. Multiplica por cuatro para quitar las fracciones, lleva todo a un lado y factoriza. Obtendrás dos valores de x; sustituye cada uno en la recta para encontrar y. El láser izquierdo usa la raíz negativa y el derecho la positiva.": "Set the parabola equal to the line. Multiply by four to remove fractions, move everything to one side and factor. You get two x values; substitute each into the line to find y. The left laser uses the negative root and the right one the positive root.",
+  "Iguala la parábola y la recta. Multiplica por tres para quitar las fracciones, lleva todo a un lado y factoriza. Obtendrás dos valores de x; sustituye cada uno en la recta para encontrar y. El láser izquierdo usa la raíz negativa y el derecho la positiva.": "Set the parabola equal to the line. Multiply by three to remove fractions, move everything to one side and factor. You get two x values; substitute each into the line to find y. The left laser uses the negative root and the right one the positive root.",
   "El botón está a 20 m en horizontal del cañón y a 1.2 m sobre la plataforma, a la misma altura que la boca del cañón. Mira detrás de ti: las ecuaciones de tiza en el muro pueden ayudarte. Elige las que relacionen el movimiento horizontal y el vertical.": "The button is 20 m horizontally from the cannon and 1.2 m above the platform, at the same height as the muzzle. Look behind you: the chalk equations on the wall may help. Choose those linking horizontal and vertical motion.",
   "Cuando tengas tu resultado, mira el sello de la puerta y pulsa E para escribir tu respuesta.": "When you have your result, look at the door seal and press E to enter your answer.",
   "Pulsa el cristal de la mesa central para elegir un problema. Luego separa los datos de lo que te piden. La respuesta se escribe directamente en el sello de la puerta.": "Press the crystal on the central table to choose a problem. Separate the given data from the unknowns. Enter your answer directly at the door seal.",
@@ -833,4 +833,17 @@ Object.assign(ENGLISH,{
   "Directora de Ciencias": "Director of Sciences",
   "Tu guía en Astralia": "Your guide in Astralia",
   "El emporio arcano": "The arcane emporium"
+});
+
+Object.assign(window.ENGLISH,{
+  "El botón está centrado sobre el arco: a 31 m en horizontal del cañón y a 4.5 m sobre el suelo, 3.3 m por encima de la boca del cañón. Mira el muro detrás de ti: hay seis ecuaciones de tiza. Una de ellas es la correcta para calcular la trayectoria hasta el botón.": "The button is centered above the arch: 31 m horizontally from the cannon and 4.5 m above the ground, 3.3 m above the muzzle. Look at the wall behind you: there are six chalk equations. One is the correct equation to calculate the trajectory to the button.",
+  "Ignitia: misión cumplida": "Ignitia: mission accomplished",
+  "La ruta acertada, un pasajero inesperado y la captura de Eric.": "The confirmed route, an unexpected passenger and Eric’s capture.",
+  "¡Intercepción lograda! Iniciando el despegue con tu trayectoria.": "Interception achieved! Launching along your trajectory.",
+  "Paola: «¡Espera! Alguien está pasando detrás del cohete…»": "Paola: “Wait! Someone is walking behind the rocket…”",
+  "Iván: «¿Eric? ¿Dónde te metiste?»": "Iván: “Eric? Where did you go?”",
+  "Iván pisa un cable suelto. El lazo se cierra alrededor de su tobillo.": "Iván steps on a loose cable. The loop tightens around his ankle.",
+  "Ignitia despega. Iván queda enganchado por accidente.": "Ignitia lifts off. Iván gets caught by accident.",
+  "Iván se suelta y desaparece entre las nubes. El cohete mantiene la trayectoria confirmada.": "Iván comes loose and disappears into the clouds. The rocket stays on the confirmed trajectory.",
+  "Volver al juego": "Back to the game"
 });
