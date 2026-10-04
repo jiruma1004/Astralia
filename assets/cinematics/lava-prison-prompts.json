@@ -1,0 +1,21 @@
+{
+  "tool": "Built-in image_gen",
+  "date": "2026-10-03",
+  "requests": [
+    {
+      "key": "ignitia-star-rocket",
+      "prompt": "Use case: precise-object-edit. Edit the first attached image, the existing upright 16-bit pixel-art Ignitia rocket sprite, by adding a distinctive mission badge on the silver fuselage in the clear area BELOW the blue circular window and above the first horizontal metal band. Use ONLY the white angular star emblem from the second reference image, NOT its lettering. Faithfully adapt its distinctive asymmetric interlocked two sharp four-point star/lightning shape into a crisp silver-white pixel-art emblem on a small dark navy circular or shield badge. This is the Ignitia mission insignia and must be visible at small game size. Preserve the original rocket silhouette, red nose, red boosters, blue porthole, flames, metal panels, dimensions, proportions, pose, centering, pixel style and transparent background. Do not add a second rocket, text, background, people or any other change. Genuine transparent background. Whole rocket fully in frame.",
+      "referenced_image_paths": [
+        "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/sprites/ignitia-rocket.png",
+        "/tmp/codex-clipboard-9955526f-42e8-4db9-8b83-cbeb2287ce0e.png"
+      ]
+    },
+    {
+      "key": "modern-prison",
+      "prompt": "Use case: illustration-story. Create a WIDE LANDSCAPE 2:1 sprite/background atlas with TWO equally sized SQUARE scenes, side by side, no gutters, no text. Pixel art 16-bit adventure RPG, same beautiful detailed chunky pixels, navy night palette and amber/cool lights as attached reference atlas. Change the prison design to MODERN industrial, absolutely NOT a castle or medieval dungeon. LEFT half: aerial view of a contemporary low-rise prison complex at night, concrete rectangular buildings, security floodlights, chain-link perimeter fence, an OPEN square roof shaft/lightwell dead center around x=50%, y=55% of its half; dark blue sky occupies upper third, ample room above for an animated parachute to descend. No crenellations, no stone towers, no medieval flags. RIGHT half: interior of a modern prison cell, visible brushed ALUMINUM cladding panels with seams/rivets on side walls and back lower wall, dull silver highlights, concrete floor, thin metal bunk at side, aluminum sink, cold overhead fluorescent fixture, open ceiling hatch at top center for a parachute entrance. Small barred rear window with visibly RUSTY IRON bars (orange brown rust spots; aluminum itself is not rusted). Center foreground empty for Eric's sprite. NO FRONT bars: rusty foreground bars will close in code. No people or rockets, no lettering. Both scenes must share coherent prison design and nighttime lighting. This replaces only the prison portions; preserve a playful videogame atmosphere.",
+      "referenced_image_paths": [
+        "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/cinematics/space-interception-atlas.webp"
+      ]
+    }
+  ]
+}

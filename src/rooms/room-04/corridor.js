@@ -4,6 +4,8 @@ window.RelaxCorridor=class {
   this.obstacles=[{x:8,y:2.9,width:2.2,height:.22},{x:12,y:6.1,width:2.2,height:.22},{x:16,y:4.5,width:1.8,height:.22},{x:20,y:2.9,width:2.2,height:.22},{x:24,y:6.1,width:2.2,height:.22}];
   this.obstacles.push(...this.obstacles.map(o=>({...o,x:o.x+27})));
   this.obstacles.forEach(o=>o.x=2.9+(o.x-2.5)*.9);
+  // Reservar las zonas de aterrizaje: los símbolos sí siguen cruzando la lava.
+  this.obstacles=this.obstacles.filter(o=>o.x<window.CORRIDOR_LAVA.start-1.5||o.x>window.CORRIDOR_LAVA.end+1.5);
   this.spawnX=46;this.spawnInterval=(28.5-1.8)/1.6/3/2/1.4/1.5;this.spawnClock=this.spawnInterval;this.nextLane=0;
   this.glyphs=['π','∑','∫','dy/dx','Δx','eˣ'];
   this.symbols=Array.from({length:9},(_,i)=>({y:2.2+(i%3)*1.55+Math.random()*1.4,text:this.glyphs[i%6],x:2.9+(8+i*5-2.5)*.9,age:1}));this.art=new Map();

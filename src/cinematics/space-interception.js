@@ -39,6 +39,11 @@ window.SpaceCinematic=class {
   const c=this.library.ctx;c.save();c.strokeStyle=color;c.lineWidth=2.5;c.setLineDash(dashed?[5,9]:[]);c.beginPath();
   for(let i=0;i<=100;i++){const p=transform(sample(maxTime*i/100));if(i)c.lineTo(p.x,p.y);else c.moveTo(p.x,p.y);}c.stroke();c.restore();
  }
+ prison(cell){
+  const {ctx:c,images,canvas}=this.library,image=images.prisonAtlas;if(!image.complete||!image.naturalWidth)return;
+  const sw=image.naturalWidth/2,sh=image.naturalHeight,scale=Math.max(canvas.width/sw,canvas.height/sh),width=sw*scale,height=sh*scale;
+  c.drawImage(image,cell*sw,0,sw,sh,(canvas.width-width)/2,(canvas.height-height)*(cell===1?.9:.5),width,height);
+ }
  draw(t){
   const lib=this.library,c=lib.ctx,w=lib.canvas.width,h=lib.canvas.height,size=Math.min(w,h),phase=SpaceInterception.phase(t);
   lib.player.dataset.phase=phase;let caption='',speech='';
@@ -63,15 +68,17 @@ window.SpaceCinematic=class {
     caption='¡Intercepción! El cohete de Eric estalla. El científico consigue salir a tiempo.';speech='¡Mi máquina de divergencia!';
    }
   }else if(t<27){
-   bg(2);const u=(t-20)/7,scale=1-.55*u,body=size*.20*scale,x=w*.5+Math.sin(u*6)*size*.065*(1-u),feet=h*(.38+.23*u);
+   this.prison(0);const u=(t-20)/7,scale=1-.55*u,body=size*.20*scale,x=w*.5+Math.sin(u*6)*size*.065*(1-u),feet=h*(.38+.23*u);
    c.save();if(u>.78)c.globalAlpha=Math.max(0,1-(u-.78)/.22);this.parachute(x,feet,body,Math.min(1,.5+u*4));c.restore();
-   caption='El paracaídas se abre. Una corriente lo lleva directo a la torre de una prisión.';speech=t>21.2?'¡Esto no termina aquí!':'';
+   caption='El paracaídas se abre. Una corriente lo lleva directo al patio de una prisión.';speech=t>21.2?'¡Esto no termina aquí!':'';
   }else{
-   bg(3);const u=Math.min(1,(t-27)/4),body=size*.32,feet=-body*.3+(h*.85+body*.3)*(1-(1-u)**2),x=w*.5;
+   this.prison(1);const u=Math.min(1,(t-27)/4),body=size*.32,feet=-body*.3+(h*.85+body*.3)*(1-(1-u)**2),x=w*.5;
    if(t<32)this.parachute(x,feet,body,Math.max(0,Math.min(1,(32-t)/1.2))); else this.sprite('ericBody',x,h*.85-body/2+Math.sin(t*4)*2,body);
    // La reja cae por delante del personaje, sin cambiar la imagen de la celda.
    if(t>=31){const closed=Math.min(1,(t-31)/1.1),top=-h*(1-closed);c.save();c.translate(0,top);const bar=Math.max(5,size*.012),gap=w*.095;
-    for(let bx=w*.12;bx<w*.92;bx+=gap){c.fillStyle='#14202c';c.fillRect(bx,0,bar,h);c.fillStyle='#75818a';c.fillRect(bx+1,0,2,h);}for(const by of [h*.13,h*.91]){c.fillStyle='#32414e';c.fillRect(w*.09,by,w*.84,bar*1.5);}c.restore();
+    for(let bx=w*.12,n=0;bx<w*.92;bx+=gap,n++){c.fillStyle='#3a302b';c.fillRect(bx,0,bar,h);c.fillStyle='#8b7260';c.fillRect(bx+1,0,2,h);
+     for(let k=0;k<15;k++){const ry=((k*71+n*47)%521)/521*h;c.fillStyle=k%2?'#b86831':'#76371e';c.fillRect(bx+(k%2)*bar*.3,ry,bar*.7,h*.012+(k%3)*2);}}
+    for(const by of [h*.13,h*.91]){c.fillStyle='#514034';c.fillRect(w*.09,by,w*.84,bar*1.5);c.fillStyle='#a8582c';for(let i=0;i<12;i++)c.fillRect(w*(.12+i*.063),by+(i%3),bar*(1+i%3),bar*.7);}c.restore();
    }
    caption=t<31?'Sin escalas: del cielo a una celda.':t<35?'La reja se cierra. Eric queda bajo custodia.':'La divergencia está a salvo… por ahora.';
    speech=t<31?'¿Una celda? ¡Esto no estaba en mis cálculos!':t<37?'¡Saldré de aquí! ¡No han visto mi último experimento!':'¡Me vengaré, Ignitia!';

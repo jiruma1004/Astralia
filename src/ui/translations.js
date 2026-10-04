@@ -1,4 +1,12 @@
 window.ENGLISH={
+  "Salta entre las plataformas · Shift corre · Espacio salta":"Jump between platforms · Shift to sprint · Space to jump",
+  "Se cansó de escuchar «eso no lo vimos» y tener que explicar todo desde cero.":"She grew tired of hearing ‘we never covered that’ and having to explain everything from scratch.",
+  "El paracaídas se abre. Una corriente lo lleva directo al patio de una prisión.":"The parachute opens. A gust carries him straight into a prison courtyard.",
+  "¡Has tocado la lava!":"You touched the lava!",
+  "El suelo estaba demasiado caliente.":"The floor was a little too hot.",
+  "La lava no cuenta como plataforma.":"Lava does not count as a platform.",
+  "Salta entre las plataformas de piedra. Usa Shift para tomar impulso y Espacio para saltar.":"Jump between the stone platforms. Use Shift to build speed and Space to jump.",
+  "Esquiva los símbolos. En el tramo central, salta entre las plataformas sobre la lava. Shift corre · Espacio salta.":"Dodge the symbols. In the middle section, jump between the platforms over the lava. Shift to sprint · Space to jump.",
   "Intercepción espacial":"Space interception",
   "Final alternativo · Sin Iván a bordo, Ignitia alcanza a Eric.":"Alternate ending · Without Iván aboard, Ignitia catches Eric.",
   "Eric bajo custodia… por ahora.":"Eric in custody… for now.",
