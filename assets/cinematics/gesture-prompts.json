@@ -1,0 +1,23 @@
+[
+  {
+    "key": "ivan-cabin-idle",
+    "prompt": "Create a game-ready pixel art sprite atlas on genuinely TRANSPARENT background. Reference is Ivan identity/style ONLY, do not reuse walking pose. TWO equal cells side by side, each with a complete full-body chibi RPG Ivan standing STILL, feet together planted, pink short sleeve button shirt tucked into navy trousers, brown shoes, neat normal belt, hands naturally at sides. Body, head, gaze and nose face towards the LEFT of the image, a three-quarter left profile. He is exploring a mysterious cabin, mildly puzzled; a small forehead bandage. First frame neutral, second subtle breathing and blink. Identical character center, size, foot baseline. NO walking stride, NO protruding belt strap or sticks, no props near waist or legs, no patches on trousers, no rectangular brown marks. All body parts inside cells, 7% margins. Crisp pixel art matching reference. No floor, no shadows, no glow, no lettering. Transparent alpha everywhere outside person.",
+    "referenced_image_paths": [
+      "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/sprites/ivan-walk-v2.png"
+    ]
+  },
+  {
+    "key": "angelica-gesture",
+    "prompt": "Create THREE animation frames in ONE horizontal row of equal-sized cells on a genuinely transparent background. Use TOP ROW woman from reference: Angélica, glasses, long dark hair, mustard gold blazer, navy blouse, ivory trousers, brown shoes. Keep her approved face and style. Full body sprite sheet for a warm pixel-art RPG ceremony. Frame 1: both hands gently hold a blue book against chest/stomach. Frame 2: book stays firmly supported by her anatomical LEFT hand (viewer RIGHT); her anatomical RIGHT arm (viewer LEFT) is half raised, bent at elbow. Frame 3: same arm opens outward to viewer LEFT with palm up in a welcoming gesture. In all three frames her torso, head, feet, expression and book stay in exactly the same position and scale, only gesturing arm moves. Face front, mouth neutral closed for separate speaking overlay, no walking, no extra limbs, no background/glow/shadow/text. Feet fully visible, clean cell margins. Detailed pixel-art matching reference, not photorealistic. Bottom-row woman is NOT part of this asset. Exactly three copies of Angélica, no other people.",
+    "referenced_image_paths": [
+      "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/cinematics/ceremony-teachers.webp"
+    ]
+  },
+  {
+    "key": "paola-gesture",
+    "prompt": "Create THREE animation frames in ONE horizontal row of equal-sized cells on a genuinely transparent background. Use BOTTOM ROW woman from reference: approved Epi Paola, brown cardigan over white blouse, ivory trousers, brown shoes, long brown hair. Preserve her face and RPG pixel art style. Frame 1: both hands gently embrace a green book against chest/stomach. Frame 2: book stays supported by her anatomical RIGHT hand (viewer LEFT); her anatomical LEFT arm (viewer RIGHT) is half raised bent at elbow. Frame 3: that same LEFT arm opens outward to viewer RIGHT, palm up, welcoming gesture. IMPORTANT: Paola gestures to the RIGHT of the picture, opposite to the reference! Her book is on viewer LEFT. Torso/head/feet/book remain aligned identically in all three cells. Neutral closed mouth for separate speaking overlay. Full bodies including feet, clean margins, no text, no glow, no shadows, no floor, no extra limbs. Transparent alpha outside bodies. Top-row woman from reference must NOT appear. Exactly three copies of Paola.",
+    "referenced_image_paths": [
+      "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/cinematics/ceremony-teachers.webp"
+    ]
+  }
+]

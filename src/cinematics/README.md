@@ -1,6 +1,6 @@
 # Lista de cinemáticas
 
-El botón **Cinemáticas**, junto a los controles del juego, abre las tres escenas registradas en `window.CINEMATICS` dentro de `library.js`:
+El botón **Cinemáticas**, junto a los controles del juego, abre las cuatro escenas registradas en `window.CINEMATICS` dentro de `library.js`:
 
 1. `ignitia-launch` — **Ignitia: despegue y caída**, 38 s. Reproduce el final anterior con una instancia visual separada: cohete, cable, Iván, pérdida de control y caída. No llama a los eventos de avance de la partida.
 2. `ivan-descenso` — **Iván descenso**, 35 s. Caída al bosque (0–3 s), aterrizaje cómico (3–6), llegada a la cabaña (6–12), legado de Eric (12–16), periódico y Karla (16–24), frase de Iván (24–28), laboratorio iluminado y carteles de Eric (28–35).
@@ -22,6 +22,8 @@ La intercepción utiliza ahora el emblema de estrella de Ignitia en el cohete y 
 
 Cuarta película: `ceremonia-ignitia`, 46 segundos. Tras **Intercepción espacial**, el botón **Continuar a la ceremonia** abre el reconocimiento de Angélica y EPI Paola. También está disponible directamente desde la lista. El final anterior de Iván se conserva.
 
-Angélica y Paola aparecen de pie a izquierda/derecha, con fotogramas de boca alineados. Los cinco mensajes duran 38 segundos; el penúltimo incluye la broma de Paola sobre el químico, el aluminio y el óxido. Después aparece el certificado 6/6, que permanece visible al terminar, listo para captura. Incluye confeti y el emblema de Ignitia.
+Angélica y Paola aparecen de pie a izquierda/derecha, con gestos de brazos opuestos: levantan la mano al hablar y vuelven a abrazar el libro. Los cinco mensajes duran 38 segundos; el penúltimo incluye la broma de Paola sobre el químico, el aluminio y el óxido. Después aparece el certificado 6/6, que permanece visible al terminar, listo para captura. Incluye confeti y el emblema de Ignitia.
 
 La galería mantiene su carácter de vista previa: no modifica el progreso. Si no se ha completado la partida, el certificado lleva una marca visible de vista previa. Al completar los seis retos, muestra las instrucciones de entrega de captura y apuntes sin esa marca. Admite español e inglés, reproducción, pausa y salto al certificado.
+
+Dentro de la cabaña, Iván usa `ivan-cabin-idle.webp`: se sitúa en el centro, mira a la izquierda y parpadea. La caminata exterior conserva su dirección hacia la derecha. La música de victoria entre salas dura 4,5 segundos y conserva su desvanecimiento final.

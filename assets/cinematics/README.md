@@ -30,7 +30,17 @@ La lava y sus cinco plataformas se dibujan en Canvas sobre el suelo del corredor
 ## Ceremonia de Ignitia
 
 - `ceremony-hall.webp`: salón ceremonial de la academia, con espacio para el emblema dibujado en Canvas.
-- `ceremony-teachers.webp`: Angélica (fila superior) y la versión A de EPI Paola (inferior), de pie, con boca cerrada/abierta. El recorte de cada fotograma se registra en `src/cinematics/ceremony.js` para mantener alineados los cuerpos al hablar.
+- `ceremony-teachers.webp`: Angélica (fila superior) y la versión A de EPI Paola (inferior), de pie, con boca cerrada/abierta. Se conserva como versión anterior; la ceremonia ahora utiliza los atlas de gestos individuales.
 - `ceremony-prompts.json`: prompts y referencias de las imágenes, creadas con la herramienta integrada `image_gen`. La foto aportada de Angélica guía su aspecto; Paola conserva el personaje ilustrado aprobado anteriormente.
 
 Los PNG originales se conservan en la carpeta de imágenes generadas. El emblema de Ignitia, el confeti y el certificado bilingüe se dibujan en Canvas/HTML, por separado, para conservar nitidez y legibilidad.
+
+## Gestos e interior de la cabaña
+
+Generados con la herramienta integrada `image_gen`, usando los sprites anteriores como referencias. Prompts completos en `gesture-prompts.json`.
+
+- `ivan-cabin-idle.webp` y `.gif`: Iván centrado, mirando a la izquierda, con parpadeo y sin la marca marrón en el pantalón.
+- `angelica-gesture.webp` y `.gif`: libro, saludo hacia la izquierda y regreso al libro.
+- `paola-gesture.webp` y `.gif`: libro, saludo hacia la derecha y regreso al libro.
+
+El juego anima los atlas en Canvas mediante `src/cinematics/gesture-sprites.js`, anclados a los pies para evitar saltos entre poses. Los GIF son exportaciones transparentes de la misma animación, a 12 fps. Las profesoras gesticulan mientras hablan y sostienen el libro al escuchar.

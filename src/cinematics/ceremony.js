@@ -21,9 +21,10 @@ window.CeremonyScene=class {
   if(image.complete&&image.naturalWidth){const s=Math.max(w/image.naturalWidth,h/image.naturalHeight),iw=image.naturalWidth*s,ih=image.naturalHeight*s;c.drawImage(image,(w-iw)/2,(h-ih)*.7,iw,ih);}
   // El emblema se añade como trazado nítido, separado de la ilustración de fondo.
   c.fillStyle='#102442dd';c.fillRect(w*.37,h*.025,w*.26,h*.24);IgnitiaCeremony.star(c,w*.5,h*.10,Math.min(w*.12,h*.15));c.fillStyle='#f4dfaa';c.font=`${Math.min(w*.04,h*.052)}px Georgia`;c.textAlign='center';c.fillText('IGNITIA',w*.5,h*.23);
-  const line=IgnitiaCeremony.lineAt(t),talk=lib.images.ceremonyTeachers,body=Math.min(h*.64,w*.68),feet=h*.83;
-  if(talk.complete&&talk.naturalWidth){const cells=[[[110,15,380,769],[556,15,380,769]],[[110,790,370,736],[556,790,370,736]]];
-   for(let row=0;row<2;row++){const speaking=line?.speaker===(row?'EPI Paola':'Angélica'),frame=speaking&&Math.floor(t*7)%2?1:0,x=w*(row?.77:.23);const [sx,sy,sw,sh]=cells[row][frame],width=body*sw/sh;c.save();c.imageSmoothingEnabled=false;c.drawImage(talk,sx*talk.naturalWidth/1024,sy*talk.naturalHeight/1536,sw*talk.naturalWidth/1024,sh*talk.naturalHeight/1536,x-width/2,feet-body,width,body);c.restore();}
+  const line=IgnitiaCeremony.lineAt(t),body=Math.min(h*.64,w*.68),feet=h*.83;
+  for(let row=0;row<2;row++){
+   const key=row?'paolaGesture':'angelicaGesture',speaking=line?.speaker===(row?'EPI Paola':'Angélica'),frame=speaking?CinematicSpriteMotion.gestureFrame(t-line.at):0;
+   CinematicSpriteMotion.draw(c,lib.images[key],key,frame,w*(row?.75:.25),feet,body,{speaking,time:t});
   }
   const confettiTime=Math.min(t,46);c.save();for(let i=0;i<100;i++){const x=((i*.618033+Math.sin(t*.8+i)*.014)%1+1)%1*w,y=((i*.137+confettiTime*(.035+i%4*.004))%1)*h;c.fillStyle=['#edcf83','#cf97dd','#89d9c5','#a9c6fa'][i%4];c.save();c.translate(x,y);c.rotate(t+i);c.fillRect(-2,-4,3+i%3,7);c.restore();}c.restore();
   const box=document.querySelector('#ceremony-dialogue'),cert=document.querySelector('#ceremony-certificate');box.hidden=!line;cert.hidden=t<IgnitiaCeremony.certificateAt;
