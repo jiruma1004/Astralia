@@ -18,7 +18,7 @@ window.IgnitiaMission=class {
   document.querySelector('#ignitia-next').onclick=()=>{if(this.speaking){this.reveal();return;}document.querySelector('#ignitia-dialog').hidden=true;if(this.mode==='debrief'){this.finishLaunch();}if(this.mode==='briefing'){this.mode='idle';this.onEvent('escapeDone');}document.querySelector('#game').focus({preventScroll:true});};
   document.querySelector('#completion-continue').onclick=()=>this.showEnding();
  }
- get blocking(){return this.simulator.running||['escape','briefing','launch','debrief','complete','ending'].includes(this.mode);}
+ get blocking(){return this.simulator.running||['escape','briefing','launch','debrief','complete','epilogue','ending'].includes(this.mode);}
  reset(room){this.simulator.reset();this.simulator.active=!!room.rocket;this.scene=room;this.impactPlayed=false;this.launchIgnited=false;this.warningDone=false;this.mode='idle';this.time=0;this.speaking=false;Sound.silence=false;Sound.stop('rocket');for(const id of ['ignitia-dialog','rocket-console','flight-banner','completion-card','chapter-ending'])document.querySelector('#'+id).hidden=true;document.querySelector('#completion-card').open=false;if(room.rocket)this.speak('Ignitia tiene un cohete listo. Soy José Luis: ¡Eric va rumbo a la Luna! Acércate al terminal azul y pulsa E. Traza una ruta para interceptarlo en el simulador; deben coincidir en el mismo lugar y al mismo tiempo. Puedes ajustar los controles o arrastrar la trayectoria. Cada ensayo consume tiempo de misión. ¡Eric no espera!');}
  speak(text,speaker='jose'){this.speaker=speaker;document.querySelector('#ignitia-dialog .eyebrow').textContent=speaker==='paola'?'EPI PAOLA':'JOSÉ LUIS · LÍDER DE IGNITIA';document.querySelector('#ignitia-portrait').setAttribute('aria-label',speaker==='paola'?'Epi Paola hablando':'José Luis hablando');this.source=text;this.text=window.I18n?I18n.t(text):text;this.count=0;this.clock=0;this.voiceTime=0;this.speaking=true;this.drawPortrait();document.querySelector('#ignitia-text').textContent='';document.querySelector('#ignitia-next').textContent='Mostrar todo';document.querySelector('#ignitia-dialog').hidden=false;window.dispatchEvent(new Event('astralia:ui-open'));}
  reveal(){this.count=this.text.length;this.speaking=false;this.drawPortrait();document.querySelector('#ignitia-text').textContent=this.text;document.querySelector('#ignitia-next').textContent=this.mode==='complete'?'Misión completada':'Continuar';}
@@ -30,9 +30,10 @@ window.IgnitiaMission=class {
   this.closeConsole();this.mode='launch';this.time=0;this.launchIgnited=false;this.warningDone=false;this.onEvent('launch');this.speak('¡Espera! Algo se mueve detrás del cohete…','paola');
  }
  finishLaunch(){if(this.mode!=='debrief')return;this.mode='complete';this.speaking=false;this.onEvent('complete');document.querySelector('#ignitia-dialog').hidden=true;const card=document.querySelector('#completion-card');card.hidden=false;card.open=true;document.querySelector('#completion-continue').focus({preventScroll:true});}
- showEnding(){if(this.mode!=='complete')return;this.mode='ending';document.querySelector('#completion-card').hidden=true;const ending=document.querySelector('#chapter-ending');ending.hidden=false;document.querySelector('#chapter-ending-text').focus({preventScroll:true});}
- updateCamera(player){if(this.scene?.rocket&&['launch','debrief','complete','ending'].includes(this.mode))player.pitch=RocketFinaleScene.state(this.time).pitch;}
- tick(dt){if(document.hidden)return;this.simulator.tick(dt);if(!['debrief','complete','ending'].includes(this.mode))this.time+=dt;this.voiceTime=(this.voiceTime||0)+dt;this.drawPortrait();
+ showEnding(){if(this.mode!=='complete')return;this.mode='epilogue';document.querySelector('#completion-card').hidden=true;this.cinematics.play('ivan-descenso',{story:true,onComplete:()=>this.showChapterEnding()});}
+ showChapterEnding(){this.mode='ending';const ending=document.querySelector('#chapter-ending');ending.hidden=false;document.querySelector('#chapter-ending-text').focus({preventScroll:true});}
+ updateCamera(player){if(this.scene?.rocket&&['launch','debrief','complete','epilogue','ending'].includes(this.mode))player.pitch=RocketFinaleScene.state(this.time).pitch;}
+ tick(dt){if(document.hidden)return;this.simulator.tick(dt);if(!['debrief','complete','epilogue','ending'].includes(this.mode))this.time+=dt;this.voiceTime=(this.voiceTime||0)+dt;this.drawPortrait();
   if(this.speaking){this.clock-=dt;if(this.clock<=0){this.count=Math.min(this.text.length,this.count+2);document.querySelector('#ignitia-text').textContent=this.text.slice(0,this.count);Sound.dialogueBlip(this.count);this.clock=.035;if(this.count===this.text.length)this.reveal();}}
   if(this.mode==='escape'){
    if(this.time>=2.5)Sound.silence=true;
@@ -49,13 +50,13 @@ window.IgnitiaMission=class {
   if(this.mode==='escape'&&this.time>=4){const h=4.8,z=-h+(this.time-4)**2*.48;this.drawRocket(renderer,player,actors,21,7.5,z,h,true);}
   if(this.scene?.rocket){const c=renderer.ctx,deck=[[13,5],[19,5],[19,10],[13,10]].map(([x,y])=>actors.project(renderer,player,x,y,.04));if(deck.every(Boolean)){c.fillStyle='#465d72';c.strokeStyle='#a2d8e7';c.lineWidth=3;c.beginPath();deck.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();c.fill();c.stroke();}
    for(const [x,y] of [[12,4.5],[12,10.5],[18,4.5],[18,10.5]]){const p=actors.project(renderer,player,x,y,0);if(p){c.fillStyle='#85d7ef';c.fillRect(p.x-4,p.y-p.scale,8,p.scale);}}
-   const launching=['launch','debrief','complete','ending'].includes(this.mode),flight=RocketFinaleScene.state(this.time),z=launching?flight.rocketZ:0;if(!launching||flight.visible!==false)this.drawRocket(renderer,player,actors,launching?flight.x:16,launching?flight.y:7.5,z,5,false,launching?flight.rotation:0);if(launching){this.drawIvanLaunch(renderer,player,actors);this.drawImpact(renderer);}else this.drawCable(renderer,player,actors,{x:15.2,y:9.125,z:.025},0,false);
+   const launching=['launch','debrief','complete','epilogue','ending'].includes(this.mode),flight=RocketFinaleScene.state(this.time),z=launching?flight.rocketZ:0;if(!launching||flight.visible!==false)this.drawRocket(renderer,player,actors,launching?flight.x:16,launching?flight.y:7.5,z,5,false,launching?flight.rotation:0);if(launching){this.drawIvanLaunch(renderer,player,actors);this.drawImpact(renderer);}else this.drawCable(renderer,player,actors,{x:15.2,y:9.125,z:.025},0,false);
    const p=actors.project(renderer,player,7.5,5.5,0);if(p&&!launching){c.save();c.fillStyle='#263f56';c.fillRect(p.x-p.scale*.5,p.y-p.scale*.9,p.scale,p.scale*.9);c.fillStyle='#83e8ff';c.fillRect(p.x-p.scale*.42,p.y-p.scale*.83,p.scale*.84,p.scale*.4);c.fillStyle='#112d44';c.textAlign='center';c.font=`bold ${Math.max(12,p.scale*.11)}px Georgia`;c.fillText('IGNITIA · E',p.x,p.y-p.scale*.60);c.restore();}
   }
  }
  drawImpact(renderer){
   const age=this.time-RocketFinaleScene.impactAt;
-  if(!this.scene?.rocket||age<0||age>2.2||!['launch','debrief','complete','ending'].includes(this.mode))return;
+  if(!this.scene?.rocket||age<0||age>2.2||!['launch','debrief','complete','epilogue','ending'].includes(this.mode))return;
   const c=renderer.ctx,w=renderer.canvas.width,h=renderer.canvas.height;
   const fade=Math.sin(Math.min(1,age/.18)*Math.PI/2)*Math.max(0,1-age/2.2);
   c.save();c.globalAlpha=fade;
@@ -84,7 +85,7 @@ window.IgnitiaMission=class {
  drawRocket(renderer,player,actors,x,y,z,h,withEric,rotation=0){
   const art=withEric?this.rider:this.rocket;if(!art.complete||!art.naturalWidth)return;
   const c=renderer.ctx;c.save();
-  if(!withEric&&this.time>=RocketFinaleScene.releaseAt&&['launch','debrief','complete','ending'].includes(this.mode)){
+  if(!withEric&&this.time>=RocketFinaleScene.releaseAt&&['launch','debrief','complete','epilogue','ending'].includes(this.mode)){
    const p=actors.project(renderer,player,x,y,z+h/2);
    if(p){const height=h*p.scale,width=height*.7;c.translate(p.x,p.y);c.rotate(rotation);c.imageSmoothingEnabled=false;
     // El cabo suelto sigue unido al fuselaje, ya sin Iván.

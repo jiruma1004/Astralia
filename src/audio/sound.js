@@ -13,7 +13,7 @@ window.Sound={
   catch(e){if(id!==this.playIds[name])return false;if(this.backgroundNames.includes(name)&&e.name==='NotAllowedError'){this.autoPending=!this.userDisabled;this.enabled=false;this.apply();this.ui();document.querySelector('#audio-status').textContent='La música empezará con tu primer clic o tecla.';}else if(e.name!=='AbortError')document.querySelector('#audio-status').textContent='No se pudo reproducir '+name+'. Puedes reintentar con Activar sonido.';return false;}
  },
  gain(id){return document.querySelector('#'+id+'-mute').checked?0:Number(document.querySelector('#'+id).value);},
- mix(dt){if(document.hidden)return;const v=this.tracks.victory,end=Number.isFinite(v.duration)?Math.min(3,v.duration):3;if(!v.paused&&v.currentTime>=end)this.stop('victory');const playing=!v.paused&&!v.ended,tail=playing?Math.max(0,Math.min(1,(end-v.currentTime)/.7)):1;
+ mix(dt){if(document.hidden)return;const v=this.tracks.victory,end=Number.isFinite(v.duration)?Math.min(4,v.duration):4;if(!v.paused&&v.currentTime>=end)this.stop('victory');const playing=!v.paused&&!v.ended,tail=playing?Math.max(0,Math.min(1,(end-v.currentTime)/.7)):1;
   this.victoryFade=playing?Math.min(1,v.currentTime/.2,tail):0;
   const target=playing?1-.82*tail:1;this.duck+=(target-this.duck)*(1-Math.exp(-dt/(target<this.duck?.25:.45)));
   for(const name of this.backgroundNames){const target=name===this.sceneTrack&&!this.silence?1:0;this.backgroundLevels[name]+=(target-this.backgroundLevels[name])*(1-Math.exp(-dt/.45));if(target===0&&this.backgroundLevels[name]<.005&&!this.tracks[name].paused)this.stop(name);}

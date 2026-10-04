@@ -1,6 +1,6 @@
 /* Motor visual compartido: raycasting de una cuadrícula, sin dependencias. */
 window.EscapeRenderer = class {
-  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.art={...makeWallArt(),...makeScenery(),oak:makeOakDoor()};
+  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.castleGate=new CastleGate(); this.art={...makeWallArt(),...makeScenery(),oak:makeOakDoor()};
     const moss=document.createElement('canvas');moss.width=moss.height=512;const m=moss.getContext('2d');m.drawImage(this.art.brick,0,0,512,512);m.fillStyle='#22362688';m.fillRect(0,0,512,512);
     for(let i=0;i<900;i++){const x=(i*173)%512,y=(i*97+Math.floor(i/7)*31)%512;m.fillStyle=['#42613a99','#67804c88','#1a3026aa'][i%3];m.fillRect(x,y,3+i%13,5+i%27);}this.art.moss=moss; }
   decorate(room,hit,x,top,height){
@@ -65,12 +65,13 @@ window.EscapeRenderer = class {
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
       if(hit.tile===1){
-        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0?this.art.forest:room.environment?.moss?this.art.moss:this.art.brick;
-        const forest=room.environment?.kind==='forest'&&hit.cx!==0,wallTop=forest?horizon-(2.6-eye)*height:room.corridor?horizon-(.65-eye)*height:room.boss?horizon-(3-eye)*height:top,wallHeight=forest?height*2.6:room.corridor?height*.65:room.boss?height*3:height;
+        const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x)?this.art.forest:room.environment?.moss?this.art.moss:this.art.brick;
+        const castleEnd=room.castleGate&&hit.cx>=room.castleGate.x;const forest=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x),wallTop=castleEnd?horizon-(2.8-eye)*height:forest?horizon-(2.6-eye)*height:room.corridor?horizon-(.65-eye)*height:room.boss?horizon-(3-eye)*height:top,wallHeight=castleEnd?height*2.8:forest?height*2.6:room.corridor?height*.65:room.boss?height*3:height;
         c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,wallTop,3,wallHeight);
         if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,wallTop,3,wallHeight);c.globalAlpha=1;}
         c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
       }
+      if(hit.tile===2&&room.castleGate){c.fillStyle='#15212a';c.fillRect(x,horizon-(2.8-eye)*height,3,height*2.8);continue;}
       if(hit.tile===4||(hit.tile===2&&room.measurement)){const along=side?hit.py:hit.px,u=((along%1)+1)%1,art=this.measurementArt||(this.measurementArt=MeasurementArt.texture());c.drawImage(art,Math.min(899,Math.floor(u*900)),0,1,800,x,top,3,height);continue;}
       if(hit.tile===2&&room.oakDoor&&hit.cx===room.oakDoor.x&&hit.cy===room.oakDoor.y){const u=((hit.py%1)+1)%1;c.drawImage(this.art.oak,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}
       if(hit.tile===2&&room.maze){const door=room.maze.doorAt(hit.cx,hit.cy);if(door){const art=this.actors.doorTexture(door),u=((hit.py%1)+1)%1;c.drawImage(art,Math.min(511,Math.floor(u*512)),0,1,512,x,top,3,height);continue;}}
@@ -85,6 +86,7 @@ window.EscapeRenderer = class {
       this.decorate(room,hit,x,top,height);
     }
     if(room.environment?.portal&&opened)this.drawPortal(room,player,time,horizon,eye);
+    if(room.castleGate)this.castleGate.draw(this,room,player,time,opened);
     if(room.physics){
       const p=room.physics;
       const project=(x,y,z)=>{const dx=x-player.x,dy=y-player.y,depth=dx*Math.cos(player.angle)+dy*Math.sin(player.angle),side=-dx*Math.sin(player.angle)+dy*Math.cos(player.angle);if(depth<.15)return null;
@@ -92,7 +94,7 @@ window.EscapeRenderer = class {
         if(obstruction.distance+.1<Math.hypot(dx,dy))return null;
         return {x:w/2+side/depth*w/1.32,y:horizon-(z-eye)*h/depth,scale:h/depth};};
       const target=project(p.targetX,p.originY,p.targetHeight/p.metersPerCell);
-      if(target){const r=Math.max(6,target.scale*p.tolerance/p.metersPerCell);c.fillStyle=opened?'#c2ee86':'#ffa95a';c.shadowColor=c.fillStyle;c.shadowBlur=18;c.beginPath();c.arc(target.x,target.y,r,0,Math.PI*2);c.fill();c.shadowBlur=0;c.strokeStyle='#f7edca';c.lineWidth=2;c.strokeRect(target.x-r-5,target.y-r-5,2*r+10,2*r+10);c.fillStyle='#eef3d8';c.font='12px Arial';c.textAlign='center';c.fillText(opened?'PUENTE ACTIVO':'BOTÓN SUSPENDIDO',target.x,target.y-r-18);c.textAlign='left';}
+      if(target){const r=Math.max(6,target.scale*p.tolerance/p.metersPerCell);c.fillStyle=opened?'#c2ee86':'#ffa95a';c.shadowColor=c.fillStyle;c.shadowBlur=18;c.beginPath();c.arc(target.x,target.y,r,0,Math.PI*2);c.fill();c.shadowBlur=0;c.strokeStyle='#f7edca';c.lineWidth=2;c.strokeRect(target.x-r-5,target.y-r-5,2*r+10,2*r+10);c.fillStyle='#eef3d8';c.font='12px Arial';c.textAlign='center';c.fillText(opened?'PUENTE ACTIVO':'SELLO DE LA VERJA',target.x,target.y-r-18);c.textAlign='left';}
       if(lab?.shot){const shot=lab.shot;const q=Projectile.sample(shot.v,shot.angle,shot.t,p,shot.azimuth),pos=project(p.originX+q.x/p.metersPerCell,p.originY+q.z/p.metersPerCell,q.y/p.metersPerCell);if(pos&&q.y>=0){c.fillStyle=shot.ammo.color;c.beginPath();c.arc(pos.x,pos.y,Math.max(3,pos.scale*.07),0,Math.PI*2);c.fill();}}
       const cannon=project(p.originX,p.originY,.22);
       if(cannon){const scale=Math.min(1.5,cannon.scale/300),cx=cannon.x,cy=cannon.y;

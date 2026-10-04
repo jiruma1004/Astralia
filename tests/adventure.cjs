@@ -11,8 +11,9 @@ now=deadline-180000;clock.tick();assert.equal(clock.phase,'danger');
 now=deadline+90000;clock.tick();clock.tick();assert.equal(clock.remaining,0);assert.equal(expired,1);assert.deepEqual(phases,['calm','warning','danger','expired']);assert.equal(clock.finish(),false);
 clock.restart();assert.equal(clock.remaining,3600);assert.equal(clock.state,'running');now+=12345;assert.equal(clock.finish(),true);const remaining=clock.remaining;now+=9999999;clock.tick();assert.equal(clock.remaining,remaining);assert.equal(expired,1);
 const room=world.ESCAPE_ROOMS[0],cast=(x,y,a,open=false)=>world.EscapeRenderer.prototype.cast(room,x,y,a,open);
-const east=cast(2.5,3.5,0);assert.equal(east.tile,2);assert.equal(east.distance,22.5);assert.equal(cast(2.5,3.5,0,true).tile,1);
+const east=cast(2.5,3.5,0);assert.equal(east.tile,2);assert.equal(east.distance,16.5);assert.equal(cast(2.5,3.5,0,true).tile,1);
 const north=cast(5,3,-Math.PI/2);assert.equal(north.cy,0);assert.equal(north.axis,'y');assert.equal(north.py,1);assert.equal(north.distance,2);
 const south=cast(5,3,Math.PI/2);assert.equal(south.cy,6);assert.equal(south.distance,3);
 for(const a of [0,Math.PI/2,Math.PI,Math.PI*1.5,Math.PI*2,-Math.PI/2]){const hit=cast(2,3,a);assert(Number.isFinite(hit.distance)&&Number.isFinite(hit.px)&&Number.isFinite(hit.py));}
 console.log('OK: inicio, umbrales exactos, tiempo real, expiración única, reinicio, victoria, puertas y caras del muro.');
+clock.restart();now+=2000;clock.pause();const paused=clock.remaining;now+=60000;clock.tick();assert.equal(clock.remaining,paused);clock.resume();clock.tick();assert.equal(clock.remaining,paused);now+=1000;clock.tick();assert.equal(clock.remaining,paused-1);console.log('OK: repetir cinemáticas pausa el reloj sin alterar el tiempo restante.');

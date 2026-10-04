@@ -6,6 +6,10 @@ Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azu
 
 Abre `index.html` en un navegador moderno. No requiere instalación ni conexión. Opcionalmente: `python3 -m http.server 8000` desde esta carpeta.
 
+## Cinemáticas guardadas
+
+El botón **Cinemáticas** permite repetir **Ignitia: despegue y caída** e **Iván descenso** sin modificar la partida. Mientras se ven, el juego y su reloj quedan en pausa. La nueva escena muestra la caída de Iván en el bosque, la cabaña de Eric, el periódico «Se busca» de Karla y el laboratorio secreto. También aparece al pulsar **Continuar** después del resultado 6/6, antes de **Continuará en semana 10…**. Guion y controles: [src/cinematics/README.md](src/cinematics/README.md). Recursos y GIF de la verja: [assets/cinematics/README.md](assets/cinematics/README.md).
+
 ## El castillo del Dr. Eric
 
 La aventura recorre seis ambientes: **bosque del abismo** (I), **portal del castillo** (II), **laberinto de los ecos** (III), **corredor de las ideas** (IV), **parábola de Eric** (V) y **plataforma de Ignitia** (VI). El bosque tiene límites de árboles y maleza; la entrada conserva cielo y un portal rúnico. La sala III tiene techo de piedra; IV, V y VI son patios abiertos bajo el cielo.
@@ -28,7 +32,7 @@ La música futura de tensión tiene su espacio reservado en `assets/audio/tensio
 2. Pulsa **Cargar orbe**, o toca el cañón de la escena después de elegirla. La recámara se ilumina con su color. La torreta Prisma tiene una base hexagonal y un cabezal de cristal, sin tubo largo ni ruedas.
 3. Calcula y escribe elevación θ, giro horizontal φ y rapidez o energía en campos numéricos. No hay deslizadores de tiro. Gira hacia atrás desde el inicio: el muro de piedra tiene once expresiones y condiciones de uso grafiteadas directamente sobre los ladrillos, sin pizarra ni marco para que elijas las pertinentes. Los campos vacíos o fuera de sus límites no disparan ni consumen el orbe.
 4. Dispara. Cada lanzamiento consume la bala cargada; hay suministro ilimitado en el estante.
-5. Al alcanzar el botón suspendido, suena el MP3 de victoria y se activa el puente. Cruza por el centro; pisar el vacío provoca una caída a una singularidad. Rodea la torreta: es un objeto sólido.
+5. Al alcanzar el botón centrado sobre el arco del castillo, suena el MP3 de victoria durante 4 s, se eleva la verja y se activa el puente. El blanco está a 31 m en horizontal y a 4.5 m sobre la plataforma; la boca del cañón está a 1.2 m. Cruza por el centro; pisar el vacío provoca una caída a una singularidad. Rodea la torreta: es un objeto sólido.
 6. Si disparas con más de 180 J, la torreta explota y tu personaje queda fuera de combate. Aparece «en papel nada se quema». La capacidad es una regla del equipo ficticio, no un umbral físico universal.
 7. Al caer se muestra una viñeta en tercera persona: el personaje cae desde el borde, gira y se pierde en un agujero negro. El canvas permanece fijo; tras **2.6 segundos** aparece **Game Over** y suena el MP3 aportado. Una explosión conserva su animación y muestra Game Over tras 1.5 segundos. Pulsa **Volver al último punto seguro** (también Escape). Conservas el registro y el puente si ya estaba activo; la torreta se repara. Una explosión consume la bala. Un disparo interrumpido por caída no activa el puente.
 
@@ -147,7 +151,7 @@ José Luis mueve la boca mientras aparecen las letras y queda en reposo al mostr
 ### Ajustes de ritmo y claridad
 Diez obstáculos bajos alternados en el corredor. Risa de Eric recortada a 1.5 s con salida suave. Barandillas sólidas de madera en el puente del bosque y metálicas en el patio. La sala VI no muestra arma ni admite disparo con F; José Luis ofrece una pista breve. El sello y los láseres cierran su panel al validar una respuesta correcta.
 
-El corredor recorre ahora 48.6 celdas entre la entrada y el centro de la puerta, un 10 % menos que las 54 anteriores. El abismo de Galileo tiene 15 celdas de largo (25 % más) y el botón está a 20 m del cañón. Las barandillas bloquean el movimiento lateral, incluso al saltar, solo después de desplegar el puente.
+El corredor recorre ahora 48.6 celdas entre la entrada y el centro de la puerta, un 10 % menos que las 54 anteriores. La sala de Galileo mide 21 columnas (25 % menos que las 28 anteriores), su abismo conserva 11.25 celdas de largo y el botón sobre la verja está a 31 m del cañón. Las barandillas bloquean el movimiento lateral, incluso al saltar, solo después de desplegar el puente.
 
 Eric lanza una poción a los 8 s y después cada 9 s. Apunta a la posición de hace 1.5 s, con vuelo de 1.6 s y un círculo de aviso. Al caer ríe y deja un charco verde de radio 0.7 celdas durante 2 s: tocarlo sin saltar causa Game Over. Los peligros desaparecen al vencerlo o reaparecer.
 

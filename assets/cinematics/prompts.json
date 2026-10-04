@@ -1,0 +1,24 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "key": "karla",
+      "prompt": "Use case: stylized-concept. Project asset for Astralia, a playful 16-bit educational fantasy RPG. Use the two attached photos ONLY as identity references for Karla, the same adult woman. Create one original charming pixel-art bust portrait, front view, dark hair neatly tied back, expressive arched eyebrows, a confident mischievous half smile, cream white knitted turtleneck sweater, teacher character. Medium likeness, illustrated not photographic. Crisp deliberate pixel clusters, warm skin shading, dark brown outline, limited 32-color palette, flattering and recognizably inspired by her. Bust centered, fully inside image with small transparent margins. Genuine transparent background. No circle, no text, no wanted poster, no accessories. This portrait will be inserted into an in-game fictional wanted newspaper for assigning excessively difficult essays.",
+      "referenced_image_paths": [
+        "/tmp/codex-clipboard-ca3d4ebd-da99-4826-a359-c5d843053c93.png",
+        "/tmp/codex-clipboard-8623d786-c7e1-475e-8b04-24867206882c.png"
+      ]
+    },
+    {
+      "key": "gate",
+      "prompt": "Use case: stylized-concept. Asset: an isolated medieval castle gateway for a 16-bit first person fantasy RPG, inspired by the attached stone arch photo. Front elevation, perfectly symmetrical, square composition. Grey warm weathered stone arch made of large visible blocks, flanking chunky pillars, moss and ivy at outer edges, massive stone lintel/crown above arch. Central opening occupies center horizontal 40% and bottom 65% of asset; leave that opening genuinely transparent and unobstructed all the way to bottom edge. IMPORTANT no iron bars, no door, no backdrop inside opening; a sliding iron portcullis will be animated in code behind this frame. Leave a small round recessed stone socket centered at 22% from top ABOVE the arch for a glowing target button added in code. Pixel-art crisp clusters, game sprite, hand-drawn low-resolution texture enlarged without smoothing. Outer background transparent. No people, no words, no UI, no ground extending beyond pillars.",
+      "referenced_image_paths": [
+        "/tmp/codex-clipboard-bfca5ae7-ff10-4990-b2c2-d4144e7fd4d4.png"
+      ]
+    },
+    {
+      "key": "descent",
+      "prompt": "Use case: illustration-story. Asset: one 2 by 2 storyboard background atlas for a 16-bit pixel-art fantasy RPG cinematic. Four equally sized rectangular quadrants, absolutely no gutters, borders or text. No people anywhere: characters will be animated over this. All quadrants share coherent moss green, midnight blue, warm amber pixel-art lighting and chunky hand-painted pixel clusters. TOP LEFT: forest clearing at twilight, open sky above tree silhouettes, soft moss floor at bottom center with ample clear space for a falling character. TOP RIGHT: same forest, view along a short path toward a small lonely wooden cabin with a dark doorway and unlit window, clearing in foreground for a walking character. BOTTOM LEFT: interior of this cabin in dim moonlight, workbench on right, bare hook and an unlit hanging bulb upper center; empty pale papers pinned to wooden walls, shadowy jars and scientific glassware barely distinguishable, center foreground clear. BOTTOM RIGHT: exact same cabin interior composition and camera, now warm ceiling bulb switched on, revealing many chemistry artifacts, retorts, beakers with emerald and violet liquids, copper piping, balances, notebooks, blueprints and wall space with blank portrait-size papers where wanted posters will be overlaid in code. Cozy sinister comic adventure mood, no real danger or graphic details. Precise aligned 2x2 grid layout; all four quadrants wide landscape composition. No lettering, no portraits, no watermarks."
+    }
+  ]
+}

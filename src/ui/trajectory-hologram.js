@@ -12,8 +12,8 @@ window.TrajectoryHologram=class {
   const lab=this.lab,p=lab.room.physics,s=lab.shot,c=this.ctx,w=this.canvas.width,h=this.canvas.height,predict=!lab.room.calculationMode&&this.preview.checked;
   const models=[];if(s)models.push({v:s.v,angle:s.angle,azimuth:s.azimuth,result:s.result});if(predict)models.push({v:lab.v0,angle:lab.angle,azimuth:lab.azimuth,result:lab.result});
   const stop=r=>r.hit?r.targetTime:r.endTime;
-  const maxX=Math.max(22,...models.map(m=>Projectile.sample(m.v,m.angle,stop(m.result),p,m.azimuth).x))*1.08;
-  const maxY=Math.max(4,...models.map(m=>Projectile.sample(m.v,m.angle,Math.max(0,Math.min(stop(m.result),m.result.vy/p.gravity)),p,m.azimuth).y))*1.2;
+  const maxX=Math.max(22,(p.targetX-p.originX)*p.metersPerCell,...models.map(m=>Projectile.sample(m.v,m.angle,stop(m.result),p,m.azimuth).x))*1.08;
+  const maxY=Math.max(4,p.targetHeight+p.tolerance,...models.map(m=>Projectile.sample(m.v,m.angle,Math.max(0,Math.min(stop(m.result),m.result.vy/p.gravity)),p,m.azimuth).y))*1.2;
   const compact=this.panel.clientWidth<260,left=compact?53:43,right=w-18,top=compact?38:28,bottom=h-(compact?42:34),X=x=>left+x/maxX*(right-left),Y=y=>bottom-y/maxY*(bottom-top);
   c.clearRect(0,0,w,h);c.font=`${compact?28:17}px Trebuchet MS, sans-serif`;c.lineWidth=1;c.textAlign='left';
   c.fillStyle='#b0ffd3';c.fillText('altura (m)',left,compact?25:18);
