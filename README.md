@@ -8,7 +8,7 @@ Abre `index.html` en un navegador moderno. No requiere instalación ni conexión
 
 ## Cinemáticas guardadas
 
-El botón **Cinemáticas** permite repetir **Ignitia: despegue y caída** e **Iván descenso** sin modificar la partida. Mientras se ven, el juego y su reloj quedan en pausa. La nueva escena muestra la caída de Iván en el bosque, la cabaña de Eric, el periódico «Se busca» de Karla y el laboratorio secreto. También aparece al pulsar **Continuar** después del resultado 6/6, antes de **Continuará en semana 10…**. Guion y controles: [src/cinematics/README.md](src/cinematics/README.md). Recursos y GIF de la verja: [assets/cinematics/README.md](assets/cinematics/README.md).
+El botón **Cinemáticas** permite repetir **Ignitia: despegue y caída**, **Iván descenso** e **Intercepción espacial** sin modificar la partida. Mientras se ven, el juego y sus relojes quedan en pausa. Iván desciende al bosque, camina hacia la cabaña de Eric y encuentra el periódico «Se busca» de Karla y el laboratorio secreto. Esta escena también aparece al pulsar **Continuar** después del resultado 6/6, antes de **Continuará en semana 10…**. La tercera película es un final alternativo de la galería: Ignitia sigue la ruta acertada, impacta al cohete de Eric y este cae en paracaídas dentro de una prisión. Si todavía no hay ruta resuelta, se identifica una trayectoria de demostración. Guion y controles: [src/cinematics/README.md](src/cinematics/README.md). Arte, prompts y GIF de la verja: [assets/cinematics/README.md](assets/cinematics/README.md).
 
 ## El castillo del Dr. Eric
 

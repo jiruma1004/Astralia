@@ -1,0 +1,49 @@
+{
+  "mode": "built-in image_gen",
+  "requests": [
+    {
+      "key": "rightwalk",
+      "prompt": "Use case: stylized-concept. Asset for a 16-bit RPG: TWO-frame horizontal walking sprite sheet, transparent background. Use attached existing Iván sprite only as character identity/style reference. Same adult dark-haired man with trimmed beard, pink short-sleeve shirt, dark blue trousers and brown shoes. Fix the gait: both frames MUST face and walk toward SCREEN RIGHT. Nose, knees AND shoe toes all point RIGHT, never left. First frame left foot forward and right arm forward, second frame right foot forward and left arm forward. Consistent scale, silhouette, face and identical ground baseline. Side/three-quarter view from the right-facing side, cheerful determined expression. Exactly two equal square cells edge to edge, no margins between cells, no labels, no background, whole body fully inside each cell, crisp pixel clusters. This corrects a backward-looking walk; do not mirror the head or body between frames.",
+      "referenced_image_paths": [
+        "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/sprites/ivan-walk-v2.png"
+      ],
+      "output": "Iteración de referencia, no utilizada en el juego"
+    },
+    {
+      "key": "wanted",
+      "prompt": "Use case: compositing. Create a game asset: two old WANTED poster papers side by side in TWO equally sized portrait cells, edge to edge, on transparent background. Reference1 is the desired wanted-poster design (aged ragged parchment, thin black border around portrait, Western engraving layout). Reference2 is Karla's identity. Reference3 is Dr Eric's identity (use one of the two expressions, not two people). LEFT poster: Karla front-facing head and shoulders, dark tied-back hair, cream turtleneck. RIGHT poster: Dr Eric front-facing bust, glasses, frowning eyebrows, white chemist lab coat. Printed portraits MUST be monochrome BLACK AND WHITE / greyscale ink, simplified silhouette-like high-contrast woodcut/halftone engraving with recognizable facial features, no color skin, integrated directly into the paper. Paper itself very pale desaturated aged ivory/grey with ragged torn edges, worn corners. Each cell ratio 2:3. Head-and-shoulders portrait inside a thin black rectangle, occupying horizontal 15–85%, vertical 29–64% of each poster. Reserve the top 25% and bottom 30% blank for live localized headline, name and offense added in code. NO TEXT anywhere, no reward numbers, no lettering, no logos. Two posters have same scale and identical alignment. Polished vintage printed illustration, compatible with pixel art RPG.",
+      "referenced_image_paths": [
+        "/tmp/codex-clipboard-e4fc6815-96e8-4357-85b0-3a4d9c5a1aaf.png",
+        "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/cinematics/karla-pixel.webp",
+        "/home/ivanruiz/Documents/Codex/2026-09-24/oye-preparame-una-carpeta-para-hacer-2/outputs/escape-room/assets/sprites/dr-eric.png"
+      ],
+      "output": "Iteración de referencia, no utilizada en el juego"
+    },
+    {
+      "key": "spaceatlas",
+      "prompt": "Use case: illustration-story. One 2x2 background atlas, four equal landscape quadrants with NO gutters or borders, 16-bit pixel art adventure RPG, midnight blues, mossy stone and warm amber lighting, crisp visible pixel clusters. No characters, no rockets and no words anywhere; those are animated in code. TOP LEFT: Ignitia launch pad at night, metal platform in foreground center lower third, castle side walls, distant mountains, open sky occupying upper two thirds. TOP RIGHT: outer space, deep navy starfield with subtle nebula, curved blue Earth limb in bottom left corner and small cratered Moon in upper right; large clear central space for two colliding rockets. BOTTOM LEFT: prison fortress seen from sky, wispy clouds, mossy old stone tower lower half center, open square roof shaft/courtyard at center, moonlit forest around it, ample open sky above for a descending parachute. BOTTOM RIGHT: inside an empty old stone prison cell facing its back wall, small high barred window, stone bench to one side, straw bed and metal cup, open roof shaft visible upper center with light descending; central floor clear for a landing villain. No bars across the FRONT of cell: foreground bars will close in code. Keep cell center free. Cinematic playful fantasy atmosphere, not photorealistic, no violence, no characters, no UI.",
+      "output": "space-interception-atlas.webp"
+    },
+    {
+      "key": "explosion",
+      "prompt": "Use case: stylized-concept. Asset: cartoon pixel-art spaceship explosion animation sprite sheet on genuine transparent background. EXACT 2 by 2 grid of four equally sized SQUARE cells with no gutters, no border, no text. Frame order top-left initial small bright yellow-white starburst; top-right big orange yellow radial fireball with irregular pixel lobes; bottom-left expanding orange red burst with darker smoke rim; bottom-right dissipating dark violet grey smoke with a few orange sparks. All explosions perfectly centered in each cell, entire effect inside each cell with generous transparent margin, no clipping across cell edges. Coherent palette and evolving shape. Classic polished 16-bit RPG visual effects, crisp hard pixel clusters. No people, no rockets, no background, no ground, no debris silhouettes.",
+      "output": "space-explosion.webp"
+    },
+    {
+      "key": "rightwalkFinal",
+      "prompt": "Edit this two-frame pixel character walking sheet. Keep the LEFT cell completely unchanged. Keep the RIGHT character's identity, right-facing head, clothing, scale and baseline. Change ONLY RIGHT frame's walking pose substantially to a passing step: near leg straight planted VERTICALLY directly below hip; far leg bent at knee and lifted behind, with its brown shoe clearly pointing RIGHT. Near arm swings back, far arm swings forward. It must be visibly DIFFERENT from the wide stride in left cell, giving a readable two-frame RIGHTWARD walking animation. Both feet toes must point RIGHT and never left. Exactly the same two equal cells, transparent background, no cell separators, no words.",
+      "referenced_image_paths": [
+        "/home/ivanruiz/.codex/generated_images/01a0d599-5291-7751-a271-cab8919bc5b1/exec-b4f98434-5790-4d5e-9aff-fbc9fd45790e.png"
+      ],
+      "output": "ivan-walk-right.webp"
+    },
+    {
+      "key": "wantedFinal",
+      "prompt": "Edit/reformat this illustration into a WIDE LANDSCAPE image, aspect ratio 3:2, two equal portrait poster cells side by side. Preserve the recognizable Karla face on LEFT and Eric glasses lab-coat face on RIGHT, monochrome ink engraving directly printed on worn light grey/ivory paper. Each individual paper must have WIDTH:HEIGHT ratio 3:4, neither tall skinny nor stretched. Papers fill almost entire height of image, with just 3% transparent outer margins, NO dark backdrop, no shadows outside paper, genuine TRANSPARENCY beyond torn ragged edges. Portrait box should be between 27% and 65% down each sheet. Leave top quarter and bottom quarter as BLANK light paper for headline and descriptions in code. No letters or numbers at all. High contrast black and white printed faces, readable silhouette-like woodcut, same aged western WANTED-poster style, two equally sized cells. Critical: wide landscape composition, not vertical composition. No external top/bottom black area.",
+      "referenced_image_paths": [
+        "/home/ivanruiz/.codex/generated_images/01a0d599-5291-7751-a271-cab8919bc5b1/exec-0011fd70-6242-4a24-ac67-3077761b3246.png"
+      ],
+      "output": "wanted-portraits.webp"
+    }
+  ]
+}

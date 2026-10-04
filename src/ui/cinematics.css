@@ -7,3 +7,14 @@
 #cinema-newspaper h2,#cinema-newspaper h3{color:#372c25;font-family:Georgia,serif;font-weight:bold}
 @media(max-width:650px){#cinema-player{padding:9px}.cinema-screen{height:48vh;min-height:330px}#cinema-newspaper{inset:3% 8%;padding:7px}#cinema-caption{font-size:16px;min-height:72px}.cinema-title{font-size:18px}#cinema-ivan-line{max-width:75%;left:4%;top:20%}.cinema-controls{gap:6px}.cinema-controls button{font-size:13px;padding:8px}.cinema-controls #cinema-time{font-size:12px}}
 @media(prefers-reduced-motion:reduce){#cinema-newspaper,#cinema-end,#cinema-end p{animation:none}}
+/* Carteles impresos: el rostro ya forma parte del papel; texto vivo bilingüe. */
+#cinema-newspaper{inset:3% 0;margin:0 auto;width:min(420px,78%);max-width:calc(58vh * .70);height:94%;border:0;padding:0;display:block;background:transparent url('../../assets/cinematics/wanted-portraits.webp') left center/200% 100% no-repeat;box-shadow:none;filter:grayscale(1)}
+#cinema-newspaper h2{position:absolute;top:7%;left:4%;width:92%;font-size:clamp(25px,3.1vw,44px);letter-spacing:1px;margin:0}
+#cinema-newspaper .wanted-archive{position:absolute;top:19%;left:7%;width:86%;font-weight:bold;font-size:clamp(8px,1vw,12px)}
+#cinema-newspaper h3{position:absolute;top:77%;left:6%;width:88%;font-size:clamp(19px,2.2vw,28px);letter-spacing:3px}
+#cinema-newspaper p{position:absolute;top:85%;left:10%;width:80%;font-size:clamp(12px,1.2vw,17px);line-height:1.25;margin:0}
+#cinema-newspaper .wanted-footer{display:none}
+#cinema-eric-line{position:absolute;right:5%;top:12%;max-width:52%;margin:0;padding:14px 18px;border:2px solid #b99379;border-radius:14px;background:#f2e4c9;color:#38293c;box-shadow:0 5px 12px #0009;font-size:clamp(16px,2vw,25px);line-height:1.4}
+#cinema-eric-line:after{content:'';position:absolute;bottom:-12px;left:30px;border:6px solid transparent;border-top-color:#f2e4c9}
+#cinema-player[data-phase="impact"] #cinema-eric-line{top:auto;bottom:6%}
+@media(max-width:650px){#cinema-newspaper{max-width:calc(48vh * .70);width:78%}#cinema-newspaper h2{font-size:27px}#cinema-newspaper h3{font-size:21px}#cinema-newspaper p{font-size:12px}#cinema-eric-line{right:5%;top:5%;max-width:90%;font-size:16px;padding:9px 12px}}
