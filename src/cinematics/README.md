@@ -30,10 +30,14 @@ Dentro de la cabaña, Iván usa `ivan-cabin-idle.webp`: se sitúa en el centro, 
 
 ## Final principal conectado
 
-`ignitia-intercepcion` — **Ignitia: misión cumplida**, 55 s. `mission-ending.js` reutiliza los fondos, sprites y la intercepción existentes. Aviso (0–3), caminata (3–6), cable (6–7), ascenso (7–13), caída sin destino visible (13–18), vuelo sobre la ruta confirmada (18–29), impacto (29–32), paracaídas (32–39), celda y cierre de reja (39–46), captura (46–55). La caída de Iván no altera los parámetros del vuelo.
+`ignitia-intercepcion` — **Ignitia: misión cumplida**, 62 s. `mission-ending.js` reutiliza los fondos, sprites y la intercepción existentes. Aviso (0–4), caminata (4–7,5), cable (7,5–8,5), ascenso (8,5–19), caída sin destino visible (19–25), vuelo sobre la ruta confirmada (25–36), impacto (36–39), paracaídas (39–46), celda y cierre de reja (46–53), captura (53–62). La caída de Iván no altera los parámetros del vuelo.
 
 El ensayo acertado dispara `IgnitiaMission.startLaunch` una sola vez. La finalización enlaza automáticamente la ceremonia y marca los seis retos completados. El diploma permanece visible, incluso después de los 46 s. Continuar, cerrar o Escape desde el diploma abre el epílogo secreto; la misma interacción antes del diploma avanza al certificado y espera otro gesto. La escena secreta termina en el cierre de capítulo. Cada reproducción consume su callback una vez y bloquea clics durante los primeros 450 ms de una transición. Repetir se oculta en el recorrido principal.
 
 `ignitia-launch` y `intercepcion-espacial` se conservan en la galería como versiones anteriores, sin participar en el final principal. El código anterior también está conservado en el commit `89569406fef10fc6ece03cc05efe2ba745c24ed2`; copia local adicional: `work/backups/final-anterior-8956940.zip`, fuera del sitio publicado.
 
 Verificación de recorrido: `tests/final-flow.browser.js` (Playwright; `GAME_URL`, `PLAYWRIGHT_MODULE`, `CHROME_PATH` y `SCREENSHOT_DIR` opcionales). Comprueba solución real, lanzamiento único, ruta sin alteración, sonidos únicos, captura, ceremonia, espera del diploma, doble clic, epílogo, salida y separación de la galería.
+
+El lanzamiento principal vuelve a usar `EscapeRenderer` y la sala VI real, mediante una copia visual de `IgnitiaMission`: misma plataforma, cable, sprites y cámara del final anterior. `MissionEnding.state` coincide con el ascenso original hasta los 19 s; después elimina únicamente la inestabilidad del cohete. `IvanLaunchScene` conserva el enganche, giro, balanceo, grito y caída. El motor no cambia parámetros ni progreso al dibujar.
+
+Durante la historia, las escenas se superponen exactamente al área del juego, sin ventana de reproductor; pausa y salto quedan discretos arriba y el diálogo abajo. La galería conserva su reproductor para las repeticiones. El diploma y el epílogo siguen enlazados como antes.

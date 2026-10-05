@@ -36,3 +36,16 @@
 
 #cinema-player.cinema-enter .cinema-screen{animation:cinema-enter .45s ease both}@keyframes cinema-enter{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){#cinema-player.cinema-enter .cinema-screen{animation:none}}
+
+/* En la historia las escenas ocupan la vista del mundo, sin abrir un reproductor. */
+#cinema-player[data-presentation="world"]{position:fixed;inset:auto;left:var(--world-left);top:var(--world-top);width:var(--world-width);height:var(--world-height);max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:inherit;overflow:hidden;box-shadow:none}
+#cinema-player[data-presentation="world"]::backdrop{background:transparent}
+#cinema-player[data-presentation="world"] .cinema-title{display:none}
+#cinema-player[data-presentation="world"] .cinema-screen{height:100%;min-height:0;border:0;box-sizing:border-box}
+#cinema-player[data-presentation="world"] #cinema-caption{position:absolute;bottom:0;left:0;right:0;margin:0;min-height:0;padding:14px 20px;background:linear-gradient(transparent,#081322ee 35%);text-align:center;font-size:clamp(15px,1.3vw,20px);pointer-events:none}
+#cinema-player[data-presentation="world"] .cinema-controls{position:absolute;top:10px;right:10px;gap:6px}
+#cinema-player[data-presentation="world"] .cinema-controls button{font-size:13px;padding:5px 9px;background:#10203acc;opacity:.8}
+#cinema-player[data-presentation="world"] #cinema-time{display:none}
+#cinema-player[data-presentation="world"][data-phase="ceremony"] #cinema-caption{display:none}
+#cinema-player[data-presentation="world"] #ceremony-certificate{overflow:auto;inset:8% 14%;padding:12px 24px;gap:5px}
+@media(max-width:650px){#cinema-player[data-presentation="world"] #ceremony-certificate{inset:9% 2% 2%;padding:10px;justify-content:flex-start}#cinema-player[data-presentation="world"] #cinema-caption{padding:10px;font-size:14px}}

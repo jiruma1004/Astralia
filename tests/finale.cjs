@@ -24,3 +24,8 @@ assert.equal(impact.pitch,dive.pitch);
 assert.deepEqual(flight.state(33),flight.state(60),'Fondo estable durante diálogo y captura');
 for(const t of [18,19.1,22])assert(w.ENGLISH[flight.state(t).caption],'Avisos traducidos');
 console.log('OK: desprendimiento continuo, caída por gravedad, giro múltiple, seguimiento de cámara, cierre estable y traducciones.');
+
+vm.runInContext(fs.readFileSync('src/cinematics/mission-ending.js','utf8'),w);
+for(const t of [0,4,8,8.5,12,16,18.99]){const old=w.RocketFinaleScene.state(t),current=w.MissionEnding.state(t);for(const k of ['x','y','rocketZ','rotation','pitch'])assert(Math.abs(old[k]-current[k])<1e-8,'Reutiliza el ascenso aprobado: '+k);}
+for(const t of [19,21,24.9]){const s=w.MissionEnding.state(t);assert.equal(s.rotation,0);assert.equal(s.x,16);assert.equal(s.y,7.5);assert(s.rocketZ>w.MissionEnding.state(t-.01).rocketZ);}
+console.log('OK: misma cámara y despegue que la escena anterior; después de soltarse Iván, el cohete sigue recto.');
