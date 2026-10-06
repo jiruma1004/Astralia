@@ -29,3 +29,11 @@ Use case: identity-preserve and style-transfer. Edit the supplied photograph of 
 ## Prompt usado para Ivan
 
 Edit the supplied photograph into a playful retro video game enemy sprite sheet. Preserve the recognizable identity, hairstyle, facial hair, facial proportions and pale pink shirt of this adult man. Output a transparent PNG sprite sheet with EXACTLY TWO equally sized cells arranged side by side horizontally, no margins between cells, identical fixed camera scale and identical position in each cell. Each cell shows the same floating bust portrait from top of head to upper chest, centered within that cell with generous transparent padding. LEFT FRAME: mischievous expression, mouth closed. RIGHT FRAME: same face, comically wide open mouth showing simple blocky teeth, as if taking a cartoon bite. Friendly humorous monster chase, no blood, no gore, no weapons. Strong chunky pixel art with visible square pixel clusters, limited palette, crisp hard edges, no smoothing, no photographic textures, dark pixel outline, readable at tiny game scale. Both busts must have equal heights and be aligned at the eyes and shoulders. Transparent alpha background, no scene, no labels, no text, no extra frames. This will be animated by alternating left and right frames in a first-person educational dungeon game.
+
+## EPI Paola · opción A con lentes (6 de octubre)
+
+Diseño A aprobado a partir de la nueva foto con lentes. `epi-paola-glasses-a-talk.webp` contiene boca cerrada/abierta y se usa en el prólogo, ayuda H y diálogos de Ignitia. Conserva la animación por sílabas de `PaolaPortrait`. `epi-paola-glasses-a-talk.gif` es una exportación independiente a 12 fps del mismo código.
+
+La ceremonia utiliza `../cinematics/paola-glasses-a-gesture.webp` y su exportación `.gif`: sostiene la tablet, levanta el brazo hacia la derecha y vuelve al reposo. Sus anclajes y boca están registrados en `gesture-sprites.js`.
+
+Generados con la herramienta integrada `image_gen`; prompts y refinamientos en `paola-glasses-a-prompts.json`. Las versiones anteriores permanecen archivadas y no están conectadas a las apariciones actuales del juego.

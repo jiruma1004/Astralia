@@ -48,3 +48,7 @@ El juego anima los atlas en Canvas mediante `src/cinematics/gesture-sprites.js`,
 ## Paola con tablet
 
 `paola-tablet-gesture.webp` sustituye únicamente los libros por una tablet en las tres poses de la ceremonia. Mantiene los anclajes de `gesture-sprites.js`, el rostro, el vestuario y la animación de brazos. Edición con la herramienta integrada `image_gen`; prompt en `tablet-prompt.json`. Se conserva `paola-gesture.webp` como versión anterior.
+
+## Paola A con lentes · versión actual
+
+`paola-glasses-a-gesture.webp` y `paola-glasses-a-gesture.gif` actualizan la ceremonia al diseño A elegido el 6 de octubre. Tres poses con tablet y gesto hacia la derecha, boca animada y pies alineados. Generados con `image_gen` integrado; prompts en `../sprites/paola-glasses-a-prompts.json`. El retrato de diálogo correspondiente está en `../sprites/epi-paola-glasses-a-talk.webp`. Los recursos previos quedan archivados.

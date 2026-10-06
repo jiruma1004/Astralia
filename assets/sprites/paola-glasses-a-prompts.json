@@ -1,0 +1,22 @@
+{
+  "mode": "built-in image_gen",
+  "approvedOption": "A — foto nueva con lentes",
+  "requests": [
+    {
+      "key": "portrait",
+      "prompt": "Use case: identity-preserve. Production sprite sheet derived from the APPROVED character A reference. Preserve her exact face, large translucent pale pink glasses, dark center-parted hair, warm natural complexion, white blouse, brown cardigan and fine-pixel RPG style. Create exactly TWO square head-and-shoulders portrait frames side by side in a 2:1 wide image, same head size and position within each equal square. First frame relaxed closed-mouth smile. Second frame the exact same pose with mouth gently open speaking, small visible teeth; change only mouth, not eyes, face or head angle. Include entire head and hair with margin, shoulders bottom. Real transparent background; no navy background, border, letter A, tablet, text or extra people. Each portrait must align perfectly for toggling while speaking."
+    },
+    {
+      "key": "body",
+      "prompt": "Use case: identity-preserve. Production animation sprite sheet from approved character A reference. EXACT same recognizable face, translucent pale pink large glasses, straight dark center-parted hair, white blouse, brown cardigan, cream trousers, brown shoes, fine pixel RPG illustration. Exactly THREE full-body frames in one horizontal row, equal cell widths, same body/head size and baseline, feet entirely visible. Adult teacher EPI Paola. One slim dark tablet held on viewer LEFT side of torso throughout. Frame 1: both arms resting naturally holding tablet to chest. Frame 2: free arm (viewer RIGHT) raised halfway in explanation. Frame 3: free arm extended to viewer RIGHT with open welcoming palm. Other hand holds tablet unchanged. Preserve glasses in every frame. Real transparent background, clean isolated sprites with ample space between them, no text, no border, no A, no scene, no books. Same neutral closed mouth in all frames; game adds mouth animation. Keep feet, torso and face vertically aligned across frames."
+    }
+  ],
+  "refinements": [
+    "Precise object/pose edit of this three-frame EPI Paola sprite sheet. Keep EXACT same character A identity, glasses, pixel texture, outfit, head/torso/feet position, scale, and three-cell layout. Correct ONLY arm/tablet continuity: in ALL THREE frames the tablet must rest on the viewer LEFT side of her torso and be held by the arm on the viewer LEFT. Frame 1 both hands rest on tablet. Frame 2 the arm on viewer RIGHT is half raised out to the right, elbow bent, palm open. Frame 3 that SAME viewer RIGHT arm extends further to the RIGHT, palm open. Never raise the viewer LEFT arm. Two arms only. Remove ALL background glow and shading outside the characters: real transparent alpha with fully transparent empty space, NO halo, no floor shadow. No labels, no text.",
+    "Edit ONLY the MIDDLE character in this 3-character sprite sheet. The middle character is incorrectly mirrored in her ARMS ONLY. She must hold the tablet on the LEFT SIDE OF THE IMAGE, like the leftmost and rightmost characters. Her waving hand must be on the RIGHT SIDE OF THE IMAGE, like the rightmost character. Replace the middle pose by a copy of the RIGHTMOST pose but lower that right-side waving hand slightly toward shoulder level. DO NOT flip her face, hair, clothes or legs. Leave the first and third characters completely unchanged. Preserve the three equally sized cells, exact image size, pixel art and transparent alpha. No other changes."
+  ],
+  "outputs": [
+    "assets/sprites/epi-paola-glasses-a-talk.webp",
+    "assets/cinematics/paola-glasses-a-gesture.webp"
+  ]
+}
