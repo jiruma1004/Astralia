@@ -847,3 +847,12 @@ Object.assign(window.ENGLISH,{
   "Iván se suelta y desaparece entre las nubes. El cohete mantiene la trayectoria confirmada.": "Iván comes loose and disappears into the clouds. The rocket stays on the confirmed trajectory.",
   "Volver al juego": "Back to the game"
 });
+
+Object.assign(window.ENGLISH,{
+  "Ceremonia de Ignitia · Karla (alterna)": "Ignitia ceremony · Karla (alternate)",
+  "Angélica y Karla, coordinadora académica del área de ciencias. Versión alterna guardada.": "Angélica and Karla, academic coordinator for the sciences area. Saved alternate version.",
+  "Soy Karla, coordinadora académica del área de ciencias. Tu esfuerzo y perseverancia hicieron posible esta misión. ¡Felicidades!": "I am Karla, academic coordinator for the sciences area. Your effort and perseverance made this mission possible. Congratulations!",
+  "Espero no pase nada por tener a un químico en una celda…": "I hope nothing happens with a chemist in a cell…",
+  "KARLA · COORDINADORA ACADÉMICA DEL ÁREA DE CIENCIAS": "KARLA · ACADEMIC COORDINATOR FOR SCIENCES",
+  "Coordinadora académica del área de ciencias": "Academic coordinator for sciences"
+});

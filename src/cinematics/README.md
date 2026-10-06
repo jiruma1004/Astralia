@@ -41,3 +41,9 @@ Verificación de recorrido: `tests/final-flow.browser.js` (Playwright; `GAME_URL
 El lanzamiento principal vuelve a usar `EscapeRenderer` y la sala VI real, mediante una copia visual de `IgnitiaMission`: misma plataforma, cable, sprites y cámara del final anterior. `MissionEnding.state` coincide con el ascenso original hasta los 19 s; después elimina únicamente la inestabilidad del cohete. `IvanLaunchScene` conserva el enganche, giro, balanceo, grito y caída. El motor no cambia parámetros ni progreso al dibujar.
 
 Durante la historia, las escenas se superponen exactamente al área del juego, sin ventana de reproductor; pausa y salto quedan discretos arriba y el diálogo abajo. La galería conserva su reproductor para las repeticiones. El diploma y el epílogo siguen enlazados como antes.
+
+## Ceremonia alterna con Karla
+
+La galería incluye `ceremonia-karla` (46 s), con Angélica y Karla como coordinadora académica del área de ciencias. Comparte escenario, confeti, música y diploma con la original; el final principal sigue usando `ceremonia-ignitia` con Paola. Reproducir la alternativa no concede progreso ni activa el easter egg.
+
+Arte: `assets/cinematics/karla-academic-gesture.webp`, creado con image_gen integrado. Prompt en `assets/cinematics/karla-academic-prompts.json`. Tres poses, brazo animado y boca al hablar.
