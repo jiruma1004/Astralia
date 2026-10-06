@@ -9,3 +9,6 @@
 @media(max-width:750px){.story-portrait.missing-newspaper{width:192px;padding:8px}.missing-newspaper canvas{width:108px;height:108px;margin:auto}.missing-headline strong{font-size:20px}.missing-headline{margin-bottom:6px}.missing-caption{font-size:10px;margin-top:5px}.missing-newspaper #story-person{font-size:12px}}
 .prologue .missing-headline strong{color:#29271f}.prologue .missing-caption{color:#3f382c;font-size:11px;line-height:1.45;margin:7px 0 0}.prologue .missing-headline small{color:#3f382c}
 @media(max-width:750px){.prologue .missing-caption{font-size:10px}}
+
+.prologue .story-portrait.full-body{background:transparent;border:0;padding:0}.prologue .full-body canvas{display:block;width:224px;height:auto;margin:auto}
+@media(max-width:750px){.prologue .story-portrait.full-body{width:140px}.prologue .full-body canvas{width:136px;height:auto}}

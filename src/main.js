@@ -56,7 +56,7 @@ function load(i){cinematics.close();measurement.reset(rooms[i]);ignitia.reset(ro
  if(room.physics)lab.reset(room);if(room.roulette)roulette.reset();
  boss=room.boss?new EricEncounter(bossEvent):null;if(boss)boss.canFire=()=>canPlay()&&boss.active===boss.near(player,renderer,rooms[index],opened);
  corridor=room.corridor?new RelaxCorridor(corridorEvent):null;
- maze=room.conceptual?new ConceptMaze(room,mazeEvent):null;room.maze=maze;companions.load(room,roulette,maze);checkpoint={room:index,stage:0,position:spawnPlayer(room)};
+ maze=room.conceptual?new ConceptMaze(room,mazeEvent):null;room.maze=maze;companions.load(room,roulette,maze);if(room.corridor)companions.toast('Cuidado, el Dr. Eric te está lanzando ecuaciones desde el otro lado');checkpoint={room:index,stage:0,position:spawnPlayer(room)};
  [...nav.children].forEach(b=>{const selected=Number(b.dataset.room)===i;b.classList.toggle('active',selected);b.setAttribute('aria-current',selected?'true':'false');});
 }
 function mazeEvent(type,text){

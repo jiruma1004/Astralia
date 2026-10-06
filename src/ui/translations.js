@@ -856,3 +856,8 @@ Object.assign(window.ENGLISH,{
   "KARLA · COORDINADORA ACADÉMICA DEL ÁREA DE CIENCIAS": "KARLA · ACADEMIC COORDINATOR FOR SCIENCES",
   "Coordinadora académica del área de ciencias": "Academic coordinator for sciences"
 });
+
+Object.assign(window.ENGLISH,{
+"Cuidado, el Dr. Eric te está lanzando ecuaciones desde el otro lado":"Watch out! Dr. Eric is throwing equations at you from the other side.",
+"El Dr. Eric lanza ecuaciones en línea recta desde el otro extremo. Muévete a los lados para esquivarlas. Usa Shift para correr y Espacio para saltar entre las plataformas sobre la lava; busca el siguiente apoyo antes de saltar.":"Dr. Eric throws equations in straight lines from the far end. Move sideways to dodge them. Use Shift to sprint and Space to jump between platforms over the lava; find your next landing spot before jumping."
+});
