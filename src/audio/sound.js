@@ -41,6 +41,13 @@ window.Sound={
   for(let i=0;i<data.length;i++){const x=i/this.ctx.sampleRate;data[i]=(Math.random()*2-1)*Math.min(1,x/.015)*Math.exp(-x*10);}
   const source=this.ctx.createBufferSource(),filter=this.ctx.createBiquadFilter(),gain=this.ctx.createGain();source.buffer=buffer;filter.type='lowpass';filter.frequency.setValueAtTime(2400,t);filter.frequency.exponentialRampToValueAtTime(180,t+length);gain.gain.value=.65;source.connect(filter).connect(gain).connect(this.master);source.onended=()=>{source.disconnect();filter.disconnect();gain.disconnect();};source.start(t);
  },
+ cartStep(slow=0){
+  this.tone(92-slow*20,.11,'triangle',.13);this.tone(165,.055,'triangle',.075,.065);
+  if(!this.enabled||!this.ctx||document.hidden)return;
+  const ctx=this.ctx,b=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*.16),ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/d.length*7);
+  const src=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();src.buffer=b;f.type='bandpass';f.frequency.value=480;g.gain.value=.17;src.connect(f).connect(g).connect(this.master);src.onended=()=>{src.disconnect();f.disconnect();g.disconnect();};src.start();
+  this.tone(280-slow*90,.18,'sawtooth',.015);
+ },
  dialogueBlip(index){this.tone([230,260,245,280][index%4],.045,'square',.055);},
  click(){this.tone(880,.12,'sine',.3);this.tone(1320,.2,'sine',.13,.04);},
  load(){this.tone(220,.12,'triangle',.3);this.tone(440,.22,'sine',.25,.1);},

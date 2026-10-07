@@ -1,4 +1,8 @@
 window.ENGLISH={
+ "En las afueras del castillo…":"On the outskirts of the castle…",
+ "Omitir llegada":"Skip arrival",
+ "Comenzar el sendero":"Start the trail",
+ "Hasta aquí llega la carreta: el cráter ha cortado el camino. El Dr. Eric no nos lo ha puesto tan fácil. Tendremos que seguir a pie… y pensar bien dónde pisamos.":"This is as far as the cart can go: the crater has cut off the road. Dr. Eric hasn't made this easy for us. We'll have to continue on foot… and think carefully about where we step.",
   "Salta entre las plataformas · Shift corre · Espacio salta":"Jump between platforms · Shift to sprint · Space to jump",
   "Se cansó de escuchar «eso no lo vimos» y tener que explicar todo desde cero.":"She grew tired of hearing ‘we never covered that’ and having to explain everything from scratch.",
   "El paracaídas se abre. Una corriente lo lleva directo al patio de una prisión.":"The parachute opens. A gust carries him straight into a prison courtyard.",
