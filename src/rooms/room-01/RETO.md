@@ -17,4 +17,7 @@ La torreta Prisma tiene `physics.maxEnergy = 180` J. Se calcula E = ½mv² en am
 
 El jugador puede entrar en las casillas del abismo; perder el suelo inicia una animación de caída. El puente soporta únicamente la fila central cuando está activo. Reaparecer conserva progreso e intentos, repara la torreta y cancela cualquier lanzamiento que estuviera en vuelo al morir. La física del disparo ideal sigue siendo independiente de la masa a velocidad fija; la sobrecarga es una regla de capacidad del equipo del juego.
 
-Pista actual: seis ecuaciones pintadas en el muro posterior al punto de inicio. Incluyen la trayectoria y `v₀ = √(2E/m)`, sin explicación de parámetros. La trayectoria escrita corresponde al tiro alineado (`φ = 0°`). Paola señala que una de ellas permite calcular la trayectoria al botón; la física y la posición del blanco no cambian.
+Pista actual: seis ecuaciones pintadas en el muro posterior al punto de inicio. Incluyen la trayectoria y `v₀ = √(2E/m)`, sin explicación de parámetros. La trayectoria escrita corresponde al tiro alineado (`φ = 0°`). Paola señala que una de ellas permite calcular la trayectoria al botón; la física permanece igual y la pista informa la distancia vigente.
+
+## Blanco de profundidad variable
+Empieza en x=19 (31 m desde la boca). Tras tres disparos fallidos completos cambia a x=16, 18, 14.5, 17 y vuelve a 19: distancias 25, 29, 22, 27 y 31 m. Conserva altura 4.5 m y alineación lateral. Se excluyen intentos sin bala, propuestas inválidas, sobrecargas y tiros interrumpidos; acertar abre el puente sin mover el blanco. El cambio ocurre después del vuelo, nunca durante él. Reaparecer conserva distancia y contador; reiniciar la sala restaura 31 m. El cañón, la ayuda, las gráficas y el registro usan la distancia real.

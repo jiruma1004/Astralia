@@ -26,3 +26,5 @@
 #station.cannon-console .numeric-settings{gap:7px 12px;margin:8px 0}
 #station.cannon-console .numeric-settings input{height:34px;margin-top:3px}
 #station.cannon-console .cannon-tabs{margin:9px 0}
+
+.cannon-target-live{font-size:15px!important;line-height:1.35!important;margin:4px 0!important;color:#b9efd7}

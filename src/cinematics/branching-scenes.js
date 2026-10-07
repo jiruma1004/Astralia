@@ -26,7 +26,7 @@ window.EricEscapeScene=class {
 (()=>{
 const P=CinematicLibrary.prototype,play=P.play,tick=P.tick,refresh=P.refresh,close=P.requestClose;
 P.play=function(id,options){
- this.dialogueStops=SceneDialogueStops[id]||null;this.dialogueIndex=0;this.dialogueWaiting=false;
+ this.visualTime=0;this.dialogueStops=SceneDialogueStops[id]||null;this.dialogueIndex=0;this.dialogueWaiting=false;
  if(!document.querySelector('#scene-next')){
   this.player.insertAdjacentHTML('beforeend','<button id="scene-next" class="primary" hidden>Continuar ▸</button>');
   document.querySelector('#scene-next').onclick=()=>this.advanceDialogue();
@@ -49,6 +49,7 @@ P.advanceDialogue=function(){
 };
 P.tick=function(dt){
  if(!this.active||!this.item||document.hidden)return;
+ if(!this.paused&&!this.finished)this.visualTime=(this.visualTime||0)+dt;
  const gate=this.dialogueStops?.[this.dialogueIndex];
  if(gate!==undefined&&!this.paused&&!this.finished){
   if(this.time+dt>=gate){this.time=gate;this.dialogueWaiting=true;this.audio();this.draw();this.refresh();return;}

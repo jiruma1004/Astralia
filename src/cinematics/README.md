@@ -65,3 +65,5 @@ La fuga muestra a Angélica en un comunicador con dos fotogramas de boca; arte e
 
 ## Aventura EPIK · ritmo final
 La caída de Eric y su escape desde el soporte se reproducen sin pausas. `ignitia-intercepcion`, `intercepcion-espacial` e `ignitia-launch` avanzan continuos. Solo las ceremonias y los epílogos (`ivan-descenso`, `eric-fuga`) tienen pausas de diálogo. El diploma conserva su interacción obligatoria y la protección contra doble clic. El prólogo vuelve al retrato de torso de Paola, con dos fotogramas de boca.
+
+Las ceremonias usan un reloj visual separado del diálogo: el confeti y los gestos siguen activos al esperar Continuar y no saltan al revelar texto. Las poses se funden en 0,1 s; Pausar sí detiene ambos relojes. El diploma conserva su espera y el filtro de doble clic.

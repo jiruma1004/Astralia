@@ -949,3 +949,19 @@ Object.assign(window.ENGLISH,{
  'Siete umbrales. A tu ritmo.':'Seven thresholds. At your pace.',
  'ACADEMIA DE LOS SIETE UMBRALES':'ACADEMY OF THE SEVEN THRESHOLDS'
 });
+
+Object.assign(window.ENGLISH,{
+  "Distancia horizontal del botón:": "Horizontal distance to the button:",
+  "Altura sobre el suelo:": "Height above the ground:",
+  "sobre la boca del cañón": "above the cannon muzzle",
+  "Mira el muro detrás de ti: hay seis ecuaciones de tiza. Una de ellas es la correcta para calcular la trayectoria hasta el botón.": "Look at the wall behind you: there are six chalk equations. One is the right equation to calculate the trajectory to the button.",
+  "Tiros antes de cambiar la distancia:": "Shots before the distance changes:",
+  "Tres tiros fallidos: el botón cambió de distancia.": "Three missed shots: the button changed distance.",
+  "Nueva distancia:": "New distance:",
+  "Recalcula tu lanzamiento; la altura no cambia.": "Recalculate your shot; the height is unchanged.",
+  "Activa el botón a": "Activate the button at",
+  "t₀ es el instante al iniciar el ensayo; d, el retraso de salida. Eric parte de (120, 60) km y viaja con rapidez de 0.28 km/s. Su reloj nunca se reinicia entre ensayos.": "t₀ is the time when the trial starts; d is launch delay. Eric starts at (120, 60) km and travels at a speed of 0.28 km/s. His clock never resets between trials.",
+  "Modelo balístico 2D, sin motor ni aire, con gravedad uniforme; Luna fuera de escala. Encuentro a ≤ 3 km. Llegada lunar: t ≈ 517.84 s. Reloj ×1 al planear, ×20 al ensayar; sigue al cerrar el panel.": "2D ballistic model, engines off, no air, uniform gravity; Moon not to scale. Meet within 3 km. Lunar arrival: t ≈ 517.84 s. Clock at 1× when planning, 20× during trials; it continues with the panel closed."
+});
+
+Object.assign(window.ENGLISH,{'Blanco:':'Target:','Altura:':'Height:'});

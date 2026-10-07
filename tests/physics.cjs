@@ -22,3 +22,5 @@ const a=i=>qs[i-1].fields.map(f=>f[2]),g=9.81,r=d=>d*Math.PI/180;
 console.log('OK: proyectiles y diez problemas sin avanzados.');
 
 assert.equal(world.ESCAPE_ROOMS[0].bridge.end-world.ESCAPE_ROOMS[0].bridge.start,11.25);assert.equal(world.ESCAPE_ROOMS[0].map[0].length,28*.75);assert.equal(D,31);assert.equal(p.targetHeight,4.5);assert(.5*solution**2<180,'Solución de 1 kg dentro de capacidad');
+
+const target=new world.CannonTarget(p);assert.equal(target.distance,31);for(let batch=0;batch<10;batch++){const previous=p.targetX;assert(!target.miss());assert.equal(p.targetX,previous);assert(!target.miss());assert(target.miss());assert.notEqual(p.targetX,previous);assert.equal(p.targetHeight,4.5);assert.equal(p.originY,3.5);const D=target.distance,v=Math.sqrt(p.gravity*D*D/(D-3.3));assert(P.evaluate(v,45,p).hit);assert(v>=6&&v<=20);assert(.5*v*v<=180);}new world.CannonTarget(p);assert.equal(p.targetX,19);console.log('OK: target moves in depth after three misses, all distances solvable, reset restores original position.');
