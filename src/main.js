@@ -61,7 +61,7 @@ function load(i){cinematics.close();measurement.reset(rooms[i]);ignitia.reset(ro
  [...nav.children].forEach(b=>{const selected=Number(b.dataset.room)===i;b.classList.toggle('active',selected);b.setAttribute('aria-current',selected?'true':'false');});
 }
 function trialEvent(type,position){
- if(type==='fall'){die('pit');return;}
+ if(type==='fall'||type==='break'){die('pit',type==='break'?'wood':null);return;}
  checkpoint={room:index,stage:trial.stage,position};opened=trial.finished;
  document.querySelector('#door-status').textContent=opened?'SENDERO SUPERADO':`SALTO ${trial.stage+1} / 5`;
  companions.updateTrial();Sound.click();if(opened)Sound.success();
@@ -151,7 +151,7 @@ function walkable(x,y){const room=rooms[index];if(opened&&room.bridge){const b=r
 // El abismo permite caminar: perder el suelo inicia la caída.
 function supported(x,y){const room=rooms[index];if(room.trial)return trial.supports(x,y);if(room.lava)return room.lava.supports(x,y);const tile=room.floorTile?room.floorTile(x,y):room.map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===(rooms[index].boss?7:3));}
 function clearDeath(){death=null;camera.release();canvas.style.transform='';canvas.style.opacity='';const dialog=document.querySelector('#death-dialog');if(dialog.open)dialog.close();}
-function die(type){if(death)return;if(type==='fall'||type==='pit')gravityFalls++;cannon.close();boss?.close();death={type,t:0,shown:false,startedAt:performance.now()};camera.release();companions.closeHelp();companions.closeConsole();lab.hologram.hide();keys.clear();lab.dead=true;lab.lock(true);if(lab.shot&&!lab.shot.done){lab.shot.done=true;lab.history.push('Lanzamiento interrumpido por el fin del intento.');lab.renderHistory();}Sound.failure(type);message.textContent=type==='moon'?'Eric ha llegado a la Luna.':type==='lava'?'¡Has tocado la lava!':type==='fall'?'Has perdido pie…':type==='ivan'?'¡EPI Ivan te alcanzó!':type==='symbol'?'¡Un símbolo te alcanzó!':type==='potion'?'¡La poción de Eric te alcanzó!':type==='pit'?'Has caído en la fosa.':'¡Sobrecarga de la torreta!';}
+function die(type,soundKind=null){if(death)return;if(type==='fall'||type==='pit')gravityFalls++;cannon.close();boss?.close();death={type,t:0,shown:false,startedAt:performance.now()};camera.release();companions.closeHelp();companions.closeConsole();lab.hologram.hide();keys.clear();lab.dead=true;lab.lock(true);if(lab.shot&&!lab.shot.done){lab.shot.done=true;lab.history.push('Lanzamiento interrumpido por el fin del intento.');lab.renderHistory();}Sound.failure(soundKind||type);message.textContent=type==='moon'?'Eric ha llegado a la Luna.':type==='lava'?'¡Has tocado la lava!':type==='fall'?'Has perdido pie…':type==='ivan'?'¡EPI Ivan te alcanzó!':type==='symbol'?'¡Un símbolo te alcanzó!':type==='potion'?'¡La poción de Eric te alcanzó!':type==='pit'?'Has caído en la fosa.':'¡Sobrecarga de la torreta!';}
 function checkpointLabel(){return rooms[checkpoint.room].name+(rooms[checkpoint.room].conceptual?` · tramo ${checkpoint.stage+1}`:'');}
 function animateDeath(dt){if(!death)return;death.t=(performance.now()-death.startedAt)/1000;const t=death.t,c=renderer.ctx,w=canvas.width,h=canvas.height;
  if(death.type==='moon'){c.fillStyle=`rgba(5,15,30,${Math.min(.95,t)})`;c.fillRect(0,0,w,h);c.save();c.translate(w/2,h/2);c.scale(4,4);ignitia.simulator.drawMoon.call({ctx:c},{x:0,y:0});c.restore();}

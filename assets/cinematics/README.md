@@ -52,3 +52,5 @@ El juego anima los atlas en Canvas mediante `src/cinematics/gesture-sprites.js`,
 ## Paola A con lentes · versión actual
 
 `paola-glasses-a-gesture.webp` y `paola-glasses-a-gesture.gif` actualizan la ceremonia al diseño A elegido el 6 de octubre. Tres poses con tablet y gesto hacia la derecha, boca animada y pies alineados. Generados con `image_gen` integrado; prompts en `../sprites/paola-glasses-a-prompts.json`. El retrato de diálogo correspondiente está en `../sprites/epi-paola-glasses-a-talk.webp`. Los recursos previos quedan archivados.
+
+Meme de elección: `electron-choice-meme-hd.webp`, reconstrucción nítida mediante image_gen integrado a partir de la imagen suministrada. Prompt en `electron-choice-meme-hd-prompt.json`; original conservado como `electron-choice-meme.png`. Se representa con filtrado de textura a un píxel por tira.

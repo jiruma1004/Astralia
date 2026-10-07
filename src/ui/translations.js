@@ -932,3 +932,9 @@ Object.assign(window.ENGLISH,{
   "Angélica hablando por comunicador": "Angélica speaking over the radio",
   "SIETE PRUEBAS COMPLETADAS": "SEVEN CHALLENGES COMPLETED"
 });
+
+Object.assign(window.ENGLISH,{
+ 'Iguala las dos expresiones:':'Set the two expressions equal:',
+ 'Escribe las coordenadas de la intersección de esta rama.':'Enter the intersection coordinates for this branch.',
+ 'Iguala la parábola y la recta. Elimina las fracciones, lleva todo a un lado y factoriza. Obtendrás dos valores de x; sustituye cada uno en la recta para encontrar y. El láser izquierdo usa la raíz negativa y el derecho la positiva.':'Set the parabola and line equal. Clear the fractions, move everything to one side and factor. You will obtain two x values; substitute each into the line to find y. The left laser uses the negative root and the right laser uses the positive one.'
+});

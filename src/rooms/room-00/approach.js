@@ -7,16 +7,18 @@ window.APPROACH_QUESTIONS=[
  {text:'En un tiro parabólico ideal, la aceleración horizontal es cero.',answer:true,hint:'Piensa hacia dónde actúa la gravedad.'}
 ];
 window.ApproachTrial=class {
- constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.stage=0;this.broken=null;this.finished=false;this.art=new Map();}
+ constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.stage=0;this.broken=new Set();this.finished=false;this.art=new Map();}
  get question(){return APPROACH_QUESTIONS[Math.min(this.stage,4)];}
  platforms(){return this.tiles??=APPROACH_QUESTIONS.flatMap((q,stage)=>[true,false].map((answer,lane)=>({stage,answer,x:5+stage*2.3,y:lane?4.05:2.25,w:1.5,h:1.4,key:stage+':'+answer})));}
  platformAt(x,y){return this.platforms().find(p=>x>=p.x&&x<=p.x+p.w&&y>=p.y&&y<=p.y+p.h);}
- supports(x,y){if(x<4.2||x>=16.7)return true;const p=this.platformAt(x,y);return !!p&&p.key!==this.broken;}
+ supports(x,y){if(x<4.2||x>=16.7)return true;const p=this.platformAt(x,y);return !!p&&!this.broken.has(p.key);}
  land(player){if(this.finished||player.jumpHeight>0)return;const p=this.platformAt(player.x,player.y);if(!p||p.stage<this.stage)return;
-  if(p.stage!==this.stage||p.answer!==this.question.answer){this.broken=p.key;this.onEvent('fall');return;}
+  if(this.broken.has(p.key))return;
+  if(p.stage!==this.stage){this.onEvent('fall');return;}
+  if(p.answer!==this.question.answer){this.broken.add(p.key);this.onEvent('break');return;}
   this.stage++;this.finished=this.stage===5;this.onEvent('safe',{x:p.x+.75,y:p.y+.7,angle:0});
  }
- restore(){this.broken=null;}
+ restore(){/* Los tablones rotos permanecen ausentes hasta reiniciar la sala. */}
  background(r,player,time){
   const c=r.ctx,w=r.canvas.width,h=r.canvas.height,horizon=h*(.5+(player.pitch||0));
   const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#28394f');sky.addColorStop(.7,'#889293');sky.addColorStop(1,'#dab889');c.fillStyle=sky;c.fillRect(0,0,w,horizon);
@@ -27,7 +29,7 @@ window.ApproachTrial=class {
  }
  color(x,y){
   const noise=Math.sin(Math.floor(x*20)*13+Math.floor(y*20)*37),p=this.platformAt(x,y);
-  if(p&&p.key!==this.broken){
+  if(p&&!this.broken.has(p.key)){
    const u=x-p.x,v=y-p.y,board=Math.floor(u/.25),seam=u% .25<.028;
    if(seam)return '#251a15';
    if((v<.10||v>p.h-.10)&&u%.25>.10&&u%.25<.14)return '#322c28';
@@ -40,7 +42,7 @@ window.ApproachTrial=class {
   return noise>.3?'#9c815b':noise<-.4?'#806546':'#8b7250';
  }
 
- draw(r,player,actors){this.drawLights(r,player,actors);for(const p of [...this.platforms()].reverse()){if(p.key===this.broken||p.stage!==Math.min(this.stage,4))continue;const pos=actors.project(r,player,p.x+.75,p.y+.7,.13);if(!pos)continue;
+ draw(r,player,actors){this.drawLights(r,player,actors);for(const p of [...this.platforms()].reverse()){if(this.broken.has(p.key)||p.stage!==Math.min(this.stage,4))continue;const pos=actors.project(r,player,p.x+.75,p.y+.7,.13);if(!pos)continue;
    const c=r.ctx,label=I18n.t(p.answer?'VERDADERO':'FALSO');c.save();c.textAlign='center';c.font='bold '+Math.max(10,Math.min(34,pos.scale*.14))+'px Trebuchet MS';c.strokeStyle='#071321';c.lineWidth=4;c.strokeText(label,pos.x,pos.y);c.fillStyle='#ffedb9';c.fillText(label,pos.x,pos.y);c.restore();}
  }
  drawLights(r,player,actors){
@@ -50,7 +52,7 @@ window.ApproachTrial=class {
    for(const dy of [-.23,0,.23]){const p=actors.project(r,player,x,y+dy,1.05);if(!p)continue;const glow=c.createRadialGradient(p.x,p.y,0,p.x,p.y,p.scale*.32);glow.addColorStop(0,'#ffcb6866');glow.addColorStop(1,'#ffcb6800');c.fillStyle=glow;c.fillRect(p.x-p.scale*.32,p.y-p.scale*.32,p.scale*.64,p.scale*.64);c.fillStyle='#ffe1a0';c.fillRect(p.x-p.scale*.025,p.y-p.scale*.11,p.scale*.05,p.scale*.13);}
   }
   // Broken rope and timber edges do not block the jumps.
-  for(const p of this.platforms()){if(p.key===this.broken)continue;for(const y of [p.y,p.y+p.h]){segment([p.x,y,0],[p.x+p.w,y,0],'#bd9a67',.025);segment([p.x,y,0],[p.x,y,.22],'#493223',.035);}}
+  for(const p of this.platforms()){if(this.broken.has(p.key))continue;for(const y of [p.y,p.y+p.h]){segment([p.x,y,0],[p.x+p.w,y,0],'#bd9a67',.025);segment([p.x,y,0],[p.x,y,.22],'#493223',.035);}}
  }
 
 };

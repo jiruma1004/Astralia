@@ -29,12 +29,18 @@ window.Sound={
  toggle(){if(!this.enabled)return this.enable();this.userDisabled=true;this.autoPending=false;this.enabled=false;for(const name of Object.keys(this.tracks))this.stop(name);this.entryFade=0;this.apply();this.ui();},
  laugh(){if(this.dead||!this.tracks.laugh.paused)return;this.play('laugh',true);},
  success(){if(this.dead)return;this.stop('laugh');this.victoryFade=0;this.play('victory',true);},
- failure(kind){this.stop('rocket');this.stop('laugh');this.dead=true;this.gameOverReady=false;this.stop('gameover');for(const name of this.backgroundNames)this.stop(name);this.stop('victory');this.stop('explosion');if(kind==='explosion')this.play('explosion',true);else{this.tone(330,.35,'triangle',.24);this.tone(180,.7,'sine',.23,.15);}if(kind==='timeout')this.gameOver();},
+ failure(kind){this.stop('rocket');this.stop('laugh');this.dead=true;this.gameOverReady=false;this.stop('gameover');for(const name of this.backgroundNames)this.stop(name);this.stop('victory');this.stop('explosion');if(kind==='explosion')this.play('explosion',true);else if(kind==='wood')this.woodBreak();else{this.tone(330,.35,'triangle',.24);this.tone(180,.7,'sine',.23,.15);}if(kind==='timeout')this.gameOver();},
  gameOver(){if(!this.dead)return;this.gameOverReady=true;this.stop('explosion');this.play('gameover',true);},
  recover(preserveVictory=false){const wasDead=this.dead;this.gameOverReady=false;this.stop('gameover');this.dead=false;this.stop('explosion');if(!preserveVictory)this.stop('victory');if(wasDead)this.entryFade=0;this.apply();if(this.enabled)this.play(this.sceneTrack);},
  selectBackground(name){if(!this.backgroundNames.includes(name)||name===this.sceneTrack)return;this.sceneTrack=name;if(this.enabled&&!this.dead)this.play(name,true);this.apply();},
  pursuit(dt,distance){if(this.dead)return;this.heartbeat-=dt;if(this.heartbeat<=0){const near=Math.max(0,1-distance/10);this.tone(65,.13,'sine',.025+near*.12);this.tone(55,.12,'sine',.02+near*.08,.17);this.heartbeat=1.5-near*.8;}},
  tone(hz,duration=.18,type='sine',volume=.3,delay=0){if(!this.enabled||!this.ctx||document.hidden)return;const t=this.ctx.currentTime+delay,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.setValueAtTime(hz,t);g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(volume,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g).connect(this.master);o.start(t);o.stop(t+duration+.02);},
+ // Tres chasquidos de fibras y una resonancia hueca de madera; usa el canal de efectos.
+ woodBreak(){if(!this.enabled||!this.ctx||document.hidden)return;
+  const duration=.55,rate=this.ctx.sampleRate,buffer=this.ctx.createBuffer(1,Math.ceil(rate*duration),rate),data=buffer.getChannelData(0);
+  for(let i=0;i<data.length;i++){const t=i/rate;let v=0;for(const [at,amp] of [[0,.75],[.047,.52],[.13,.3],[.24,.14]]){const d=t-at;if(d<0)continue;v+=amp*((Math.random()*2-1)*Math.exp(-d*62)+.35*Math.sin(2*Math.PI*370*d)*Math.exp(-d*25)+.2*Math.sin(2*Math.PI*830*d)*Math.exp(-d*37));}data[i]=Math.max(-1,Math.min(1,v));}
+  const source=this.ctx.createBufferSource(),filter=this.ctx.createBiquadFilter();source.buffer=buffer;filter.type='highpass';filter.frequency.value=180;source.connect(filter).connect(this.master);source.onended=()=>{source.disconnect();filter.disconnect();};source.start();
+ },
  dialogueBlip(index){this.tone([230,260,245,280][index%4],.045,'square',.055);},
  click(){this.tone(880,.12,'sine',.3);this.tone(1320,.2,'sine',.13,.04);},
  load(){this.tone(220,.12,'triangle',.3);this.tone(440,.22,'sine',.25,.1);},

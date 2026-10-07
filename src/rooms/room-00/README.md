@@ -6,3 +6,5 @@ Cinco afirmaciones, claves F/V/F/V/V. Las dos plataformas de cada nivel tienen l
 El salto y el sprint usan la física del jugador existente. La ayuda H da una pista conceptual sin indicar la clave.
 
 Escenario: llanuras laterales, bosque al frente y un cráter rocoso bajo un puente viejo. Los tablones, cuerdas rotas y candelabros se dibujan con Canvas, sin alterar las distancias de salto ni las respuestas. El aviso de entrada explica controles y puntos seguros.
+
+Los tablones incorrectos desaparecen durante todo el intento de la sala, incluso después de reaparecer. El evento de rotura reproduce un crujido sintetizado en el canal de efectos. Reiniciar la sala reconstruye el puente. Elegir Falso no rompe un tablón si esa es la respuesta correcta. Los laterales tienen un murete de piedra de unos 0,5 m; conserva las colisiones de los bordes.

@@ -1,10 +1,15 @@
 /* Motor visual compartido: raycasting de una cuadrícula, sin dependencias. */
 window.EscapeRenderer = class {
-  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.castleGate=new CastleGate();this.choiceMeme=new Image();this.choiceMeme.src='assets/cinematics/electron-choice-meme.png'; this.art={...makeWallArt(),...makeScenery(),...makeInteriorArt(),oak:makeOakDoor()};
+  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.castleGate=new CastleGate();this.choiceMeme=new Image();this.choiceMeme.src='assets/cinematics/electron-choice-meme-hd.webp'; this.art={...makeWallArt(),...makeScenery(),...makeInteriorArt(),oak:makeOakDoor()};
     const moss=document.createElement('canvas');moss.width=moss.height=512;const m=moss.getContext('2d');m.drawImage(this.art.brick,0,0,512,512);m.fillStyle='#22362688';m.fillRect(0,0,512,512);
     for(let i=0;i<900;i++){const x=(i*173)%512,y=(i*97+Math.floor(i/7)*31)%512;m.fillStyle=['#42613a99','#67804c88','#1a3026aa'][i%3];m.fillRect(x,y,3+i%13,5+i%27);}this.art.moss=moss; }
-  decorate(room,hit,x,top,height){
-    if(room.conceptual&&!room.maze?.dungeon&&hit.axis==='x'&&hit.cx===44&&hit.py>=7.95&&hit.py<=8.95&&this.choiceMeme.complete&&this.choiceMeme.naturalWidth){const art=this.choiceMeme,u=(8.95-hit.py);this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top-height*.45,3,height*1.45);return;}
+  decorate(room,hit,x,top,height,player){
+    if(room.conceptual&&!room.maze?.dungeon&&hit.axis==='x'&&hit.cx===44&&hit.py>=7.9&&hit.py<=9&&this.choiceMeme.complete&&this.choiceMeme.naturalWidth){
+      // El cartel usa tiras de un píxel con filtrado para conservar sus líneas finas.
+      const art=this.choiceMeme,c=this.ctx,w=this.canvas.width,yAt=sx=>{const a=player.angle+Math.atan((sx/w*2-1)*.66);return player.y+(44-player.x)*Math.tan(a);};
+      c.save();c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
+      for(let sx=x;sx<x+3;sx++){const u=yAt(sx)-7.95,v=yAt(sx+1)-7.95;if(u<0||u>=1||v<=u)continue;const end=Math.min(1,v);c.drawImage(art,u*art.width,0,(end-u)*art.width,art.height,sx,top-height*.45,1,height*1.45);}c.restore();return;
+    }
     if(room.environment?.shop)return;
     if(room.environment?.kind==='forest'){
       if(hit.axis==='x'&&hit.cx===0&&hit.py>=2.5&&hit.py<=5.5){const art=this.art.chalkWall,u=(5.5-hit.py)/3;this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top+height*.08,3,height*.84);}
@@ -70,13 +75,17 @@ window.EscapeRenderer = class {
       this.depths[x]=d;
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
-      if(hit.tile===1&&room.trial)continue;
+      if(hit.tile===1&&room.trial){
+        // Cada celda equivale a unos 2 m: .25 de altura forma un murete de medio metro.
+        if(hit.cy===0||hit.cy===7){const wallTop=horizon-(.25-eye)*height,u=((hit.px%1)+1)%1;c.drawImage(this.art.brick,Math.floor(u*511),0,1,256,x,wallTop,3,height*.25);c.fillStyle=`rgba(8,12,17,${1-shade})`;c.fillRect(x,wallTop,3,height*.25);c.fillStyle='#b0aaa0';c.fillRect(x,wallTop,3,Math.max(1,height*.025));}
+        continue;
+      }
       if(hit.tile===1){
         const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x)?this.art.forest:room.environment?.shop?((hit.cx+hit.cy)%3===0?this.art.shopWall:this.art.shopShelf):room.environment?.moss||(room.environment?.abandoned&&(hit.cx*3+hit.cy)%4!==0)?this.art.moss:this.art.brick;
         const castleEnd=room.castleGate&&hit.cx>=room.castleGate.x;const forest=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x),wallTop=castleEnd?horizon-(2.8-eye)*height:forest?horizon-(2.6-eye)*height:room.corridor?horizon-(.65-eye)*height:room.boss?horizon-(3-eye)*height:room.environment?.ceilingHeight?horizon-(room.environment.ceilingHeight-eye)*height:top,wallHeight=castleEnd?height*2.8:forest?height*2.6:room.corridor?height*.65:room.boss?height*3:height*(room.environment?.ceilingHeight||1);
         c.drawImage(texture,Math.min(texture.width-1,Math.floor(u*texture.width)),0,1,texture.height,x,wallTop,3,wallHeight);
         if(room.environment?.tint){c.fillStyle=room.environment.tint;c.globalAlpha=.2;c.fillRect(x,wallTop,3,wallHeight);c.globalAlpha=1;}
-        c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);if(room.environment?.abandoned&&(hit.cx*7+hit.cy*3)%4===0)c.drawImage(this.art.vines,u*511,0,1,512,x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height);continue;
+        c.fillStyle=`rgba(4,8,17,${1-shade})`;c.fillRect(x,wallTop,3,wallHeight);if(room.environment?.abandoned&&(hit.cx*7+hit.cy*3)%4===0)c.drawImage(this.art.vines,u*511,0,1,512,x,wallTop,3,wallHeight);this.decorate(room,hit,x,top,height,player);continue;
       }
       if(hit.tile===2&&room.environment?.ceilingHeight>1){const u=(((hit.axis==='x'?hit.py:hit.px)%1)+1)%1,art=room.environment.shop?this.art.shopWall:this.art.moss;c.drawImage(art,u*511,0,1,170,x,horizon-(room.environment.ceilingHeight-eye)*height,3,(room.environment.ceilingHeight-1)*height);}
       if(hit.tile===2&&room.castleGate){c.fillStyle='#15212a';c.fillRect(x,horizon-(2.8-eye)*height,3,height*2.8);continue;}
@@ -91,7 +100,7 @@ window.EscapeRenderer = class {
       for(let k=1;k<5;k++)c.fillRect(x,top+height*k/5,3,Math.max(1,height*.009));
       if(u<.025)c.fillRect(x,top,3,height);
       if(hit.tile===2 && u>.28){c.fillStyle='#ffcb78';c.fillRect(x,top+height*.43,3,height*.14);}
-      this.decorate(room,hit,x,top,height);
+      this.decorate(room,hit,x,top,height,player);
     }
     if(room.environment?.portal&&opened)this.drawPortal(room,player,time,horizon,eye);
     if(room.castleGate)this.castleGate.draw(this,room,player,time,opened);
