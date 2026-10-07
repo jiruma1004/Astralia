@@ -62,3 +62,6 @@ El cobertizo contiene carteles de Eric, Karla y una identidad desconocida. eric-
 Todas las escenas del catálogo esperan en cada cambio de diálogo, incluido el lanzamiento archivado. La huida de Eric desde la sala de los láseres espera un clic antes del despegue y otro antes del mensaje de José Luis. Los dos pasajes finales del laberinto están físicamente separados: azul/partícula y rojo/onda, con el meme suministrado entre ellos.
 
 La fuga muestra a Angélica en un comunicador con dos fotogramas de boca; arte en `assets/sprites/angelica-radio-talk.webp`, prompt en `assets/sprites/angelica-radio-prompt.json`. El cartel desconocido utiliza la imagen suministrada y el de Karla menciona las referencias omitidas. Las instrucciones de entrada se muestran en las seis primeras pruebas y no en Ignitia.
+
+## Aventura EPIK · ritmo final
+La caída de Eric y su escape desde el soporte se reproducen sin pausas. `ignitia-intercepcion`, `intercepcion-espacial` e `ignitia-launch` avanzan continuos. Solo las ceremonias y los epílogos (`ivan-descenso`, `eric-fuga`) tienen pausas de diálogo. El diploma conserva su interacción obligatoria y la protección contra doble clic. El prólogo vuelve al retrato de torso de Paola, con dos fotogramas de boca.

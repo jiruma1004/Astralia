@@ -1,6 +1,7 @@
 const canvas=document.querySelector('#game'),renderer=new EscapeRenderer(canvas),keys=new Set(),rooms=window.ESCAPE_ROOMS,lab=new ProjectileLab();
 let index=0,player,opened=false,flash=0,last=0,completed=false,death=null,checkpoint=null;
-let gravityFalls=0;
+let gravityFalls=0,potionDeaths=0;
+const chemistryQuotes=['Esa reacción fue demasiado exotérmica para ti.','Otra dosis… Tu estrategia necesita menos ensayo y más química.','Eric ya te considera parte de los reactivos. ¡Cambia el procedimiento!'];
 const gravityQuotes=['La gravedad funciona. Tu estrategia necesita ajustes.','Definitivamente, tú y la gravedad no os lleváis.','La gravedad ya te reconoce. Quizá sea hora de negociar con el puente.'];
 lab.hologram=new TrajectoryHologram(lab);
 lab.onFeedback=text=>companions.toast(text);
@@ -37,7 +38,7 @@ function enterAdventure(){
 }
 const prologue=new AdventurePrologue(enterAdventure);
 document.querySelector('#adventure-expired').addEventListener('cancel',e=>e.preventDefault());
-document.querySelector('#adventure-restart').onclick=()=>{gravityFalls=0;document.querySelector('#adventure-expired').close();StoryRoute.reset();load(rooms.findIndex(r=>r.trial));mission.restart();canvas.focus({preventScroll:true});};
+document.querySelector('#adventure-restart').onclick=()=>{gravityFalls=0;potionDeaths=0;document.querySelector('#adventure-expired').close();StoryRoute.reset();load(rooms.findIndex(r=>r.trial));mission.restart();canvas.focus({preventScroll:true});};
 document.addEventListener('visibilitychange',()=>{keys.clear();mission.tick();});
 setInterval(()=>mission.tick(),250);
 new ResizeObserver(entries=>{const r=entries[0].contentRect;if(r.width&&r.height){canvas.width=960;canvas.height=Math.round(960*r.height/r.width);}}).observe(canvas);
@@ -62,7 +63,7 @@ function load(i){cinematics.close();measurement.reset(rooms[i]);ignitia.reset(ro
 }
 function trialEvent(type,position){
  if(type==='fall'||type==='break'){die('pit',type==='break'?'wood':null);return;}
- checkpoint={room:index,stage:trial.stage,position};opened=trial.finished;
+ checkpoint={room:index,stage:trial.stage,position:spawnPlayer(rooms[index])};opened=trial.finished;
  document.querySelector('#door-status').textContent=opened?'SENDERO SUPERADO':`SALTO ${trial.stage+1} / 5`;
  companions.updateTrial();Sound.click();if(opened)Sound.success();
  companions.toast(opened?'¡Cinco aciertos! Sigue el camino hacia el bosque.':'Respuesta correcta. Punto seguro guardado.');
@@ -151,10 +152,14 @@ function walkable(x,y){const room=rooms[index];if(opened&&room.bridge){const b=r
 // El abismo permite caminar: perder el suelo inicia la caída.
 function supported(x,y){const room=rooms[index];if(room.trial)return trial.supports(x,y);if(room.lava)return room.lava.supports(x,y);const tile=room.floorTile?room.floorTile(x,y):room.map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===(rooms[index].boss?7:3));}
 function clearDeath(){death=null;camera.release();canvas.style.transform='';canvas.style.opacity='';const dialog=document.querySelector('#death-dialog');if(dialog.open)dialog.close();}
-function die(type,soundKind=null){if(death)return;if(type==='fall'||type==='pit')gravityFalls++;cannon.close();boss?.close();death={type,t:0,shown:false,startedAt:performance.now()};camera.release();companions.closeHelp();companions.closeConsole();lab.hologram.hide();keys.clear();lab.dead=true;lab.lock(true);if(lab.shot&&!lab.shot.done){lab.shot.done=true;lab.history.push('Lanzamiento interrumpido por el fin del intento.');lab.renderHistory();}Sound.failure(soundKind||type);message.textContent=type==='moon'?'Eric ha llegado a la Luna.':type==='lava'?'¡Has tocado la lava!':type==='fall'?'Has perdido pie…':type==='ivan'?'¡EPI Ivan te alcanzó!':type==='symbol'?'¡Un símbolo te alcanzó!':type==='potion'?'¡La poción de Eric te alcanzó!':type==='pit'?'Has caído en la fosa.':'¡Sobrecarga de la torreta!';}
+function die(type,soundKind=null){if(death)return;if(type==='fall'||type==='pit')gravityFalls++;if(type==='potion')potionDeaths++;cannon.close();boss?.close();death={type,t:0,shown:false,startedAt:performance.now()};camera.release();companions.closeHelp();companions.closeConsole();lab.hologram.hide();keys.clear();lab.dead=true;lab.lock(true);if(lab.shot&&!lab.shot.done){lab.shot.done=true;lab.history.push('Lanzamiento interrumpido por el fin del intento.');lab.renderHistory();}Sound.failure(soundKind||type);message.textContent=type==='moon'?'Eric ha llegado a la Luna.':type==='lava'?'¡Has tocado la lava!':type==='fall'?'Has perdido pie…':type==='ivan'?'¡EPI Ivan te alcanzó!':type==='symbol'?'¡Un símbolo te alcanzó!':type==='potion'?'¡La poción de Eric te alcanzó!':type==='pit'?'Has caído en la fosa.':'¡Sobrecarga de la torreta!';}
 function checkpointLabel(){return rooms[checkpoint.room].name+(rooms[checkpoint.room].conceptual?` · tramo ${checkpoint.stage+1}`:'');}
 function animateDeath(dt){if(!death)return;death.t=(performance.now()-death.startedAt)/1000;const t=death.t,c=renderer.ctx,w=canvas.width,h=canvas.height;
  if(death.type==='moon'){c.fillStyle=`rgba(5,15,30,${Math.min(.95,t)})`;c.fillRect(0,0,w,h);c.save();c.translate(w/2,h/2);c.scale(4,4);ignitia.simulator.drawMoon.call({ctx:c},{x:0,y:0});c.restore();}
+ else if(death.type==='potion'){
+  c.fillStyle=`rgba(14,45,13,${Math.min(.87,t*.65)})`;c.fillRect(0,0,w,h);
+  if(t<1.2){c.save();c.globalAlpha=Math.max(0,1-t/1.2);for(let i=0;i<18;i++){const x=w*i/17,base=h*(1+.12*Math.sin(i)),rise=h*(.18+.16*Math.sin(i*7)**2)*(1+t);c.fillStyle=i%2?'#b5ff60':'#39d946';c.beginPath();c.moveTo(x-w*.055,base);c.quadraticCurveTo(x-w*.09,base-rise*.5,x+Math.sin(t*11+i)*w*.024,base-rise);c.quadraticCurveTo(x+w*.07,base-rise*.5,x+w*.055,base);c.fill();}c.restore();}
+ }
  else if(death.type==='fall')drawBlackHoleFall(c,w,h,t);
  else if(death.type==='symbol'||death.type==='pit'||death.type==='potion'||death.type==='lava'){c.fillStyle=death.type==='lava'?`rgba(125,31,8,${Math.min(.92,t)})`:`rgba(12,16,30,${Math.min(.9,t)})`;c.fillRect(0,0,w,h);c.fillStyle='#ddadcb';c.textAlign='center';c.font='bold 130px Georgia';c.fillText(death.type==='lava'?'♨':death.type==='symbol'?'∑':death.type==='potion'?'☣':'↓',w/2,h/2);}
  else if(death.type==='ivan'){c.fillStyle=`rgba(85,9,28,${Math.min(.7,t*.5)})`;c.fillRect(0,0,w,h);if(actors.ivan.complete){const size=Math.min(w,h)*(.65+Math.min(t,.6)*.35),fw=actors.ivan.naturalWidth/2;c.save();c.imageSmoothingEnabled=false;c.drawImage(actors.ivan,fw,0,fw,actors.ivan.naturalHeight,(w-size)/2,(h-size)/2,size,size);c.restore();}}
@@ -163,7 +168,7 @@ function animateDeath(dt){if(!death)return;death.t=(performance.now()-death.star
   death.shown=true;const explosion=death.type==='explosion',ivan=death.type==='ivan';
   document.querySelector('#death-kind').textContent='GAME OVER · '+(death.type==='moon'?'LUNA':death.type==='lava'?'LAVA':explosion?'SOBRECARGA':ivan?'EPI IVAN':death.type==='symbol'?'IMPACTO':death.type==='potion'?'POCIÓN':death.type==='pit'?'LA FOSA':'AGUJERO NEGRO');
   document.querySelector('#death-title').textContent=death.type==='moon'?'Eric llegó primero.':death.type==='lava'?'El suelo estaba demasiado caliente.':explosion?'Te pasaste de energía.':ivan?'Ivan te atrapó.':death.type==='symbol'?'Una idea te pasó por encima.':death.type==='potion'?'Una reacción inesperada.':death.type==='pit'?'Cuidado con el borde.':'La singularidad ganó esta ronda.';
-  document.querySelector('#death-quote').textContent=death.type==='moon'?'La divergencia ha alcanzado la Luna.':death.type==='lava'?'La lava no cuenta como plataforma.':explosion?'en papel nada se quema':ivan?'Confundiste una salida con la hora de la comida.':death.type==='symbol'?'Las matemáticas también pueden ser un deporte de contacto.':gravityQuotes[(death.type==='fall'||death.type==='pit')?Math.min(2,Math.max(0,gravityFalls-1)):0];
+  document.querySelector('#death-quote').textContent=death.type==='moon'?'La divergencia ha alcanzado la Luna.':death.type==='lava'?'La lava no cuenta como plataforma.':explosion?'en papel nada se quema':ivan?'Confundiste una salida con la hora de la comida.':death.type==='symbol'?'Las matemáticas también pueden ser un deporte de contacto.':death.type==='potion'?chemistryQuotes[Math.min(2,potionDeaths-1)]:gravityQuotes[(death.type==='fall'||death.type==='pit')?Math.min(2,Math.max(0,gravityFalls-1)):0];
   document.querySelector('#death-detail').textContent=(death.type==='moon'?'Vuelve a la plataforma de Ignitia y prepara otra intercepción. ':death.type==='lava'?'Salta entre las plataformas de piedra. Usa Shift para tomar impulso y Espacio para saltar. ':explosion?'La torreta superó los 180 J. ':ivan?'La persecución terminó aquí. ':death.type==='symbol'?'Esquiva los carriles o salta sobre los símbolos. ':death.type==='potion'?'Evita los charcos verdes: desaparecen en dos segundos. ':death.type==='pit'?(trial?'Elige la respuesta correcta y salta a su plataforma. Conservas los aciertos anteriores. ':'Corta el soporte para activar el puente central. '):'Has caído en el agujero negro. ')+`Volverás a tu último punto seguro: ${checkpointLabel()}. El reloj sigue corriendo.`;
   document.querySelector('#death-dialog').showModal();Sound.gameOver();
  }

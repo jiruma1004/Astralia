@@ -32,6 +32,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  }
  async function advanceAll(id){
   assert.equal(await page.evaluate(()=>cinematics.item.id),id);
+  if(await page.evaluate(()=>!cinematics.dialogueStops)){await page.evaluate(()=>{const id=cinematics.item.id;for(let t=0;t<70&&cinematics.item?.id===id;t++)cinematics.tick(1);});return;}
   const n=await page.evaluate(()=>cinematics.dialogueStops.length);
   for(let i=0;i<n;i++){
    await page.evaluate(()=>{cinematics.paused=false;cinematics.tick(100);});
@@ -44,7 +45,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  for(const route of ['particle','wave']){
   await page.evaluate(route=>{load(5);document.querySelector('#maze-notice').hidden=true;StoryRoute.choose(route);Object.assign(player,{x:6,y:5.5,angle:0});ignitia.open(player);
    window.flow=[];if(!window.basePlay)window.basePlay=cinematics.play.bind(cinematics);cinematics.play=(id,o)=>{flow.push(id);return basePlay(id,o);};
-   const s=ignitia.simulator;s.missionTime=20;const duration=100,delay=10,t=20+duration+delay,vx=(120+.22*t)/duration,vy=(60+.10*t+.5*.00981*duration*duration)/duration;
+   const s=ignitia.simulator;s.missionTime=20;const duration=100,delay=10,t=20+duration+delay,vx=(120+.231*t)/duration,vy=(60+.105*t+.5*.00981*duration*duration)/duration;
    s.params={speed:Math.hypot(vx,vy),angle:Math.atan2(vy,vx)*180/Math.PI,delay,duration};s.sync();s.startTrial();for(let n=0;n<200&&s.running;n++)s.tick(.04);
   },route);
   await advanceAll('ignitia-intercepcion');

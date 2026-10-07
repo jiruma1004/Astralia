@@ -41,7 +41,16 @@ window.InteriorAtmosphere={
   if(Math.abs(d-.86)<.055||Math.abs(d-.38)<.04)return '#b9956c';
   return (Math.floor(x*17)+Math.floor(y*17))%3?'#4b325e':'#553c68';
  },
+ exams:[[2.7,2.2,.28],[3.2,4.7,-.4],[5.4,1.9,.65],[6.2,4.7,-.2],[6.5,3.1,.35]],
+ drawExams(r,player){const c=r.ctx;c.save();for(const [x,y,a] of this.exams){const center=r.actors.project(r,player,x,y,.014);if(!center||center.depth>(r.depths[Math.floor(center.x/3)*3]??Infinity)+.05)continue;
+  const p=(u,v)=>r.actors.project(r,player,x+u*Math.cos(a)-v*Math.sin(a),y+u*Math.sin(a)+v*Math.cos(a),.014);
+  const corners=[p(-.42,-.3),p(.42,-.3),p(.42,.3),p(-.42,.3)];if(corners.some(q=>!q))continue;c.fillStyle='#eee3c8';c.strokeStyle='#a99d86';c.lineWidth=1;c.beginPath();corners.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fill();c.stroke();
+  const line=(u,v,uu,vv,color,width)=>{const b=p(u,v),e=p(uu,vv);if(!b||!e)return;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(b.x,b.y);c.lineTo(e.x,e.y);c.stroke();};
+  for(let i=0;i<5;i++)line(-.31,-.2+i*.09,.12,-.2+i*.09,'#878782',Math.max(.5,center.scale*.004));
+  c.strokeStyle='#c62029';c.lineWidth=Math.max(1.8,center.scale*.014);c.beginPath();for(let i=0;i<=24;i++){const q=p(.26+.065*Math.cos(i*Math.PI/12),-.13+.1*Math.sin(i*Math.PI/12));if(i)c.lineTo(q.x,q.y);else c.moveTo(q.x,q.y);}c.stroke();line(.16,.06,.35,.08,'#c62029',Math.max(1,center.scale*.008));
+ }c.restore();},
  draw(renderer,room,player,time){
+  if(room.roulette)this.drawExams(renderer,player);
   if(!room.environment?.abandoned)return;
   const points=room.maze?.dungeon?[[3.5,3.5],[10.5,6.5],[5.5,10.5]]:Array.from({length:4},(_,i)=>[[i*12+2.5,3.5],[i*12+5.5,8.5],[i*12+5.5,12.5]]).flat();
   for(const [x,y] of points){if(room.map[Math.floor(y)]?.[Math.floor(x)]!==0||Math.hypot(x-player.x,y-player.y)>12)continue;

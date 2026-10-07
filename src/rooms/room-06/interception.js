@@ -1,10 +1,10 @@
 /* A local, uniform-gravity training model, in km and seconds. Not orbital mechanics. */
 window.InterceptionPhysics = {
- g: .00981, tolerance: 3, moonTime: 600,
+ g: .00981, tolerance: 3, moonTime: 600/1.05, ericVelocity:{x:.231,y:.105},
  limits: {speed:[.8,3], angle:[5,85], delay:[0,60], duration:[40,140]},
  initial: {speed:1.8, angle:48, delay:10, duration:90},
  valid(p){return Object.entries(this.limits).every(([k,[min,max]])=>Number.isFinite(p[k])&&p[k]>=min&&p[k]<=max);},
- eric(t){return {x:120+.22*t,y:60+.10*t};},
+ eric(t){return {x:120+this.ericVelocity.x*t,y:60+this.ericVelocity.y*t};},
  rocket(p,t){const a=p.angle*Math.PI/180;return {x:p.speed*Math.cos(a)*t,y:p.speed*Math.sin(a)*t-.5*this.g*t*t};},
  groundTime(p){return 2*p.speed*Math.sin(p.angle*Math.PI/180)/this.g;},
  evaluate(p,epoch=0){
@@ -25,7 +25,7 @@ window.InterceptionConsole = class {
   panel.innerHTML=`<button id="rocket-close" class="bubble-fold" aria-label="Cerrar panel">×</button>
    <header><p class="eyebrow">IGNITIA · NAVEGACIÓN TÁCTICA</p><h2>Intercepta a Eric</h2><p class="intercept-intro">Eric avanza hacia la Luna. Intercéptalo antes de que llegue o será game over.</p></header>
    <div class="intercept-workspace"><div class="intercept-map">
-    <div class="intercept-map-top"><span>RADAR · EN DIRECTO</span><output id="intercept-clock" aria-label="Tiempo hasta la llegada lunar" aria-live="off">600 s</output></div>
+    <div class="intercept-map-top"><span>RADAR · EN DIRECTO</span><output id="intercept-clock" aria-label="Tiempo hasta la llegada lunar" aria-live="off">572 s</output></div>
     <canvas id="intercept-canvas" width="1000" height="480" aria-label="Trayectorias de Ignitia y Eric. Arrastra el punto verde para ajustar rapidez y ángulo; también puedes usar los controles deslizantes."></canvas>
     <div class="intercept-legend"><span class="ours-key">Ignitia</span><span class="eric-key">Eric</span><span class="future-key">Posición prevista al encuentro</span></div>
     <p class="intercept-drag">Arrastra el punto verde de la trayectoria o usa los controles.</p>
@@ -37,8 +37,8 @@ window.InterceptionConsole = class {
    </div></div>
    <section class="intercept-equations" aria-label="Ecuaciones del movimiento">
     <div><b>Tu cohete · tiro parabólico</b><p class="intercept-formula" data-no-translate>x = v₀ cos(θ) τ<br>y = v₀ sin(θ) τ − ½gτ²</p><p>τ es el tiempo desde tu salida. v₀ es la rapidez inicial y θ el ángulo sobre la horizontal. g = 0.00981 km/s².</p></div>
-    <div><b>Eric · velocidad constante</b><p class="intercept-formula" data-no-translate>xᴱ = 120 + 0.22t<br>yᴱ = 60 + 0.10t; t = t₀ + d + τ</p><p>t₀ es el instante al iniciar el ensayo; d, el retraso de salida. Eric parte de (120, 60) km y avanza a (0.22, 0.10) km/s. Su reloj nunca se reinicia entre ensayos.</p></div>
-   </section><p class="intercept-model">Modelo balístico 2D, sin motor ni aire, con gravedad uniforme; Luna fuera de escala. Encuentro a ≤ 3 km. Llegada lunar: t = 600 s. Reloj ×1 al planear, ×20 al ensayar; sigue al cerrar el panel.</p>`;
+    <div><b>Eric · velocidad constante</b><p class="intercept-formula" data-no-translate>xᴱ = 120 + 0.231t<br>yᴱ = 60 + 0.105t; t = t₀ + d + τ</p><p>t₀ es el instante al iniciar el ensayo; d, el retraso de salida. Eric parte de (120, 60) km y avanza a (0.231, 0.105) km/s. Su reloj nunca se reinicia entre ensayos.</p></div>
+   </section><p class="intercept-model">Modelo balístico 2D, sin motor ni aire, con gravedad uniforme; Luna fuera de escala. Encuentro a ≤ 3 km. Llegada lunar: t ≈ 571.43 s. Reloj ×1 al planear, ×20 al ensayar; sigue al cerrar el panel.</p>`;
   this.canvas=panel.querySelector('canvas');this.ctx=this.canvas.getContext('2d');
   this.clock=panel.querySelector('#intercept-clock');this.feedback=panel.querySelector('#rocket-feedback');
   this.trialButton=panel.querySelector('#intercept-trial');this.launchButton=panel.querySelector('#intercept-launch');
@@ -130,8 +130,8 @@ window.InterceptionConsole = class {
   if(flight>0)path(preview.filter((q,i)=>p.duration*i/100<=flight),'#7bffb9');path([original,current],'#ffd699');
   const end=this.project(preview[100]),ep=this.project(target),real=this.project(current);
   c.strokeStyle='#f5c579';c.lineWidth=1.5;c.setLineDash([3,4]);c.beginPath();c.arc(ep.x,ep.y,13,0,Math.PI*2);c.stroke();c.setLineDash([]);
-  this.miniature(this.ericArt,ep,Math.atan2(.22,.10),.23);
-  this.miniature(this.ericArt,real,Math.atan2(.22,.10),1);
+  this.miniature(this.ericArt,ep,Math.atan2(InterceptionPhysics.ericVelocity.x,InterceptionPhysics.ericVelocity.y),.23);
+  this.miniature(this.ericArt,real,Math.atan2(InterceptionPhysics.ericVelocity.x,InterceptionPhysics.ericVelocity.y),1);
   this.miniature(this.rocketArt,this.project(ours),Math.atan2(p.speed*Math.cos(p.angle*Math.PI/180),p.speed*Math.sin(p.angle*Math.PI/180)-InterceptionPhysics.g*flight),1);
   c.strokeStyle='#91ffbe';c.lineWidth=2;c.fillStyle='#0d4430';c.beginPath();c.arc(end.x,end.y,10,0,Math.PI*2);c.fill();c.stroke();c.beginPath();c.moveTo(end.x-5,end.y);c.lineTo(end.x+5,end.y);c.moveTo(end.x,end.y-5);c.lineTo(end.x,end.y+5);c.stroke();
   if(this.ready){c.strokeStyle='#b8ffbd';c.beginPath();c.arc(ep.x,ep.y,22+Math.sin(this.elapsed)*2,0,Math.PI*2);c.stroke();}

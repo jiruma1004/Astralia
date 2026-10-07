@@ -1,8 +1,5 @@
 /* Diálogos por clic: la animación termina su gesto y espera al jugador. */
 window.SceneDialogueStops={
- 'ignitia-intercepcion':[3.99,7.49,8.49,18.99,24.99,35.99,38.99,40.19,45.99,49.99,53.99,55.99,61.99],
- 'intercepcion-espacial':[5.99,16.99,19.99,21.19,26.99,30.99,34.99,36.99,42.99],
- 'ignitia-launch':[3.99,8.49,18.99,26.99,32.99,37.99],
  'ceremonia-ignitia':[7.95,15.95,23.95,32.95,37.95],
  'ceremonia-karla':[7.95,15.95,23.95,32.95,37.95],
  'ivan-descenso':[2.99,5.99,11.99,15.99,23.99,27.99,34.99],
@@ -70,24 +67,4 @@ P.requestClose=function(){
  if(this.story&&this.dialogueStops&&this.dialogueIndex<this.dialogueStops.length){this.advanceDialogue();return;}
  close.call(this);
 };
-})();
-
-// La huida desde el soporte de Eric también espera al jugador antes del despegue.
-(()=>{
- const P=IgnitiaMission.prototype,start=P.startEscape,tick=P.tick;
- P.startEscape=function(player){this.escapeBeat=0;this.escapeWaiting=false;start.call(this,player);
-  if(!document.querySelector('#escape-next')){
-   document.querySelector('.scene-view').insertAdjacentHTML('beforeend','<button id="escape-next" class="primary" hidden>Continuar ▸</button>');
-   document.querySelector('#escape-next').onclick=()=>{
-    if(this.mode!=='escape'||!this.escapeWaiting||performance.now()<(this.escapeInputAfter||0))return;
-    this.escapeInputAfter=performance.now()+450;this.escapeWaiting=false;this.escapeBeat++;this.time+=.06;
-   };
-  }
- };
- P.tick=function(dt){
-  const gate=this.mode==='escape'?[3.95,10.95][this.escapeBeat]:undefined;
-  if(gate!==undefined&&this.time+dt>=gate){dt=Math.max(0,gate-this.time);this.escapeWaiting=true;}
-  tick.call(this,dt);
-  const b=document.querySelector('#escape-next');if(b){b.hidden=this.mode!=='escape';b.disabled=!this.escapeWaiting;b.textContent=this.escapeWaiting?'Continuar ▸':'La escena continúa…';}
- };
 })();

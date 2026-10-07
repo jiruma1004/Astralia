@@ -1,4 +1,4 @@
-# Astralia · Academia de los seis umbrales
+# Aventura EPIK · Academia de los seis umbrales
 
 Escape room educativo en HTML, CSS y JavaScript, con menús de RPG clásico: azul nocturno, cristal, detalles dorados y letras más grandes. Seis habitaciones; las seis tienen actividades, incluida la plataforma de lanzamiento de Ignitia. Vista 2.5D por raycasting con objetos dibujados en canvas, sin dependencias externas. Las paredes incluyen estandartes, un retrato ilustrado original de Einstein y ecuaciones grafiteadas.
 
@@ -163,3 +163,8 @@ La fuente local Oxanium sustituye a Pixelify Sans en la interfaz, con cifras má
 El prólogo conserva la pista de Eric durante la siguiente intervención de Paola. Cambia a `missing` al presentar a Iván desaparecido y vuelve a `music` con la última intervención de Paola.
 
 El lanzamiento final dura 19 segundos. Primero Paola avisa durante 4 segundos; después Iván aparece caminando con dos pasos que conservan la orientación del torso. El cohete empieza a elevarse a los 8.5 segundos. Iván gira cuando el cohete alcanza 3.4 unidades de ascenso (dos alturas del sprite), cuelga por debajo del cable y se balancea con amplitud decreciente. Un globo junto a su cabeza muestra «AAAAAAAAHHHH». Al terminar aparece una tarjeta desplegable «6 / 6» con la indicación de tomar una captura y subirla a la actividad. La escena y la tarjeta se reinician al volver a entrar. Los recursos originales se documentan en `assets/sprites/IVAN-FINALE.md`; los nuevos pasos, en `assets/sprites/IVAN-WALK-V2.md`.
+
+## Actualización Aventura EPIK
+Nombre visible actualizado; la dirección del repositorio se conserva. Iván pasa de 0,83349 a 0,8751645 celdas/s. Eric pasa de (0,22; 0,10) a (0,231; 0,105) km/s en el modelo del simulador. La muerte por poción tiene un contador independiente con tres mensajes químicos; sus impactos emiten un flamazo verde y un efecto de soplido sintetizado. La rueda tiene exámenes con ceros rojos en el suelo.
+
+`assets/audio/woodenbridge-2s.wav` contiene exactamente los primeros 2 segundos de woodenbridge.mp3 aportado por el usuario, convertido a PCM mono de 44,1 kHz sin relleno de codificación. Respeta el canal y silencio de efectos.
