@@ -49,3 +49,12 @@
 #cinema-player[data-presentation="world"][data-phase="ceremony"] #cinema-caption{display:none}
 #cinema-player[data-presentation="world"] #ceremony-certificate{overflow:auto;inset:8% 14%;padding:12px 24px;gap:5px}
 @media(max-width:650px){#cinema-player[data-presentation="world"] #ceremony-certificate{inset:9% 2% 2%;padding:10px;justify-content:flex-start}#cinema-player[data-presentation="world"] #cinema-caption{padding:10px;font-size:14px}}
+
+#scene-next{position:absolute;bottom:10px;right:18px;z-index:15;font-size:17px;padding:8px 20px}
+#cinema-player[data-dialogues="click"] #cinema-caption{padding-bottom:62px}
+#cinema-player[data-dialogues="click"] #ceremony-dialogue{bottom:66px}
+#cinema-player[data-dialogues="click"][data-presentation="world"] .cinema-controls{display:none}
+#cinema-player[data-phase="escape-cell"] #cinema-caption{display:none}
+#cinema-player[data-dialogues="click"] #scene-next:disabled{opacity:.45}
+
+#cinema-player[data-presentation="gallery"] #scene-next{bottom:106px}#cinema-player[data-dialogues="click"] #scene-next[hidden]{display:none}

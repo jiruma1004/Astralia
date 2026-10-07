@@ -1,9 +1,9 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const world={};world.window=world;vm.createContext(world);
-for(const file of ['src/rooms/room-03/room.js','src/rooms/room-03/maze.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),world);
+for(const file of ['src/rooms/room-03/room.js','src/rooms/room-03/maze.js','src/rooms/room-00/approach.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),world);
 const room=world.ESCAPE_ROOMS[0],events=[],maze=new world.ConceptMaze(room,(type,text)=>events.push({type,text}));
 const door=(stage,choice)=>maze.doors.find(d=>d.stage===stage&&d.choice===choice);
-function pass(){const d=door(maze.stage,world.CONCEPT_QUESTIONS[maze.stage].correct);assert.equal(maze.choose(d),true);maze.tick(.016,{x:d.x+5.3,y:d.y+.5});}
+function pass(){const d=door(maze.stage,[world.CONCEPT_QUESTIONS[maze.stage].correct].flat()[0]);assert.equal(maze.choose(d),true);maze.tick(.016,{x:d.x+5.3,y:d.y+.5});}
 assert.equal(maze.choose(door(1,0)),null);
 const bad=door(0,0),traveler={x:7,y:3.5};assert.equal(room.map[3][10],1,'No hay cuarto vacío tras el portal');
 assert.equal(maze.choose(bad,traveler),false);assert.equal(maze.dungeon,true,'La selección castiga inmediatamente, sin esperar movimiento ni tick');assert.equal(traveler.x,6.5);assert.equal(maze.doors.length,2);assert.equal(room.environment.moss,true);assert.equal(maze.chasing,true);
@@ -17,7 +17,7 @@ maze.restoreCheckpoint(1);assert.equal(maze.stage,1);assert(!maze.chasing);asser
 console.log('OK: penalización inmediata, sin cuartos vacíos, dos respuestas, retorno con puertas abiertas, reentrada, velocidad, captura y progreso correcto.');
 maze.reset();
 for(let stage=0;stage<4;stage++){
- const doors=maze.doors.filter(d=>d.stage===stage);assert.equal(doors.length,3);assert.equal(doors.filter(d=>d.correct).length,1);
+ const doors=maze.doors.filter(d=>d.stage===stage);assert.equal(doors.length,stage===3?2:3);assert.equal(doors.filter(d=>d.correct).length,stage===3?2:1);
  const correct=doors.find(d=>d.correct);assert.equal(room.map[correct.y][correct.x+4],0,'El pasaje coincide con la respuesta correcta');
 }
 const cycle=world.DUNGEON_QUESTIONS.length;assert.equal(cycle,12);
@@ -29,6 +29,6 @@ maze.nextDungeonQuestion();const remaining=maze.questionPool.length;maze.restore
 maze.choose(door(0,0),traveler);maze.choose(maze.doors.find(d=>d.correct),traveler);assert.equal(maze.grace,5);assert(maze.returnGrace);
 const still={...maze.enemy};const near={x:still.x+.1,y:still.y};for(let i=0;i<49;i++)maze.tick(.1,near);
 assert.equal(maze.enemy.x,still.x);assert.equal(maze.enemy.y,still.y);assert(!maze.caught,'No captura durante el margen de regreso');maze.tick(.2,near);assert(maze.caught,'La persecución se reanuda al terminar el margen');
-console.log('OK: tres puertas en los cuatro tramos, banco de 12 sin repeticiones y margen de regreso de 5 segundos sin movimiento ni captura.');
+console.log('OK: tres puertas en los primeros tramos y dos respuestas válidas en el último, banco de 12 sin repeticiones y margen de regreso de 5 segundos sin movimiento ni captura.');
 
 assert.equal(room.oakDoor.x,49);

@@ -47,3 +47,13 @@ Durante la historia, las escenas se superponen exactamente al área del juego, s
 La galería incluye `ceremonia-karla` (46 s), con Angélica y Karla como coordinadora académica del área de ciencias. Comparte escenario, confeti, música y diploma con la original; el final principal sigue usando `ceremonia-ignitia` con Paola. Reproducir la alternativa no concede progreso ni activa el easter egg.
 
 Arte: `assets/cinematics/karla-academic-gesture.webp`, creado con image_gen integrado. Prompt en `assets/cinematics/karla-academic-prompts.json`. Tres poses, brazo animado y boca al hablar.
+
+## Rutas onda y partícula · siete umbrales
+La cuarta pregunta del laberinto tiene dos puertas correctas. StoryRoute mantiene la primera elección de esa pregunta durante la partida, incluidos cambios de sala y reapariciones. Onda es la ruta predeterminada para vistas previas; reiniciar la aventura restablece esa opción.
+
+- Partícula: intercepción → ceremonia con Paola → clic en diploma → celda vacía y Angélica → Continuará.
+- Onda: intercepción → ceremonia con Karla → clic en diploma → descenso de Iván y cobertizo → Continuará.
+
+branching-scenes.js añade pausas de diálogo y un botón Continuar a las escenas existentes. El doble clic se filtra durante 450 ms, cada callback de final se consume una sola vez y la galería sigue sin modificar la partida. La antigua secuencia del cohete permanece archivada en la galería.
+
+El cobertizo contiene carteles de Eric, Karla y una identidad desconocida. eric-escaped-cell.webp se generó con image_gen integrado; prompts en assets/cinematics/eric-escaped-cell-prompts.json. La escena de fuga es ficción: presenta indicios, sin enseñar a preparar o encender una reacción. Diploma actualizado a 7/7.

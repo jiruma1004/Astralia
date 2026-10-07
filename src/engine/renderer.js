@@ -41,15 +41,17 @@ window.EscapeRenderer = class {
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height,horizon=h*(.5+(player.pitch||0)),eye=.5+(player.jumpHeight||0);
     const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,horizon);if(room.environment?.kind!=='interior')for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(horizon*.86),1.8,1.8);}
     const floor=c.createLinearGradient(0,horizon,0,h);floor.addColorStop(0,'#17213f');floor.addColorStop(1,'#465477');c.fillStyle=floor;c.fillRect(0,horizon,w,h-horizon);
+    if(room.trial)WorldBillboard(this,player,this.actors,this.outdoor.castle,32,3.85,0,14,12,false);
     if(room.environment?.kind==='courtyard')this.outdoor.background(this,room,player,this.actors);
     if(room.environment?.kind==='interior')this.drawCeiling(room,player,horizon,eye);
-    if(room.physics||room.environment?.kind==='interior'||room.environment?.kind==='courtyard'){
+    if(room.trial||room.physics||room.environment?.kind==='interior'||room.environment?.kind==='courtyard'){
       // Proyección del suelo: el abismo y el puente ocupan las mismas casillas que las colisiones.
       for(let sy=Math.max(0,horizon+2);sy<h;sy+=4){const depth=(h*eye)/(sy-horizon);
         for(let sx=0;sx<w;sx+=6){const lateral=(sx/w*2-1)*.66;
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.floorTile?room.floorTile(wx,wy):room.map[Math.floor(wy)]?.[Math.floor(wx)];
-          if(room.lava?.contains(wx,wy)){c.fillStyle=room.lava.color(wx,wy,time);}
+          if(room.trial){c.fillStyle=room.approach.color(wx,wy);}
+          else if(room.lava?.contains(wx,wy)){c.fillStyle=room.lava.color(wx,wy,time);}
           else if(tile===3&&room.boss){const bridge=opened&&Math.floor(wy)===7;c.fillStyle=bridge?'#758c8b':((Math.floor(wx*3)+Math.floor(wy*3))%2?'#060c1c':'#091425');}
           else if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-(room.bridge.start+room.bridge.end)/2)/((room.bridge.end-room.bridge.start)*.367),by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
           else if(room.environment?.shop)c.fillStyle=InteriorAtmosphere.shopFloor(wx,wy);
@@ -130,7 +132,7 @@ window.EscapeRenderer = class {
       return;
     }
     if(room.roulette){this.drawTable(room,player,opened,roulette,time);return;}
-    if(room.conceptual||room.corridor||room.boss||room.rocket||room.measurement)return;
+    if(room.trial||room.conceptual||room.corridor||room.boss||room.rocket||room.measurement)return;
     // Retícula y silueta del cañón; sustituibles por sprites en assets/.
     c.strokeStyle='#dbe8c3';c.lineWidth=2;c.beginPath();c.moveTo(w/2-10,h/2);c.lineTo(w/2-4,h/2);c.moveTo(w/2+4,h/2);c.lineTo(w/2+10,h/2);c.moveTo(w/2,h/2-10);c.lineTo(w/2,h/2-4);c.stroke();
     const recoil=flash>0?18:0;

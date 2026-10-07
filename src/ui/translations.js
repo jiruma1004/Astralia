@@ -217,12 +217,12 @@ window.ENGLISH={
   "El ascenso no coincide. Comprueba v = at, h = ½at² y recuerda que el empuje debe vencer también al peso. Tolerancia: 1 %.": "The ascent does not match. Check v = at and h = ½at². Thrust must also overcome weight. Tolerance: 1%.",
   "Ignitia tiene un cohete listo. Soy José Luis: programa el primer ascenso para alcanzar 1800 m y 120 m/s al apagar el motor. Calcula aceleración neta, tiempo de encendido y empuje. Acércate al terminal azul y pulsa E. Las ecuaciones y los datos están en el panel. ¡Eric va rumbo a la Luna!": "Ignitia has a rocket ready. I’m José Luis: program the first ascent to reach 1800 m and 120 m/s at engine cutoff. Calculate net acceleration, burn time and thrust. Approach the blue terminal and press E. The panel has the data and equations. Eric is heading for the Moon!",
   "¡Aquí José Luis, líder de Ignitia! Eric ha escapado. Planea activar su máquina de divergencia en la Luna. Apresúrate a la siguiente sala: nuestro grupo tiene un cohete preparado. Solo faltan los parámetros de lanzamiento. ¡Todavía podemos alcanzarlo!": "José Luis here, leader of Ignitia! Eric has escaped. He plans to activate his divergence machine on the Moon. Hurry to the next room: our group has a rocket ready. All we need are the launch parameters. We can still catch him!",
-  "¡Despegue confirmado! El piloto automático toma el control. Ignitia va rumbo a la Luna para alcanzar al Dr. Eric. Has completado las seis pruebas. La persecución continúa entre las estrellas…": "Liftoff confirmed! Autopilot is taking over. Ignitia is heading to the Moon to catch Dr. Eric. You have completed all six challenges. The pursuit continues among the stars…",
+  "¡Despegue confirmado! El piloto automático toma el control. Ignitia va rumbo a la Luna para alcanzar al Dr. Eric. Has completado las siete pruebas. La persecución continúa entre las estrellas…": "Liftoff confirmed! Autopilot is taking over. Ignitia is heading to the Moon to catch Dr. Eric. You have completed all seven challenges. The pursuit continues among the stars…",
   "El soporte cede…": "The support gives way…",
   "¡Eric está escapando!": "Eric is escaping!",
   "IGNITIA · DESPEGUE CONFIRMADO": "IGNITIA · LIFTOFF CONFIRMED",
   "IGNITIA RUMBO A LA LUNA": "IGNITIA BOUND FOR THE MOON",
-  "Has completado las seis pruebas. La persecución continúa.": "You completed all six challenges. The pursuit continues.",
+  "Has completado las siete pruebas. La persecución continúa.": "You completed all seven challenges. The pursuit continues.",
   "Eric escapó. Cruza el puente central hacia el cohete de Ignitia.": "Eric escaped. Cross the central bridge to Ignitia’s rocket.",
   "Acércate al terminal azul de Ignitia y pulsa E.": "Approach Ignitia’s blue terminal and press E.",
   "Clic o E · Programar el cohete": "Click or E · Program rocket",
@@ -581,7 +581,7 @@ window.ENGLISH={
   "El origen de un villano": "The origin of a villain",
   "Este es el Dr. Eric. Se cansó de que los alumnos nunca pusieran títulos a las gráficas. Su paciencia se convirtió en furia, y ahora prepara la divergencia: quiere unificar la gravedad y el espacio.": "This is Dr. Eric. He grew tired of students never giving their graphs titles. His patience turned into fury, and now he is preparing the divergence: he wants to unify gravity and space.",
   "Una hora para detenerlo": "One hour to stop him",
-  "Nadie sabe qué podría ocurrir si termina su experimento. Te esperan seis umbrales y varias pruebas de física. Tendrás sesenta minutos desde que entres al mundo; usa tus conocimientos y observa a tu alrededor.": "Nobody knows what could happen if he finishes his experiment. Six gateways and several physics challenges await. You have sixty minutes from entering the world; use your knowledge and observe your surroundings.",
+  "Nadie sabe qué podría ocurrir si termina su experimento. Te esperan siete umbrales y varias pruebas de física. Tendrás sesenta minutos desde que entres al mundo; usa tus conocimientos y observa a tu alrededor.": "Nobody knows what could happen if he finishes his experiment. Seven gateways and several physics challenges await. You have sixty minutes from entering the world; use your knowledge and observe your surroundings.",
   "EPI Iván · desaparecido": "EPI Iván · missing",
   "Una desaparición sin resolver": "An unsolved disappearance",
   "El EPI Iván también está desaparecido desde que Eric se fue. Nadie sabe dónde se encuentra. Se dice que se perdió en un bosque… pero nadie ha podido confirmar esa historia.": "EPI Iván has also been missing since Eric left. Nobody knows where he is. People say he got lost in a forest… but nobody has confirmed that story.",
@@ -617,7 +617,7 @@ window.ENGLISH={
   "TU AVENTURA EN ASTRALIA": "YOUR ADVENTURE IN ASTRALIA",
   "El castillo": "The castle",
   "de la divergencia.": "of divergence.",
-  "Seis umbrales. Una hora. El Dr. Eric te espera.": "Six gateways. One hour. Dr. Eric awaits.",
+  "Seis umbrales. Una hora. El Dr. Eric te espera.": "Seven gateways. One hour. Dr. Eric awaits.",
   "LOS SEIS UMBRALES": "THE SIX GATEWAYS",
   "Caminar": "Walk",
   "Mouse para mirar": "Mouse to look",
@@ -644,7 +644,7 @@ window.ENGLISH={
   "Reiniciar la rueda y cerrar la puerta": "Reset the wheel and close the door",
   "Acerca de estos problemas": "About these problems",
   "ASTRALIA · APRENDE EXPLORANDO": "ASTRALIA · LEARN BY EXPLORING",
-  "Seis umbrales. A tu ritmo.": "Six gateways. At your own pace.",
+  "Seis umbrales. A tu ritmo.": "Seven gateways. At your own pace.",
   "00:00 · EL TIEMPO SE AGOTÓ": "00:00 · TIME’S UP",
   "La divergencia ha comenzado.": "The divergence has begun.",
   "Las piedras tiemblan. El Dr. Eric ha unido la gravedad y el espacio… y el castillo ya no obedece las mismas leyes. Esta vez llegó primero.": "The stones tremble. Dr. Eric has united gravity and space… and the castle no longer obeys the same laws. He got there first this time.",
@@ -806,20 +806,20 @@ Object.assign(ENGLISH,{'Relaciona altura, rapidez y tiempo. Recuerda que el empu
 
 Object.assign(ENGLISH,{'¡Ja, ja! ¡Cuidado con la mezcla!':'Ha, ha! Watch out for the mixture!','¡Una pequeña reacción para tus cálculos!':'A little reaction for your calculations!','¡La poción de Eric te alcanzó!':'Eric’s potion got you!','POCIÓN':'POTION','Una reacción inesperada.':'An unexpected reaction.','Evita los charcos verdes: desaparecen en dos segundos.':'Avoid the green puddles: they disappear in two seconds.'});
 
-Object.assign(ENGLISH,{"Iván: «¿Eric? ¿Dónde te metiste?»": "Iván: “Eric? Where did you go?”", "Iván: «Un momento… ¿qué es este cable?»": "Iván: “Wait… what is this cable?”", "¡Pasajero inesperado! Iván va rumbo a las estrellas.": "An unexpected passenger! Iván is heading for the stars.", "¡Despegue confirmado! El piloto automático toma el control. Ignitia va rumbo a la Luna para alcanzar al Dr. Eric. Has completado las seis pruebas. La persecución continúa entre las estrellas… ¡Y parece que Iván se ha colado en la expedición!": "Liftoff confirmed! Autopilot is taking over. Ignitia is heading for the Moon to catch Dr. Eric. You have completed all six challenges. The chase continues among the stars… and it seems Iván has joined the expedition!"});
+Object.assign(ENGLISH,{"Iván: «¿Eric? ¿Dónde te metiste?»": "Iván: “Eric? Where did you go?”", "Iván: «Un momento… ¿qué es este cable?»": "Iván: “Wait… what is this cable?”", "¡Pasajero inesperado! Iván va rumbo a las estrellas.": "An unexpected passenger! Iván is heading for the stars.", "¡Despegue confirmado! El piloto automático toma el control. Ignitia va rumbo a la Luna para alcanzar al Dr. Eric. Has completado las siete pruebas. La persecución continúa entre las estrellas… ¡Y parece que Iván se ha colado en la expedición!": "Liftoff confirmed! Autopilot is taking over. Ignitia is heading for the Moon to catch Dr. Eric. You have completed all seven challenges. The chase continues among the stars… and it seems Iván has joined the expedition!"});
 
 Object.assign(ENGLISH,{
   "Se cansó de escuchar «eso no lo vimos».": "She grew tired of hearing “we never covered that”.",
   "Definitivamente, tú y la gravedad no os lleváis.": "You and gravity definitely do not get along.",
   "La gravedad ya te reconoce. Quizá sea hora de negociar con el puente.": "Gravity recognizes you now. Perhaps it is time to negotiate with the bridge.",
   "Ceremonia de Ignitia": "Ignitia ceremony",
-  "Angélica y EPI Paola celebran el final de las seis pruebas.": "Angélica and EPI Paola celebrate the six completed challenges.",
+  "Angélica y EPI Paola celebran el final de las siete pruebas.": "Angélica and EPI Paola celebrate the seven completed challenges.",
   "Continuar a la ceremonia": "Continue to the ceremony",
   "En nombre del Departamento de Ciencias, te damos la bienvenida. Hoy celebramos tu ingenio y tu perseverancia.": "On behalf of the Department of Sciences, welcome. Today we celebrate your ingenuity and perseverance.",
-  "Superaste seis desafíos, pusiste a prueba tus ideas y no dejaste de intentarlo. ¡Ha sido un gusto acompañarte!": "You overcame six challenges, tested your ideas and kept trying. It has been a pleasure to guide you!",
+  "Superaste siete desafíos, pusiste a prueba tus ideas y no dejaste de intentarlo. ¡Ha sido un gusto acompañarte!": "You overcame seven challenges, tested your ideas and kept trying. It has been a pleasure to guide you!",
   "Gracias por detener al Dr. Eric antes de que distorsionara el tiempo y el espacio. Ignitia está en deuda contigo.": "Thank you for stopping Dr. Eric before he could distort time and space. Ignitia owes you a debt of gratitude.",
   "Esperemos que no pase nada por poner a un químico en una celda de aluminio y óxido…": "Let us hope nothing happens after putting a chemist in a cell made of aluminum and rust…",
-  "Por ahora, celebremos. ¡Felicidades por completar las seis pruebas!": "For now, let us celebrate. Congratulations on completing all six challenges!",
+  "Por ahora, celebremos. ¡Felicidades por completar las siete pruebas!": "For now, let us celebrate. Congratulations on completing all seven challenges!",
   "ANGÉLICA · DIRECTORA DE CIENCIAS": "ANGÉLICA · DIRECTOR OF SCIENCES",
   "Ceremonia de reconocimiento · Departamento de Ciencias": "Recognition ceremony · Department of Sciences",
   "Gracias por formar parte de Ignitia.": "Thank you for being part of Ignitia.",
@@ -829,7 +829,7 @@ Object.assign(ENGLISH,{
   "PRUEBAS COMPLETADAS": "CHALLENGES COMPLETED",
   "Por tu ingenio, perseverancia y por proteger el tiempo y el espacio.": "For your ingenuity, perseverance and protection of time and space.",
   "Puedes tomar una captura de esta imagen y subirla a la actividad, junto con tus apuntes de los ejercicios, para validar tu trabajo.": "Take a screenshot of this image and submit it to the activity, along with your exercise notes, to validate your work.",
-  "Vista previa: completa las seis pruebas para obtener tu certificado de la actividad.": "Preview: complete all six challenges to earn your activity certificate.",
+  "Vista previa: completa las siete pruebas para obtener tu certificado de la actividad.": "Preview: complete all seven challenges to earn your activity certificate.",
   "Directora de Ciencias": "Director of Sciences",
   "Tu guía en Astralia": "Your guide in Astralia",
   "El emporio arcano": "The arcane emporium"
@@ -860,4 +860,54 @@ Object.assign(window.ENGLISH,{
 Object.assign(window.ENGLISH,{
 "Cuidado, el Dr. Eric te está lanzando ecuaciones desde el otro lado":"Watch out! Dr. Eric is throwing equations at you from the other side.",
 "El Dr. Eric lanza ecuaciones en línea recta desde el otro extremo. Muévete a los lados para esquivarlas. Usa Shift para correr y Espacio para saltar entre las plataformas sobre la lava; busca el siguiente apoyo antes de saltar.":"Dr. Eric throws equations in straight lines from the far end. Move sideways to dodge them. Use Shift to sprint and Space to jump between platforms over the lava; find your next landing spot before jumping."
+});
+
+Object.assign(window.ENGLISH,{
+  "El sendero de las decisiones": "The path of decisions",
+  "Cinco saltos de verdadero o falso": "Five true-or-false jumps",
+  "EL SENDERO PREGUNTA": "THE PATH ASKS",
+  "Verdadero o falso": "True or false",
+  "VERDADERO": "TRUE",
+  "FALSO": "FALSE",
+  "VERDADERO O FALSO": "TRUE OR FALSE",
+  "CINCO ACIERTOS": "FIVE CORRECT ANSWERS",
+  "SENDERO SUPERADO": "PATH COMPLETED",
+  "La rapidez es una magnitud vectorial.": "Speed is a vector quantity.",
+  "En el vacío, dos cuerpos de distinta masa caen con la misma aceleración.": "In a vacuum, two bodies of different masses fall with the same acceleration.",
+  "Si la fuerza neta es cero, un cuerpo necesariamente está en reposo.": "If the net force is zero, a body must be at rest.",
+  "La pendiente de una gráfica de velocidad contra tiempo representa la aceleración.": "The slope of a velocity-versus-time graph represents acceleration.",
+  "En un tiro parabólico ideal, la aceleración horizontal es cero.": "In ideal projectile motion, horizontal acceleration is zero.",
+  "Distingue cuánto se mueve un objeto de hacia dónde se mueve.": "Distinguish how fast an object moves from the direction of its motion.",
+  "Piensa en qué cambia cuando desaparece la resistencia del aire.": "Think about what changes when air resistance disappears.",
+  "Recuerda qué puede conservarse cuando no hay aceleración.": "Recall what can remain constant when there is no acceleration.",
+  "Observa las unidades de los dos ejes.": "Look at the units on the two axes.",
+  "Piensa hacia dónde actúa la gravedad.": "Think about the direction in which gravity acts.",
+  "Mira las dos plataformas antes de saltar.": "Look at both platforms before jumping.",
+  "Salta a la plataforma con tu respuesta. Cada acierto guarda un punto seguro.": "Jump onto the platform with your answer. Each correct answer saves a checkpoint.",
+  "Ya puedes seguir el camino hacia el bosque.": "You can now follow the path into the forest.",
+  "Lee la afirmación y salta a Verdadero o Falso. Shift corre · Espacio salta. Cada acierto guarda tu avance.": "Read the statement and jump to True or False. Shift to sprint · Space to jump. Each correct answer saves your progress.",
+  "Salta a tu respuesta · Shift corre · Espacio salta · H pista": "Jump to your answer · Shift sprint · Space jump · H hint",
+  "Respuesta correcta. Punto seguro guardado.": "Correct answer. Checkpoint saved.",
+  "¡Cinco aciertos! Sigue el camino hacia el bosque.": "Five correct answers! Follow the path into the forest.",
+  "Elige la respuesta correcta y salta a su plataforma. Conservas los aciertos anteriores. ": "Choose the correct answer and jump to its platform. Previous correct answers are saved. ",
+  "La doble naturaleza": "The dual nature",
+  "¿Cómo puede comportarse un electrón? Elige qué aspecto de su naturaleza quieres explorar: ambas puertas son válidas.": "How can an electron behave? Choose which aspect of its nature you want to explore: both doors are valid.",
+  "Partícula": "Particle",
+  "Onda": "Wave",
+  "Los electrones muestran propiedades ondulatorias y corpusculares según el experimento. Aquí no hay una respuesta incorrecta.": "Electrons show wave-like and particle-like properties depending on the experiment. There is no wrong answer here.",
+  "La dualidad onda-partícula describe dos aspectos del comportamiento cuántico; esta elección cambia tu historia.": "Wave-particle duality describes two aspects of quantum behavior; this choice changes your story.",
+  "La celda vacía": "The empty cell",
+  "Ruta partícula · Angélica descubre una fuga durante la ceremonia.": "Particle route · Angélica discovers an escape during the ceremony.",
+  "La celda está vacía… Eric debió escapar mientras estábamos en la ceremonia.": "The cell is empty… Eric must have escaped while we were at the ceremony.",
+  "El aluminio y el óxido de hierro… Esto parece el rastro de una reacción de termita. La reja está fundida.": "The aluminum and iron oxide… This looks like the aftermath of a thermite reaction. The bars have melted.",
+  "Hay un fósforo quemado. ¿Alguien se lo dio? No explica por sí solo lo ocurrido… Me temo que Eric recibió ayuda.": "There is a burnt match. Did someone give it to him? That alone does not explain what happened… I fear Eric had help.",
+  "Después de la ceremonia · Una ausencia inesperada": "After the ceremony · An unexpected absence",
+  "Continuar ▸": "Continue ▸",
+  "Cuatro tramos: tres puertas en los primeros y dos puertas válidas en el último.": "Four sections: three doors in the first sections and two valid doors in the last one.",
+  "SALTO ": "JUMP "
+});
+
+Object.assign(window.ENGLISH,{
+"Sigue el camino hacia el bosque.":"Follow the path into the forest.",
+"Lee la afirmación y prepara el siguiente salto.":"Read the statement and prepare your next jump."
 });

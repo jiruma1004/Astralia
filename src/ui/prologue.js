@@ -5,7 +5,7 @@ window.AdventurePrologue=class {
   this.pages=[
    {portrait:'paola',name:'Epi Paola',cue:'music',title:'Antes de cruzar el bosque…',text:'Hola, soy Epi Paola. Hay algo que debes saber antes de entrar al castillo. Todo empezó con el Dr. Eric… y unas gráficas.'},
    {portrait:'eric',name:'Dr. Eric',cue:'villain',title:'El origen de un villano',text:'Este es el Dr. Eric. Se cansó de que los alumnos nunca pusieran títulos a las gráficas. Su paciencia se convirtió en furia, y ahora prepara la divergencia: quiere unificar la gravedad y el espacio.'},
-   {portrait:'paola',name:'Epi Paola',cue:'villain',title:'Una hora para detenerlo',text:'Nadie sabe qué podría ocurrir si termina su experimento. Te esperan seis umbrales y varias pruebas de física. Tendrás sesenta minutos desde que entres al mundo; usa tus conocimientos y observa a tu alrededor.'},
+   {portrait:'paola',name:'Epi Paola',cue:'villain',title:'Una hora para detenerlo',text:'Nadie sabe qué podría ocurrir si termina su experimento. Te esperan siete umbrales y varias pruebas de física. Tendrás sesenta minutos desde que entres al mundo; usa tus conocimientos y observa a tu alrededor.'},
    {portrait:'ivan',name:'EPI Iván · desaparecido',cue:'missing',title:'Una desaparición sin resolver',text:'El EPI Iván también está desaparecido desde que Eric se fue. Nadie sabe dónde se encuentra. Se dice que se perdió en un bosque… pero nadie ha podido confirmar esa historia.'},
    {portrait:'paola',name:'Epi Paola',cue:'music',title:'No estarás solo',text:'Yo estaré para apoyarte. Puedes contar conmigo presionando la tecla H o tocando mi globo de ayuda. Ahora, respira, prepara tus cálculos y entra. Ah… y esta vez ponles título a tus gráficas.'}
   ];

@@ -3,10 +3,10 @@ window.IgnitiaCeremony={
  duration:46,certificateAt:38,
  lines:[
   {at:0,until:8,speaker:'Angélica',text:'En nombre del Departamento de Ciencias, te damos la bienvenida. Hoy celebramos tu ingenio y tu perseverancia.'},
-  {at:8,until:16,speaker:'EPI Paola',text:'Superaste seis desafíos, pusiste a prueba tus ideas y no dejaste de intentarlo. ¡Ha sido un gusto acompañarte!'},
+  {at:8,until:16,speaker:'EPI Paola',text:'Superaste siete desafíos, pusiste a prueba tus ideas y no dejaste de intentarlo. ¡Ha sido un gusto acompañarte!'},
   {at:16,until:24,speaker:'Angélica',text:'Gracias por detener al Dr. Eric antes de que distorsionara el tiempo y el espacio. Ignitia está en deuda contigo.'},
   {at:24,until:33,speaker:'EPI Paola',text:'Esperemos que no pase nada por poner a un químico en una celda de aluminio y óxido…'},
-  {at:33,until:38,speaker:'Angélica',text:'Por ahora, celebremos. ¡Felicidades por completar las seis pruebas!'}
+  {at:33,until:38,speaker:'Angélica',text:'Por ahora, celebremos. ¡Felicidades por completar las siete pruebas!'}
  ],
  lineAt(t){return this.lines.find(line=>t>=line.at&&t<line.until)||null;},
  star(c,x,y,size){c.save();c.translate(x-size/2,y-size/2);c.scale(size/100,size/100);c.fillStyle='#f1e8c9';c.beginPath();for(const [i,p] of [[51,0],[60,45],[99,29],[69,56],[74,68],[60,65],[34,100],[43,63],[0,52],[45,55]].entries())i?c.lineTo(...p):c.moveTo(...p);c.closePath();c.fill();c.restore();}
@@ -15,7 +15,7 @@ window.CeremonyScene=class {
  constructor(library,{karla=false}={}){this.karla=karla;this.lines=IgnitiaCeremony.lines.map(line=>karla&&line.speaker==='EPI Paola'?{...line,speaker:'Karla',text:line.at===8?'Soy Karla, coordinadora académica del área de ciencias. Tu esfuerzo y perseverancia hicieron posible esta misión. ¡Felicidades!':'Espero no pase nada por tener a un químico en una celda…'}:line);this.lib=library;this.verified=!!library.isComplete?.();this.lastSpeaker=null;
   document.querySelector('#ceremony-certificate footer span:last-child').innerHTML=karla?'Karla<br><small>Coordinadora académica del área de ciencias</small>':'EPI Paola<br><small>Tu guía en Astralia</small>';
   document.querySelector('#ceremony-preview').hidden=this.verified;
-  document.querySelector('#certificate-instruction').textContent=this.verified?'Puedes tomar una captura de esta imagen y subirla a la actividad, junto con tus apuntes de los ejercicios, para validar tu trabajo.':'Vista previa: completa las seis pruebas para obtener tu certificado de la actividad.';
+  document.querySelector('#certificate-instruction').textContent=this.verified?'Puedes tomar una captura de esta imagen y subirla a la actividad, junto con tus apuntes de los ejercicios, para validar tu trabajo.':'Vista previa: completa las siete pruebas para obtener tu certificado de la actividad.';
  }
  draw(t){
   const lib=this.lib,c=lib.ctx,w=lib.canvas.width,h=lib.canvas.height,image=lib.images.ceremonyHall;

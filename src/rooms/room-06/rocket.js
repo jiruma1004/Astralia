@@ -14,7 +14,7 @@ window.IgnitiaMission=class {
   this.simulator=new InterceptionConsole(document.querySelector('#rocket-console'),this.rider,this.rocket,()=>this.startLaunch());this.simulator.canRun=()=>this.canLaunch?.();this.simulator.onFail=()=>this.onEvent('moon');
   document.querySelector('#rocket-close').onclick=()=>this.closeConsole();
   this.walk=new Image();this.walk.src='assets/sprites/ivan-walk-v2.png';this.paola=new Image();this.paola.src='assets/sprites/epi-paola-glasses-a-talk.webp';this.speaker='jose';
-  document.querySelector('.scene-view').insertAdjacentHTML('beforeend','<details id="completion-card" hidden><summary>ASTRALIA · DESAFÍO COMPLETADO</summary><strong>6 / 6</strong><p>¡Muchas felicidades! Has completado todas las pruebas. Toma una captura de esta pantalla y súbela a la actividad junto con tus apuntes y los procedimientos de los ejercicios.</p><button id="completion-continue" class="primary">Continuar</button></details><section id="chapter-ending" hidden aria-label="Epílogo"><p id="chapter-ending-text" tabindex="-1">Continuará en semana 10…</p></section>');
+  document.querySelector('.scene-view').insertAdjacentHTML('beforeend','<details id="completion-card" hidden><summary>ASTRALIA · DESAFÍO COMPLETADO</summary><strong>7 / 7</strong><p>¡Muchas felicidades! Has completado todas las pruebas. Toma una captura de esta pantalla y súbela a la actividad junto con tus apuntes y los procedimientos de los ejercicios.</p><button id="completion-continue" class="primary">Continuar</button></details><section id="chapter-ending" hidden aria-label="Epílogo"><p id="chapter-ending-text" tabindex="-1">Continuará en semana 10…</p></section>');
   document.querySelector('#ignitia-next').onclick=()=>{if(this.speaking){this.reveal();return;}document.querySelector('#ignitia-dialog').hidden=true;if(this.mode==='debrief'){this.finishLaunch();}if(this.mode==='briefing'){this.mode='idle';this.onEvent('escapeDone');}document.querySelector('#game').focus({preventScroll:true});};
   document.querySelector('#completion-continue').onclick=()=>this.showEnding();
  }
@@ -31,10 +31,10 @@ window.IgnitiaMission=class {
   this.cinematics.play('ignitia-intercepcion',{story:true,onComplete:()=>this.beginCeremony()});
  }
  beginCeremony(){if(this.mode!=='sequence')return;this.mode='ceremony';this.onEvent('complete');
-  this.cinematics.play('ceremonia-ignitia',{story:true,onComplete:()=>{if(this.mode!=='ceremony')return;this.mode='complete';this.showEnding();}});
+  this.cinematics.play(StoryRoute.choice==='particle'?'ceremonia-ignitia':'ceremonia-karla',{story:true,onComplete:()=>{if(this.mode!=='ceremony')return;this.mode='complete';this.showEnding();}});
  }
  finishLaunch(){if(this.mode!=='debrief')return;this.mode='complete';this.speaking=false;this.onEvent('complete');document.querySelector('#ignitia-dialog').hidden=true;const card=document.querySelector('#completion-card');card.hidden=false;card.open=true;document.querySelector('#completion-continue').focus({preventScroll:true});}
- showEnding(){if(this.mode!=='complete')return;this.mode='epilogue';document.querySelector('#completion-card').hidden=true;this.cinematics.play('ivan-descenso',{story:true,onComplete:()=>this.showChapterEnding()});}
+ showEnding(){if(this.mode!=='complete')return;this.mode='epilogue';document.querySelector('#completion-card').hidden=true;this.cinematics.play(StoryRoute.choice==='particle'?'eric-fuga':'ivan-descenso',{story:true,onComplete:()=>this.showChapterEnding()});}
  showChapterEnding(){this.mode='ending';const ending=document.querySelector('#chapter-ending');ending.hidden=false;document.querySelector('#chapter-ending-text').focus({preventScroll:true});}
  updateCamera(player){if(this.scene?.rocket&&['launch','debrief','complete','epilogue','ending'].includes(this.mode))player.pitch=RocketFinaleScene.state(this.time).pitch;}
  tick(dt){if(document.hidden)return;this.simulator.tick(dt);if(!['sequence','ceremony','debrief','complete','epilogue','ending'].includes(this.mode))this.time+=dt;this.voiceTime=(this.voiceTime||0)+dt;this.drawPortrait();

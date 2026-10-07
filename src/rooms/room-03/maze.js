@@ -3,7 +3,7 @@ window.CONCEPT_QUESTIONS=[
  {title:'El carro encantado',text:'Un carro se mueve en línea recta con velocidad constante sobre un suelo horizontal. ¿Cuál es la fuerza neta sobre él?',answers:['Hacia delante','Es cero','Hacia atrás'],correct:1,hint:'Piensa qué mide la aceleración. Una velocidad constante no implica que no existan fuerzas.',explanation:'Velocidad constante significa aceleración cero: la suma de fuerzas es cero.'},
  {title:'Un instante en lo alto',text:'Lanzas una pelota verticalmente hacia arriba. Sin resistencia del aire, ¿qué aceleración tiene justo en su punto más alto?',answers:['Cero','g hacia arriba','g hacia abajo'],correct:2,hint:'Distingue velocidad de aceleración. ¿La gravedad desaparece cuando la pelota se detiene un instante?',explanation:'En la cima la velocidad es cero, pero la aceleración sigue siendo g hacia abajo.'},
  {title:'Dos esferas, un vacío',text:'Dejas caer dos esferas de masas distintas, desde la misma altura y al mismo tiempo, en el vacío. ¿Cuál llega primero al suelo?',answers:['La más pesada','La más ligera','Llegan juntas'],correct:2,hint:'Relaciona el peso mg con F = ma. ¿Qué pasa con la masa al despejar la aceleración?',explanation:'Sin aire, ambas tienen la misma aceleración g y llegan juntas.'},
- {title:'El giro del centinela',text:'Una esfera gira en una circunferencia con rapidez constante. ¿Hacia dónde apunta su aceleración?',answers:['Es cero','Tangente al círculo','Hacia el centro'],correct:2,hint:'La rapidez no cambia, pero la dirección de la velocidad sí. Imagina la diferencia entre dos vectores velocidad cercanos.',explanation:'El cambio de dirección requiere aceleración centrípeta, dirigida hacia el centro.'}
+ {title:'La doble naturaleza',text:'¿Cómo puede comportarse un electrón? Elige qué aspecto de su naturaleza quieres explorar: ambas puertas son válidas.',answers:['Partícula','Onda'],correct:[0,1],branch:true,hint:'Los electrones muestran propiedades ondulatorias y corpusculares según el experimento. Aquí no hay una respuesta incorrecta.',explanation:'La dualidad onda-partícula describe dos aspectos del comportamiento cuántico; esta elección cambia tu historia.'}
 ];
 window.DUNGEON_QUESTIONS=[
  {title:'El sello de inercia',text:'Si la fuerza neta sobre un cuerpo es cero, ¿qué ocurre con su velocidad?',answers:['Permanece constante','Siempre se hace cero'],correct:0,hint:'F = ma: sin fuerza neta no hay aceleración. Puede estar en reposo o seguir moviéndose.'},
@@ -24,7 +24,7 @@ window.ConceptMaze=class {
  constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.questionPool=[];this.lastDungeonQuestion=null;this.reset();}
  reset(){
   this.speech=null;this.speechLeft=0;this.tauntClock=0;this.tauntIndex=0;
-  this.freezeLeft=0;this.usedFreezeButtons=new Set();this.dungeonVisit=0;this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
+  this.freezeLeft=0;this.usedFreezeButtons=new Set();this.dungeonVisit=0;this.returnGrace=false;this.dungeon=false;this.room.environment=this.baseEnvironment||this.room.environment;this.baseEnvironment=this.room.environment;this.routeChoice=null;this.stage=0;this.passed=new Set();this.finished=false;this.chasing=false;this.caught=false;this.bite=0;this.path=[];this.pathClock=0;this.doors=[];this.openDoors=new Set();this.grace=0;
   this.enemy={x:1.5,y:8.5};
   // Solo la respuesta correcta tiene un pasaje. Las incorrectas son portales sin cuarto detrás.
   this.room.map=Array.from({length:17},()=>Array(51).fill(1));
@@ -32,11 +32,11 @@ window.ConceptMaze=class {
    const base=stage*12;
    for(let y=1;y<=15;y++)for(let x=base+1;x<=base+7;x++)this.room.map[y][x]=0;
    for(const y of [1,2,3,13,14,15])this.room.map[y][base+4]=1;
-   const rows=[3,8,13];
+   const rows=q.branch?[5,11]:[3,8,13];
    q.answers.forEach((text,choice)=>{
-    const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABC'[choice],correct:choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
+    const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABC'[choice],correct:Array.isArray(q.correct)?q.correct.includes(choice):choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
     if(door.correct)for(let y=door.y-1;y<=door.y+1;y++)for(let x=base+9;x<=base+11;x++)this.room.map[y][x]=0;
-    if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3){this.room.map[door.y][49]=2;this.room.oakDoor={x:49,y:door.y};}}
+    if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3){for(let row=5;row<=11;row++)this.room.map[row][48]=0;this.room.map[8][49]=2;this.room.oakDoor={x:49,y:8};}}
    });
   });
  }
@@ -78,6 +78,7 @@ window.ConceptMaze=class {
    this.onEvent('wrong','Ese sello no responde. '+this.dungeonQuestion.hint+' ¡Iván sigue acercándose!');return false;
   }
   if(!door||door.stage!==this.stage||this.finished||this.caught||this.openDoors.has(door.stage+':'+door.choice))return null;
+  if(CONCEPT_QUESTIONS[this.stage].branch){if(this.routeChoice!==null)return null;this.routeChoice=door.choice;StoryRoute.choose(door.choice===0?'particle':'wave');}
   this.room.map[door.y][door.x]=0;this.openDoors.add(door.stage+':'+door.choice);
   if(!door.correct||this.openDoors.size>=2)this.awaken();
   if(door.correct){this.passed.add(this.stage);this.onEvent('correct','La puerta se abre. Explora el pasaje y cruza hasta la siguiente galería.');return true;}
