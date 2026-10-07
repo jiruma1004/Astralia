@@ -38,10 +38,22 @@ window.RoomCompanions=class {
   document.querySelector('#question-bubble').hidden=!(room.trial||room.roulette||room.conceptual);
   document.querySelector('#question-owner').textContent=room.conceptual?'EL LABERINTO PREGUNTA':'LA RUEDA PREGUNTA';
   document.querySelector('#roulette-status').hidden=!room.roulette;document.querySelector('#problem-card').hidden=true;
-  document.querySelector('#concept-question').hidden=!(room.trial||room.conceptual);document.querySelector('#maze-notice').hidden=!room.conceptual;
+  document.querySelector('#concept-question').hidden=!(room.trial||room.conceptual);this.showRoomNotice(room);
   document.querySelector('#ask-paola').hidden=!(room.trial||room.physics||room.roulette||room.conceptual||room.corridor||room.boss||room.rocket);
   document.querySelector('#question-content').hidden=false;document.querySelector('#question-fold').textContent='−';document.querySelector('#question-fold').setAttribute('aria-expanded','true');
   this.updateConcept();this.updateTrial();
+ }
+
+ showRoomNotice(room){
+  const notice=document.querySelector('#maze-notice');
+  const texts=room.trial?['El puente viejo cruza un cráter. Cinco afirmaciones deciden qué tablones resistirán tu peso.','Lee la afirmación y salta a Verdadero o Falso. Shift para correr, Espacio para saltar. Un error rompe la plataforma; reapareces en tu último acierto. Pulsa H si necesitas una pista.']
+   :room.physics?['Un sello protege la entrada al bosque del castillo. Actívalo con un proyectil.','Acércate al cañón y pulsa E. Elige y carga una bala; calcula la energía y los ángulos. Busca las ecuaciones a tu espalda. Al acertar el botón se abrirá la verja y aparecerá el puente. H: pista.']
+   :room.roulette?['La rueda de la sala elige tu problema de física.','Acércate a la mesa y pulsa el cristal con clic o E. Lee el problema; cuando tengas tu resultado, mira el sello de la puerta y pulsa E para escribirlo. H: pista.']
+   :room.conceptual?['Al cruzar el umbral sientes una presencia. El eco de tus pasos parece llegar un instante tarde…','Tres galerías con una respuesta correcta y una última con dos puertas válidas: azul / partícula y roja / onda. Abre con clic o E. Un error te envía al calabozo; resuélvelo para regresar. Cada acierto guarda un punto seguro. Los botones azules congelan a Iván 10 segundos. H: pista.']
+   :room.corridor?['Cuidado, el Dr. Eric te está lanzando ecuaciones desde el otro lado.','Esquiva los símbolos moviéndote a los lados. Usa Shift para correr y Espacio para saltar obstáculos y plataformas sobre la lava. Llega a la puerta del fondo. H: pista.']
+   :room.boss?['El Dr. Eric se sostiene sobre una parábola. Dos láseres pueden cortar sus soportes.','Observa las ecuaciones. Calcula los dos puntos donde se cruzan la recta y la parábola e introdúcelos en los paneles laterales. Evita las pociones y sus charcos. H: pista.']:null;
+  notice.hidden=!texts;if(!texts)return;
+  notice.querySelector('strong').textContent=room.name;const paragraphs=notice.querySelectorAll('p');paragraphs[0].textContent=texts[0];paragraphs[1].textContent=texts[1];
  }
  revealQuestion(){document.querySelector('#question-content').hidden=false;document.querySelector('#question-fold').textContent='−';document.querySelector('#question-fold').setAttribute('aria-expanded','true');}
  updateTrial(){if(!this.room.trial)return;const t=this.room.approach;document.querySelector('#question-owner').textContent='EL SENDERO PREGUNTA';document.querySelector('#concept-level').textContent=t.finished?'CINCO ACIERTOS':`SALTO ${t.stage+1} / 5`;document.querySelector('#concept-title').textContent='Verdadero o falso';document.querySelector('#concept-text').textContent=t.finished?'Ya puedes seguir el camino hacia el bosque.':t.question.text;document.querySelector('.concept-instruction').textContent='Salta a la plataforma con tu respuesta. Cada acierto guarda un punto seguro.';}
@@ -56,7 +68,7 @@ window.RoomCompanions=class {
   this.activeDoor=null;
   if(this.maze&&playing){const hit=renderer.cast(this.room,player.x,player.y,player.angle,false);if(hit.tile===2&&hit.distance<1.8){const d=this.maze.doorAt(hit.cx,hit.cy);if(d?.stage===this.maze.stage)this.activeDoor=d;}}
   const hint=document.querySelector('#interaction-hint');hint.hidden=!playing||!(this.room.roulette||this.room.conceptual||(!this.room.physics));
-  hint.textContent=this.room.conceptual?(this.maze.finished?'Clic o E junto a la puerta de roble':this.activeDoor?`Clic o E · Abrir ${this.activeDoor.letter}: ${this.activeDoor.text}`:'Acércate a una puerta'):this.room.roulette?(this.nearConsole?(this.roulette.current?'Clic o E · Responder al sello':'Primero gira la rueda'):'Clic o E junto a la mesa · Girar la ruleta'):this.room.corridor&&player.x<35?'Salta entre las plataformas · Shift corre · Espacio salta':'Clic o E cerca de la puerta · Abrir';
+  hint.textContent=this.room.conceptual?(this.maze.finished?'Sigue por la salida elegida':this.activeDoor?`Clic o E · Abrir ${this.activeDoor.letter}: ${this.activeDoor.text}`:'Acércate a una puerta'):this.room.roulette?(this.nearConsole?(this.roulette.current?'Clic o E · Responder al sello':'Primero gira la rueda'):'Clic o E junto a la mesa · Girar la ruleta'):this.room.corridor&&player.x<35?'Salta entre las plataformas · Shift corre · Espacio salta':'Clic o E cerca de la puerta · Abrir';
   if(this.maze?.nearFreezeButton(player,renderer)&&playing){hint.hidden=false;hint.textContent=this.maze.freezeUsed?'BOTÓN AGOTADO':'Clic o E · Congelar a Iván · 10 s';}
   const chase=document.querySelector('#chase-indicator');chase.hidden=!this.maze?.chasing||this.maze.finished;chase.textContent=this.maze?.freezeLeft>0?`IVÁN CONGELADO · ${Math.ceil(this.maze.freezeLeft)} s`:this.maze?.returnGrace&&this.maze.grace>0?`IVÁN ESPERA · ${Math.ceil(this.maze.grace)} s PARA ALEJARTE`:'CUIDADO, ALGUIEN TE PERSIGUE';
   if(this.toastTime>0){this.toastTime-=dt;if(this.toastTime<=0)document.querySelector('#world-toast').hidden=true;}

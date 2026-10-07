@@ -44,7 +44,7 @@ Durante la historia, las escenas se superponen exactamente al área del juego, s
 
 ## Ceremonia alterna con Karla
 
-La galería incluye `ceremonia-karla` (46 s), con Angélica y Karla como coordinadora académica del área de ciencias. Comparte escenario, confeti, música y diploma con la original; el final principal sigue usando `ceremonia-ignitia` con Paola. Reproducir la alternativa no concede progreso ni activa el easter egg.
+La galería incluye `ceremonia-karla` (46 s), con Angélica y Karla como coordinadora académica del área de ciencias. Comparte escenario, confeti, música y diploma con la original; la elección de partícula usa `ceremonia-ignitia` con Paola y la elección de onda usa esta versión con Karla. Reproducir la alternativa no concede progreso ni activa el easter egg.
 
 Arte: `assets/cinematics/karla-academic-gesture.webp`, creado con image_gen integrado. Prompt en `assets/cinematics/karla-academic-prompts.json`. Tres poses, brazo animado y boca al hablar.
 
@@ -57,3 +57,8 @@ La cuarta pregunta del laberinto tiene dos puertas correctas. StoryRoute mantien
 branching-scenes.js añade pausas de diálogo y un botón Continuar a las escenas existentes. El doble clic se filtra durante 450 ms, cada callback de final se consume una sola vez y la galería sigue sin modificar la partida. La antigua secuencia del cohete permanece archivada en la galería.
 
 El cobertizo contiene carteles de Eric, Karla y una identidad desconocida. eric-escaped-cell.webp se generó con image_gen integrado; prompts en assets/cinematics/eric-escaped-cell-prompts.json. La escena de fuga es ficción: presenta indicios, sin enseñar a preparar o encender una reacción. Diploma actualizado a 7/7.
+
+## Actualización de escenas por clic
+Todas las escenas del catálogo esperan en cada cambio de diálogo, incluido el lanzamiento archivado. La huida de Eric desde la sala de los láseres espera un clic antes del despegue y otro antes del mensaje de José Luis. Los dos pasajes finales del laberinto están físicamente separados: azul/partícula y rojo/onda, con el meme suministrado entre ellos.
+
+La fuga muestra a Angélica en un comunicador con dos fotogramas de boca; arte en `assets/sprites/angelica-radio-talk.webp`, prompt en `assets/sprites/angelica-radio-prompt.json`. El cartel desconocido utiliza la imagen suministrada y el de Karla menciona las referencias omitidas. Las instrucciones de entrada se muestran en las seis primeras pruebas y no en Ignitia.

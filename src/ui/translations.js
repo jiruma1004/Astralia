@@ -911,3 +911,24 @@ Object.assign(window.ENGLISH,{
 "Sigue el camino hacia el bosque.":"Follow the path into the forest.",
 "Lee la afirmación y prepara el siguiente salto.":"Read the statement and prepare your next jump."
 });
+
+Object.assign(window.ENGLISH,{
+  "El puente viejo del cráter": "The old crater bridge",
+  "El puente viejo cruza un cráter. Cinco afirmaciones deciden qué tablones resistirán tu peso.": "The old bridge crosses a crater. Five statements determine which planks will hold your weight.",
+  "Lee la afirmación y salta a Verdadero o Falso. Shift para correr, Espacio para saltar. Un error rompe la plataforma; reapareces en tu último acierto. Pulsa H si necesitas una pista.": "Read the statement and jump to True or False. Shift to sprint, Space to jump. A wrong answer breaks the platform; you respawn at your last correct answer. Press H for a hint.",
+  "Un sello protege la entrada al bosque del castillo. Actívalo con un proyectil.": "A seal protects the entrance to the castle forest. Activate it with a projectile.",
+  "Acércate al cañón y pulsa E. Elige y carga una bala; calcula la energía y los ángulos. Busca las ecuaciones a tu espalda. Al acertar el botón se abrirá la verja y aparecerá el puente. H: pista.": "Approach the cannon and press E. Choose and load a ball; calculate the energy and angles. Look for the equations behind you. Hit the button to open the gate and reveal the bridge. H: hint.",
+  "La rueda de la sala elige tu problema de física.": "The wheel chooses your physics problem.",
+  "Acércate a la mesa y pulsa el cristal con clic o E. Lee el problema; cuando tengas tu resultado, mira el sello de la puerta y pulsa E para escribirlo. H: pista.": "Approach the table and activate the crystal with a click or E. Read the problem; once you have your result, face the door seal and press E to enter it. H: hint.",
+  "Tres galerías con una respuesta correcta y una última con dos puertas válidas: azul / partícula y roja / onda. Abre con clic o E. Un error te envía al calabozo; resuélvelo para regresar. Cada acierto guarda un punto seguro. Los botones azules congelan a Iván 10 segundos. H: pista.": "Three galleries have one correct answer; the last has two valid doors: blue / particle and red / wave. Open with a click or E. A mistake sends you to the dungeon; solve its question to return. Each correct answer saves a checkpoint. Blue buttons freeze Iván for 10 seconds. H: hint.",
+  "Cuidado, el Dr. Eric te está lanzando ecuaciones desde el otro lado.": "Watch out! Dr. Eric is throwing equations at you from the other side.",
+  "Esquiva los símbolos moviéndote a los lados. Usa Shift para correr y Espacio para saltar obstáculos y plataformas sobre la lava. Llega a la puerta del fondo. H: pista.": "Dodge symbols by moving sideways. Use Shift to sprint and Space to jump over obstacles and across lava platforms. Reach the far door. H: hint.",
+  "El Dr. Eric se sostiene sobre una parábola. Dos láseres pueden cortar sus soportes.": "Dr. Eric stands on a parabola. Two lasers can cut its supports.",
+  "Observa las ecuaciones. Calcula los dos puntos donde se cruzan la recta y la parábola e introdúcelos en los paneles laterales. Evita las pociones y sus charcos. H: pista.": "Study the equations. Calculate the two intersections of the line and parabola and enter them in the side panels. Avoid potions and puddles. H: hint.",
+  "¡Laberinto superado! Sigue por la salida que elegiste.": "Maze completed! Follow the exit you chose.",
+  "Sigue por la salida elegida.": "Follow your chosen exit.",
+  "Se cansó de que los estudiantes no pusieran referencias.": "She grew tired of students leaving out their references.",
+  "La escena continúa…": "The scene continues…",
+  "Angélica hablando por comunicador": "Angélica speaking over the radio",
+  "SIETE PRUEBAS COMPLETADAS": "SEVEN CHALLENGES COMPLETED"
+});

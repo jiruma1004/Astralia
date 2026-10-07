@@ -3,7 +3,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  const browser=await chromium.launch({headless:true,executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
  const page=await browser.newPage({viewport:{width:1440,height:1050}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{window.requestAnimationFrame=()=>0;});
- await page.goto(process.env.GAME_URL||'http://127.0.0.1:8765');await page.locator('#story-skip').click();
+ await page.goto(process.env.GAME_URL||'http://127.0.0.1:8765');await page.locator('#story-skip').click();await page.locator('#maze-understood').click();
  await page.waitForFunction(()=>Object.values(cinematics.images).every(i=>i.complete&&i.naturalWidth));
  assert.equal(await page.evaluate(()=>rooms[index].trial),true);assert.equal(await page.locator('#rooms button').count(),7);
  await page.evaluate(()=>{tick(16);companions.help();companions.finishDialogue();});assert.match(await page.locator('#paola-text').textContent(),/hacia dónde/);
@@ -22,12 +22,13 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  assert.equal(await page.evaluate(()=>opened),true);
  await page.evaluate(()=>{Object.assign(player,{x:15.5,y:4.75,angle:0});jump();keys.add('w');keys.add('shift');for(let n=0;n<60;n++)tick(last+16);keys.clear();});
  assert.equal(await page.evaluate(()=>rooms[index].id),'room-01');
- // Both electron doors are valid and converge on one exit; no third door.
+ // Both electron doors are valid and have separate exits; no third door.
  for(const choice of [0,1]){
   await page.evaluate(choice=>{load(2);document.querySelector('#maze-notice').hidden=true;maze.restoreCheckpoint(3);const ds=maze.doors.filter(d=>d.stage===3);window.lastDoors=ds.map(d=>({correct:d.correct,text:d.text}));maze.choose(ds[choice],player);Object.assign(player,{x:48.3,y:ds[choice].y+.5});maze.tick(.016,player);},choice);
   assert.deepEqual(await page.evaluate(()=>lastDoors),[{correct:true,text:'Partícula'},{correct:true,text:'Onda'}]);
   assert.equal(await page.evaluate(()=>StoryRoute.choice),choice===0?'particle':'wave');assert.equal(await page.evaluate(()=>maze.finished),true);
-  await page.evaluate(()=>{load(3);die('symbol');respawn();});assert.equal(await page.evaluate(()=>StoryRoute.choice),choice===0?'particle':'wave');
+  await page.evaluate(()=>tick(last+16));assert.equal(await page.evaluate(()=>rooms[index].corridor),true,'Each separate exit leads into the corridor');
+  await page.evaluate(()=>{load(3);document.querySelector('#maze-notice').hidden=true;die('symbol');respawn();});assert.equal(await page.evaluate(()=>StoryRoute.choice),choice===0?'particle':'wave');
  }
  async function advanceAll(id){
   assert.equal(await page.evaluate(()=>cinematics.item.id),id);
@@ -41,7 +42,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
   }
  }
  for(const route of ['particle','wave']){
-  await page.evaluate(route=>{load(5);StoryRoute.choose(route);Object.assign(player,{x:6,y:5.5,angle:0});ignitia.open(player);
+  await page.evaluate(route=>{load(5);document.querySelector('#maze-notice').hidden=true;StoryRoute.choose(route);Object.assign(player,{x:6,y:5.5,angle:0});ignitia.open(player);
    window.flow=[];if(!window.basePlay)window.basePlay=cinematics.play.bind(cinematics);cinematics.play=(id,o)=>{flow.push(id);return basePlay(id,o);};
    const s=ignitia.simulator;s.missionTime=20;const duration=100,delay=10,t=20+duration+delay,vx=(120+.22*t)/duration,vy=(60+.10*t+.5*.00981*duration*duration)/duration;
    s.params={speed:Math.hypot(vx,vy),angle:Math.atan2(vy,vx)*180/Math.PI,delay,duration};s.sync();s.startTrial();for(let n=0;n<200&&s.running;n++)s.tick(.04);
@@ -59,7 +60,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
   // A new full run resets the mission clock (a room reload is only a preview).
   await page.evaluate(()=>mission.restart());
  }
- await page.evaluate(()=>{load(0);cinematics.play('ceremonia-karla');cinematics.finish();cinematics.inputAfter=0;cinematics.requestClose();});
+ await page.evaluate(()=>{load(0);document.querySelector('#maze-notice').hidden=true;cinematics.play('ceremonia-karla');cinematics.finish();cinematics.inputAfter=0;cinematics.requestClose();});
  assert.equal(await page.evaluate(()=>completed),false);
  assert.deepEqual(errors,[]);await browser.close();console.log('PASS: five real jumps, wrong landing/checkpoint, both routes, click gates/double click, 7/7, diploma secrets, gallery isolation.');
 })().catch(e=>{console.error(e);process.exit(1)});

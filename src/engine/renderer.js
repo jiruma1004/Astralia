@@ -1,9 +1,10 @@
 /* Motor visual compartido: raycasting de una cuadrícula, sin dependencias. */
 window.EscapeRenderer = class {
-  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.castleGate=new CastleGate(); this.art={...makeWallArt(),...makeScenery(),...makeInteriorArt(),oak:makeOakDoor()};
+  constructor(canvas) { this.canvas=canvas; this.ctx=canvas.getContext('2d'); this.castleGate=new CastleGate();this.choiceMeme=new Image();this.choiceMeme.src='assets/cinematics/electron-choice-meme.png'; this.art={...makeWallArt(),...makeScenery(),...makeInteriorArt(),oak:makeOakDoor()};
     const moss=document.createElement('canvas');moss.width=moss.height=512;const m=moss.getContext('2d');m.drawImage(this.art.brick,0,0,512,512);m.fillStyle='#22362688';m.fillRect(0,0,512,512);
     for(let i=0;i<900;i++){const x=(i*173)%512,y=(i*97+Math.floor(i/7)*31)%512;m.fillStyle=['#42613a99','#67804c88','#1a3026aa'][i%3];m.fillRect(x,y,3+i%13,5+i%27);}this.art.moss=moss; }
   decorate(room,hit,x,top,height){
+    if(room.conceptual&&!room.maze?.dungeon&&hit.axis==='x'&&hit.cx===44&&hit.py>=7.95&&hit.py<=8.95&&this.choiceMeme.complete&&this.choiceMeme.naturalWidth){const art=this.choiceMeme,u=(8.95-hit.py);this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top-height*.45,3,height*1.45);return;}
     if(room.environment?.shop)return;
     if(room.environment?.kind==='forest'){
       if(hit.axis==='x'&&hit.cx===0&&hit.py>=2.5&&hit.py<=5.5){const art=this.art.chalkWall,u=(5.5-hit.py)/3;this.ctx.drawImage(art,Math.min(art.width-1,Math.max(0,u*art.width)),0,1,art.height,x,top+height*.08,3,height*.84);}
@@ -41,7 +42,7 @@ window.EscapeRenderer = class {
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height,horizon=h*(.5+(player.pitch||0)),eye=.5+(player.jumpHeight||0);
     const sky=c.createLinearGradient(0,0,0,horizon);sky.addColorStop(0,'#080e29');sky.addColorStop(1,'#25345c');c.fillStyle=sky;c.fillRect(0,0,w,horizon);if(room.environment?.kind!=='interior')for(let i=0;i<45;i++){c.fillStyle='rgba(190,215,255,'+(.2+.3*Math.sin(time/2200+i)**2)+')';c.fillRect((i*137.5)%w,(i*53.8)%(horizon*.86),1.8,1.8);}
     const floor=c.createLinearGradient(0,horizon,0,h);floor.addColorStop(0,'#17213f');floor.addColorStop(1,'#465477');c.fillStyle=floor;c.fillRect(0,horizon,w,h-horizon);
-    if(room.trial)WorldBillboard(this,player,this.actors,this.outdoor.castle,32,3.85,0,14,12,false);
+    if(room.trial)room.approach.background(this,player,time);
     if(room.environment?.kind==='courtyard')this.outdoor.background(this,room,player,this.actors);
     if(room.environment?.kind==='interior')this.drawCeiling(room,player,horizon,eye);
     if(room.trial||room.physics||room.environment?.kind==='interior'||room.environment?.kind==='courtyard'){
@@ -69,6 +70,7 @@ window.EscapeRenderer = class {
       this.depths[x]=d;
       const side=hit.axis==='x';
       const shade=Math.max(.15,1/(1+d*.15))*(side?.7:1);
+      if(hit.tile===1&&room.trial)continue;
       if(hit.tile===1){
         const along=side?hit.py:hit.px,u=((along%1)+1)%1,texture=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x)?this.art.forest:room.environment?.shop?((hit.cx+hit.cy)%3===0?this.art.shopWall:this.art.shopShelf):room.environment?.moss||(room.environment?.abandoned&&(hit.cx*3+hit.cy)%4!==0)?this.art.moss:this.art.brick;
         const castleEnd=room.castleGate&&hit.cx>=room.castleGate.x;const forest=room.environment?.kind==='forest'&&hit.cx!==0&&!(room.castleGate&&hit.cx>=room.castleGate.x),wallTop=castleEnd?horizon-(2.8-eye)*height:forest?horizon-(2.6-eye)*height:room.corridor?horizon-(.65-eye)*height:room.boss?horizon-(3-eye)*height:room.environment?.ceilingHeight?horizon-(room.environment.ceilingHeight-eye)*height:top,wallHeight=castleEnd?height*2.8:forest?height*2.6:room.corridor?height*.65:room.boss?height*3:height*(room.environment?.ceilingHeight||1);

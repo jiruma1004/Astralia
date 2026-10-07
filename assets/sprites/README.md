@@ -37,3 +37,5 @@ Diseño A aprobado a partir de la nueva foto con lentes. `epi-paola-glasses-a-ta
 La ceremonia utiliza `../cinematics/paola-glasses-a-gesture.webp` y su exportación `.gif`: sostiene la tablet, levanta el brazo hacia la derecha y vuelve al reposo. Sus anclajes y boca están registrados en `gesture-sprites.js`.
 
 Generados con la herramienta integrada `image_gen`; prompts y refinamientos en `paola-glasses-a-prompts.json`. Las versiones anteriores permanecen archivadas y no están conectadas a las apariciones actuales del juego.
+
+Angélica por comunicador: `angelica-radio-talk.webp`, dos fotogramas horizontales de boca cerrada/abierta generados con image_gen a partir de su sprite de ceremonia. Prompt: `angelica-radio-prompt.json`. Se anima durante la revelación del texto y descansa al terminar.

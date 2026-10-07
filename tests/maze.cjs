@@ -31,4 +31,9 @@ const still={...maze.enemy};const near={x:still.x+.1,y:still.y};for(let i=0;i<49
 assert.equal(maze.enemy.x,still.x);assert.equal(maze.enemy.y,still.y);assert(!maze.caught,'No captura durante el margen de regreso');maze.tick(.2,near);assert(maze.caught,'La persecución se reanuda al terminar el margen');
 console.log('OK: tres puertas en los primeros tramos y dos respuestas válidas en el último, banco de 12 sin repeticiones y margen de regreso de 5 segundos sin movimiento ni captura.');
 
-assert.equal(room.oakDoor.x,49);
+maze.reset();
+assert.equal(room.oakDoor,null,'No shared exit door');
+assert.equal(room.exitX,48.25);
+for(const x of [45,46,47,48,49])assert.equal(room.map[8][x],1,'A wall separates the red and blue passages');
+for(const choice of [0,1]){const d=door(3,choice);for(const x of [45,46,47,48,49])assert.equal(room.map[d.y][x],0,'Each door has its own passage');}
+console.log('OK: blue and red exits remain physically separate.');

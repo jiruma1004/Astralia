@@ -32,11 +32,11 @@ window.ConceptMaze=class {
    const base=stage*12;
    for(let y=1;y<=15;y++)for(let x=base+1;x<=base+7;x++)this.room.map[y][x]=0;
    for(const y of [1,2,3,13,14,15])this.room.map[y][base+4]=1;
-   const rows=q.branch?[5,11]:[3,8,13];
+   const rows=q.branch?[6,10]:[3,8,13];
    q.answers.forEach((text,choice)=>{
-    const door={x:base+8,y:rows[choice],stage,choice,text,letter:'ABC'[choice],correct:Array.isArray(q.correct)?q.correct.includes(choice):choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
+    const door={branch:!!q.branch,x:base+8,y:rows[choice],stage,choice,text,letter:'ABC'[choice],correct:Array.isArray(q.correct)?q.correct.includes(choice):choice===q.correct};this.doors.push(door);this.room.map[door.y][door.x]=2;
     if(door.correct)for(let y=door.y-1;y<=door.y+1;y++)for(let x=base+9;x<=base+11;x++)this.room.map[y][x]=0;
-    if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3){for(let row=5;row<=11;row++)this.room.map[row][48]=0;this.room.map[8][49]=2;this.room.oakDoor={x:49,y:8};}}
+    if(door.correct){this.room.map[door.y][base+12]=0;if(stage===3){this.room.map[door.y][49]=0;this.room.oakDoor=null;this.room.exitX=48.25;}}
    });
   });
  }

@@ -75,7 +75,7 @@ function mazeEvent(type,text){
  else if(type==='wrong')Sound.tone(180,.25,'triangle',.15);
  else if(type==='correct')Sound.click();
  else if(type==='advance'){checkpoint={room:index,stage:maze.stage,position:maze.checkpointPosition()};}
- else if(type==='complete'){Sound.success();text='¡Laberinto superado! Abre la puerta de roble al final del pasaje.';}
+ else if(type==='complete'){opened=true;Sound.success();text='¡Laberinto superado! Sigue por la salida que elegiste.';}
  companions.updateConcept();companions.revealQuestion();if(maze.finished)document.querySelector('#question-bubble').hidden=true;companions.toast(text);message.textContent=text;
  document.querySelector('#door-status').textContent=maze.dungeon?'CALABOZO · RESUELVE EL SELLO':maze.finished?'LABERINTO SUPERADO':`LABERINTO · ${maze.stage+1} / 4`;
 }
@@ -96,7 +96,7 @@ function bossEvent(type){if(type==='potion'){die('potion');return;}if(type!=='so
 function ignitiaEvent(type){
  if(type==='moon'){ignitia.closeConsole();ignitia.speaking=false;document.querySelector('#ignitia-dialog').hidden=true;die('moon');return;}
  if(type==='launch'){mission.finish();keys.clear();camera.release();companions.closeHelp();Object.assign(player,{x:3,y:7.5,angle:0,pitch:.10,jumpHeight:0,jumpVelocity:0});return;}
- if(type==='complete'){if(mission.state==='complete'||mission.finish()){completed=true;keys.clear();document.querySelector('#door-status').textContent='SEIS PRUEBAS COMPLETADAS';message.textContent='Entrega tu captura y tus apuntes con los procedimientos de los ejercicios.';}return;}
+ if(type==='complete'){if(mission.state==='complete'||mission.finish()){completed=true;keys.clear();document.querySelector('#door-status').textContent='SIETE PRUEBAS COMPLETADAS';message.textContent='Entrega tu captura y tus apuntes con los procedimientos de los ejercicios.';}return;}
  if(type!=='escapeDone')return;opened=rooms[index].canUnlock({parabolaCut:true});companions.toast('Eric escapó. Cruza el puente central hacia el cohete de Ignitia.');document.querySelector('#door-status').textContent='SOPORTE CORTADO · PASO ABIERTO';}
 function corridorEvent(type,text){
  if(type==='hit'){die('symbol');return;}
@@ -190,7 +190,7 @@ function tick(time){const dt=Math.min((time-last)/1000,.04);last=time;flash=Math
  // Altura en celdas (2 m en Galileo): salto corto, sin doble salto ni apoyo sobre el vacío.
  if(player.jumpHeight>0||player.jumpVelocity>0){player.jumpVelocity-=4.905*dt;player.jumpHeight=Math.max(0,player.jumpHeight+player.jumpVelocity*dt);if(player.jumpHeight===0)player.jumpVelocity=0;}
  if(trial&&player.jumpHeight===0)trial.land(player);
- if(player.jumpHeight===0&&!supported(player.x,player.y))die(rooms[index].lava?'lava':rooms[index].boss?'pit':'fall');
+ if(player.jumpHeight===0&&!supported(player.x,player.y))die(rooms[index].lava?'lava':(rooms[index].boss||rooms[index].trial)?'pit':'fall');
  if(!death&&opened&&player.x>(rooms[index].exitX??7.6)){if(rooms[index].measurement)load(1);else if(ADVENTURE_ORDER.indexOf(rooms[index])<ADVENTURE_ORDER.length-1)load(rooms.indexOf(ADVENTURE_ORDER[ADVENTURE_ORDER.indexOf(rooms[index])+1]));else if(mission.finish()){completed=true;message.textContent='Has cruzado los siete umbrales. ¡Has detenido al Dr. Eric!';document.querySelector('#door-status').textContent='SALIDA ALCANZADA';keys.clear();}}
  }
  if(canPlay()&&maze){maze.tick(dt,player);if(maze.chasing&&!maze.caught&&maze.freezeLeft<=0)Sound.pursuit(dt,Math.hypot(maze.enemy.x-player.x,maze.enemy.y-player.y));}
