@@ -7,7 +7,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  // Third shot succeeding must open the bridge, not move the target.
  await p.evaluate(()=>{lab.target.misses=2;const D=lab.target.distance;lab.v.value=String(Math.sqrt(9.81*D*D/(D-3.3)));lab.a.value='45';lab.loadAmmo();lab.launch(()=>{opened=true;});lab.tick(20);});assert.equal(await p.evaluate(()=>opened),true);assert.equal(await p.evaluate(()=>lab.target.distance),25);
  await p.evaluate(()=>load(0));assert.equal(await p.evaluate(()=>lab.target.distance),31);
- await p.waitForFunction(()=>Object.values(cinematics.images).every(i=>i.complete&&i.naturalWidth));
+ await p.evaluate(()=>Promise.all(CINEMATICS.map(scene=>cinematics.assets.preload(scene.id))));
  for(const id of ['ceremonia-ignitia','ceremonia-karla']){
   await p.evaluate(id=>{cinematics.play(id);cinematics.tick(8);},id);const t=await p.evaluate(()=>cinematics.time),a=await p.locator('#cinema-canvas').screenshot();await p.evaluate(()=>cinematics.tick(.2));const next=await p.locator('#cinema-canvas').screenshot();assert.equal(await p.evaluate(()=>cinematics.time),t);assert(!a.equals(next),'Animation keeps moving while dialogue waits');
   const visual=await p.evaluate(()=>cinematics.visualTime);await p.evaluate(()=>{cinematics.inputAfter=0;cinematics.advanceDialogue();cinematics.advanceDialogue();});assert.equal(await p.evaluate(()=>cinematics.dialogueIndex),1);assert.equal(await p.evaluate(()=>cinematics.visualTime),visual,'Click never jumps the animation clock');await p.evaluate(()=>cinematics.tick(.1));assert(await p.evaluate(()=>cinematics.visualTime)>visual);

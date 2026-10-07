@@ -4,7 +4,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  const page=await browser.newPage({viewport:{width:1440,height:1050}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{window.requestAnimationFrame=()=>0;});
  await page.goto(process.env.GAME_URL||'http://127.0.0.1:8765');await page.locator('#story-skip').click();await page.locator('#maze-understood').click();
- await page.waitForFunction(()=>Object.values(cinematics.images).every(i=>i.complete&&i.naturalWidth));
+ await page.evaluate(()=>Promise.all(CINEMATICS.map(scene=>cinematics.assets.preload(scene.id))));
  assert.equal(await page.evaluate(()=>rooms[index].trial),true);assert.equal(await page.locator('#rooms button').count(),7);
  await page.evaluate(()=>{tick(16);companions.help();companions.finishDialogue();});assert.match(await page.locator('#paola-text').textContent(),/hacia dónde/);
  await page.evaluate(()=>{companions.closeHelp();Object.assign(player,{x:4.05,y:2.95,angle:0});jump();keys.add('w');for(let n=0;n<58;n++)tick(last+16);keys.clear();});

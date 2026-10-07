@@ -8,7 +8,7 @@
 @media(max-width:650px){#cinema-player{padding:9px}.cinema-screen{height:48vh;min-height:330px}#cinema-newspaper{inset:3% 8%;padding:7px}#cinema-caption{font-size:16px;min-height:72px}.cinema-title{font-size:18px}#cinema-ivan-line{max-width:75%;left:4%;top:20%}.cinema-controls{gap:6px}.cinema-controls button{font-size:13px;padding:8px}.cinema-controls #cinema-time{font-size:12px}}
 @media(prefers-reduced-motion:reduce){#cinema-newspaper,#cinema-end,#cinema-end p{animation:none}}
 /* Carteles impresos: el rostro ya forma parte del papel; texto vivo bilingüe. */
-#cinema-newspaper{inset:3% 0;margin:0 auto;width:min(420px,78%);max-width:calc(58vh * .70);height:94%;border:0;padding:0;display:block;background:transparent url('../../assets/cinematics/wanted-portraits.webp') left center/200% 100% no-repeat;box-shadow:none;filter:grayscale(1)}
+#cinema-newspaper{inset:3% 0;margin:0 auto;width:min(420px,78%);max-width:calc(58vh * .70);height:94%;border:0;padding:0;display:block;background:transparent left center/200% 100% no-repeat;box-shadow:none;filter:grayscale(1)}
 #cinema-newspaper h2{position:absolute;top:7%;left:4%;width:92%;font-size:clamp(25px,3.1vw,44px);letter-spacing:1px;margin:0}
 #cinema-newspaper .wanted-archive{position:absolute;top:19%;left:7%;width:86%;font-weight:bold;font-size:clamp(8px,1vw,12px)}
 #cinema-newspaper h3{position:absolute;top:77%;left:6%;width:88%;font-size:clamp(19px,2.2vw,28px);letter-spacing:3px}
@@ -65,3 +65,5 @@
 #cinema-player[data-phase="escape-cell"] #ceremony-words{margin-top:8px}
 @media(max-width:650px){#cinema-player[data-phase="escape-cell"] #ceremony-dialogue{grid-template-columns:76px 1fr;gap:8px;padding:10px}#cinema-player[data-phase="escape-cell"] #angelica-radio-face{width:76px;height:76px}#cinema-player[data-phase="escape-cell"] #ceremony-words{font-size:16px;line-height:1.35}}
 #escape-next{position:absolute;right:18px;bottom:18px;z-index:12}
+
+#cinema-loading{position:absolute;inset:0;z-index:20;display:grid;place-content:center;gap:16px;text-align:center;background:#091120;color:#efe2c0;padding:24px}#cinema-loading[hidden]{display:none}

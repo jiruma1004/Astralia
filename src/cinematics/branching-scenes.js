@@ -33,7 +33,7 @@ P.play=function(id,options){
   this.player.addEventListener('click',e=>{if(e.target.closest('#ceremony-dialogue')||e.target===this.canvas)this.advanceDialogue();});
  }
  const result=play.call(this,id,options);this.player.dataset.dialogues=this.dialogueStops?'click':'timed';
- if(id==='eric-fuga'){this.escape=new EricEscapeScene(this);this.draw();}
+ if(id==='eric-fuga')this.draw();
  return result;
 };
 P.advanceDialogue=function(){
@@ -48,7 +48,7 @@ P.advanceDialogue=function(){
  this.time=gate+.11;this.refresh();this.draw();
 };
 P.tick=function(dt){
- if(!this.active||!this.item||document.hidden)return;
+ if(!this.active||!this.item||this.loading||document.hidden)return;
  if(!this.paused&&!this.finished)this.visualTime=(this.visualTime||0)+dt;
  const gate=this.dialogueStops?.[this.dialogueIndex];
  if(gate!==undefined&&!this.paused&&!this.finished){
@@ -59,7 +59,7 @@ P.tick=function(dt){
 P.refreshDialogue=function(){
  const b=document.querySelector('#scene-next');if(!b)return;
  const gate=this.dialogueStops?.[this.dialogueIndex];
- b.hidden=!this.active||!this.item||gate===undefined||this.finished;
+ b.hidden=this.loading||!this.active||!this.item||gate===undefined||this.finished;
  b.disabled=!this.dialogueWaiting&&!this.item?.id.startsWith('ceremonia-')&&this.item?.id!=='eric-fuga';
  b.textContent=this.dialogueWaiting?'Continuar ▸':b.disabled?'La escena continúa…':'Mostrar todo';
 };

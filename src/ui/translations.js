@@ -1,4 +1,7 @@
 window.ENGLISH={
+ "Preparando escena…":"Preparing scene…",
+ "Reintentar carga":"Retry loading",
+ "No se pudo cargar la escena. Revisa tu conexión y vuelve a intentarlo.":"The scene could not load. Check your connection and try again.",
  "En las afueras del castillo…":"On the outskirts of the castle…",
  "Omitir llegada":"Skip arrival",
  "Comenzar el sendero":"Start the trail",

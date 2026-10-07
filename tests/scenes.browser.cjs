@@ -14,7 +14,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  assert.equal(await page.evaluate(()=>ignitia.ignited),true);await page.evaluate(()=>ignitia.tick(7));assert.equal(await page.evaluate(()=>ignitia.mode),'briefing');
  assert.equal(await page.evaluate(()=>escapeSounds.filter(n=>n==='rocket').length),1);assert(await page.locator('#ignitia-dialog').isVisible());
  await page.evaluate(()=>{ignitia.reveal();document.querySelector('#ignitia-next').click();});assert.equal(await page.evaluate(()=>ignitia.mode),'idle');
- await page.waitForFunction(()=>Object.values(cinematics.images).every(i=>i.complete&&i.naturalWidth));
+ await page.evaluate(()=>Promise.all(CINEMATICS.map(scene=>cinematics.assets.preload(scene.id))));
  // Every catalog entry uses click gates and remains stopped without input.
  const ids=await page.evaluate(()=>Object.keys(SceneDialogueStops));
  for(const id of ids){
