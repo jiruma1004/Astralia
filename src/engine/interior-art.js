@@ -43,13 +43,20 @@ window.InteriorAtmosphere={
  },
  exams:[[2.7,2.2,.28],[3.2,4.7,-.4],[5.4,1.9,.65],[6.2,4.7,-.2],[6.5,3.1,.35]],
  drawExams(r,player){const c=r.ctx;c.save();for(const [x,y,a] of this.exams){const center=r.actors.project(r,player,x,y,.014);if(!center||center.depth>(r.depths[Math.floor(center.x/3)*3]??Infinity)+.05)continue;
-  const p=(u,v)=>r.actors.project(r,player,x+u*Math.cos(a)-v*Math.sin(a),y+u*Math.sin(a)+v*Math.cos(a),.014);
+  const p=(u,v)=>r.actors.project(r,player,x+.78*(u*Math.cos(a)-v*Math.sin(a)),y+.78*(u*Math.sin(a)+v*Math.cos(a)),.014);
   const corners=[p(-.42,-.3),p(.42,-.3),p(.42,.3),p(-.42,.3)];if(corners.some(q=>!q))continue;c.fillStyle='#eee3c8';c.strokeStyle='#a99d86';c.lineWidth=1;c.beginPath();corners.forEach((q,i)=>i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y));c.closePath();c.fill();c.stroke();
   const line=(u,v,uu,vv,color,width)=>{const b=p(u,v),e=p(uu,vv);if(!b||!e)return;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(b.x,b.y);c.lineTo(e.x,e.y);c.stroke();};
-  for(let i=0;i<5;i++)line(-.31,-.2+i*.09,.12,-.2+i*.09,'#878782',Math.max(.5,center.scale*.004));
-  c.strokeStyle='#c62029';c.lineWidth=Math.max(1.8,center.scale*.014);c.beginPath();for(let i=0;i<=24;i++){const q=p(.26+.065*Math.cos(i*Math.PI/12),-.13+.1*Math.sin(i*Math.PI/12));if(i)c.lineTo(q.x,q.y);else c.moveTo(q.x,q.y);}c.stroke();line(.16,.06,.35,.08,'#c62029',Math.max(1,center.scale*.008));
+  line(-.31,-.23,.07,-.23,'#696663',Math.max(.5,center.scale*.003));
+  for(let row=0;row<5;row++)for(let j=0;j<12-row%3;j++){const u=-.31+j*.033,v=-.15+row*.075;line(u,v,u+.019,v-.009*((j+row)%3),'#87847c',Math.max(.4,center.scale*.0018));if(j%3===0)line(u+.007,v-.01,u+.012,v+.013,'#87847c',Math.max(.4,center.scale*.0016));}
+  // Uneven pen loops and two curved underlines, projected onto each sheet.
+  const stroke=(points,width)=>{c.strokeStyle='#dc252b';c.lineWidth=Math.max(.65,center.scale*width);c.lineCap='round';c.lineJoin='round';c.beginPath();points.forEach(([u,v],i)=>{const q=p(u,v);if(q)i?c.lineTo(q.x,q.y):c.moveTo(q.x,q.y);});c.stroke();};
+  const zero=[];for(let i=0;i<=48;i++){const t=-1.1+i/48*Math.PI*2.06, v=Math.sin(t)*.102;zero.push([.245+Math.cos(t)*.069+v*.38,-.115+v]);}stroke(zero,.005);
+  stroke([[.252,-.233],[.273,-.229],[.29,-.218],[.302,-.204]],.004);
+  for(let j=0;j<2;j++){const curve=[];for(let i=0;i<=20;i++){const t=i/20;curve.push([.12+t*.26,.10+j*.043-t*.082-.023*Math.sin(t*Math.PI)]);}stroke(curve,.0045);}
+
  }c.restore();},
  draw(renderer,room,player,time){
+  RoomDetails.draw(renderer,room,player);
   if(room.roulette)this.drawExams(renderer,player);
   if(!room.environment?.abandoned)return;
   const points=room.maze?.dungeon?[[3.5,3.5],[10.5,6.5],[5.5,10.5]]:Array.from({length:4},(_,i)=>[[i*12+2.5,3.5],[i*12+5.5,8.5],[i*12+5.5,12.5]]).flat();

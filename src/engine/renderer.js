@@ -4,6 +4,7 @@ window.EscapeRenderer = class {
     const moss=document.createElement('canvas');moss.width=moss.height=512;const m=moss.getContext('2d');m.drawImage(this.art.brick,0,0,512,512);m.fillStyle='#22362688';m.fillRect(0,0,512,512);
     for(let i=0;i<900;i++){const x=(i*173)%512,y=(i*97+Math.floor(i/7)*31)%512;m.fillStyle=['#42613a99','#67804c88','#1a3026aa'][i%3];m.fillRect(x,y,3+i%13,5+i%27);}this.art.moss=moss; }
   decorate(room,hit,x,top,height,player){
+    RoomDetails.wall(this,room,hit,x,top,height,player);
     if(room.conceptual&&!room.maze?.dungeon&&hit.axis==='x'&&hit.cx===44&&hit.py>=7.9&&hit.py<=9&&this.choiceMeme.complete&&this.choiceMeme.naturalWidth){
       // El cartel usa tiras de un píxel con filtrado para conservar sus líneas finas.
       const art=this.choiceMeme,c=this.ctx,w=this.canvas.width,yAt=sx=>{const a=player.angle+Math.atan((sx/w*2-1)*.66);return player.y+(44-player.x)*Math.tan(a);};
