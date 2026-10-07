@@ -964,7 +964,7 @@ Object.assign(window.ENGLISH,{
   "Nueva distancia:": "New distance:",
   "Recalcula tu lanzamiento; la altura no cambia.": "Recalculate your shot; the height is unchanged.",
   "Activa el botón a": "Activate the button at",
-  "t₀ es el instante al iniciar el ensayo; d, el retraso de salida. Eric parte de (120, 60) km y viaja con rapidez de 0.28 km/s. Su reloj nunca se reinicia entre ensayos.": "t₀ is the time when the trial starts; d is launch delay. Eric starts at (120, 60) km and travels at a speed of 0.28 km/s. His clock never resets between trials.",
+  "t₀ es el instante al iniciar el ensayo; d, el retraso de salida. Eric parte de (120, 60) km y viaja con rapidez de 0.308 km/s. Su reloj nunca se reinicia entre ensayos.": "t₀ is the time when the trial starts; d is launch delay. Eric starts at (120, 60) km and travels at a speed of 0.308 km/s. His clock never resets between trials.",
   "Modelo balístico 2D, sin motor ni aire, con gravedad uniforme; Luna fuera de escala. Encuentro a ≤ 3 km. Llegada lunar: t ≈ 517.84 s. Reloj ×1 al planear, ×20 al ensayar; sigue al cerrar el panel.": "2D ballistic model, engines off, no air, uniform gravity; Moon not to scale. Meet within 3 km. Lunar arrival: t ≈ 517.84 s. Clock at 1× when planning, 20× during trials; it continues with the panel closed."
 });
 
