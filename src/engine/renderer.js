@@ -57,7 +57,7 @@ window.EscapeRenderer = class {
           const wx=player.x+depth*(Math.cos(player.angle)-Math.sin(player.angle)*lateral),wy=player.y+depth*(Math.sin(player.angle)+Math.cos(player.angle)*lateral);
           const tile=room.floorTile?room.floorTile(wx,wy):room.map[Math.floor(wy)]?.[Math.floor(wx)];
           if(room.trial){c.fillStyle=room.approach.color(wx,wy);}
-          else if(room.lava?.contains(wx,wy)){c.fillStyle=room.lava.color(wx,wy,time);}
+          else if(room.lava?.contains(wx,wy)){c.fillStyle=room.lava.rayColor(player,Math.cos(player.angle)-Math.sin(player.angle)*lateral,Math.sin(player.angle)+Math.cos(player.angle)*lateral,depth,eye,time);}
           else if(tile===3&&room.boss){const bridge=opened&&Math.floor(wy)===7;c.fillStyle=bridge?'#758c8b':((Math.floor(wx*3)+Math.floor(wy*3))%2?'#060c1c':'#091425');}
           else if(tile===3){const bridge=opened&&Math.floor(wy)===3;if(bridge)c.fillStyle=wx%1<.08?'#a6d6f8':'#4b6586';else{const bx=(wx-(room.bridge.start+room.bridge.end)/2)/((room.bridge.end-room.bridge.start)*.367),by=(wy-3.5)/1.65,r=Math.hypot(bx,by),swirl=Math.sin(Math.atan2(by,bx)*3-r*25+time*.001);c.fillStyle=r<.53?'#010208':r<.62?'#c1a2e1':r<1.05&&swirl>.3?(r<.8?'#895d9c':'#504775'):'#070b18';}}
           else if(room.environment?.shop)c.fillStyle=InteriorAtmosphere.shopFloor(wx,wy);
@@ -69,6 +69,7 @@ window.EscapeRenderer = class {
       }
     }
     if(room.trial)room.approach.drawCrater(this,player);
+    if(room.lava)room.lava.drawSupports(this,player);
     for(let x=0;x<w;x+=3){
       const angle=player.angle+Math.atan((x/w*2-1)*.66);
       const hit=this.cast(room,player.x,player.y,angle,opened);
