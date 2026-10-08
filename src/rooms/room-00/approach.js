@@ -15,7 +15,7 @@ window.ApproachTrial=class {
  land(player){if(this.finished||player.jumpHeight>0)return;const p=this.platformAt(player.x,player.y);if(!p||p.stage<this.stage)return;
   if(this.broken.has(p.key))return;
   if(p.stage!==this.stage){this.onEvent('fall');return;}
-  if(p.answer!==this.question.answer){this.broken.add(p.key);this.onEvent('break');return;}
+  this.onAnswer?.(p.answer,p.answer===this.question.answer);if(p.answer!==this.question.answer){this.broken.add(p.key);this.onEvent('break');return;}
   this.stage++;this.finished=this.stage===5;this.onEvent('safe',{x:p.x+.75,y:p.y+.7,angle:0});
  }
  restore(){/* Los tablones rotos permanecen ausentes hasta reiniciar la sala. */}

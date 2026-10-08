@@ -4,3 +4,6 @@ node_modules/
 .env.*
 !.env.example
 dist/
+
+# Los resultados de actividad se entregan localmente, no se publican.
+examples/*.csv

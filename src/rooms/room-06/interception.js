@@ -69,9 +69,9 @@ window.InterceptionConsole = class {
   this.reset();
  }
  reset(){this.missionTime=0;this.launchEpoch=0;this.failed=false;this.active=false;this.attempts=0;this.resetControls();}
- resetControls(){this.params={...InterceptionPhysics.initial};this.running=false;this.ready=false;this.elapsed=0;this.dragging=false;this.result=null;this.feedback.textContent='Ajusta tu ruta. Eric sigue avanzando; restablecer los controles no reinicia su reloj.';this.sync();this.draw();}
+ resetControls(){if(this.running)this.onAttemptEnd?.('interrupted','reset');this.params={...InterceptionPhysics.initial};this.running=false;this.ready=false;this.elapsed=0;this.dragging=false;this.result=null;this.feedback.textContent='Ajusta tu ruta. Eric sigue avanzando; restablecer los controles no reinicia su reloj.';this.sync();this.draw();}
  get predictionEpoch(){return this.running||this.ready?this.launchEpoch:this.missionTime;}
- cancel(){if(this.running){this.elapsed=0;this.feedback.textContent='Ensayo cancelado. Puedes ajustar la ruta y volver a probar.';}this.running=false;this.dragging=false;this.sync();}
+ cancel(){if(this.running){this.onAttemptEnd?.('interrupted','cancelled');this.elapsed=0;this.feedback.textContent='Ensayo cancelado. Puedes ajustar la ruta y volver a probar.';}this.running=false;this.dragging=false;this.sync();}
  show(){this.draw();this.panel.querySelector('#intercept-speed').focus({preventScroll:true});}
  edited(){this.running=false;this.ready=false;this.elapsed=0;this.result=null;this.feedback.textContent='Ruta actualizada. Ensaya para comprobar si coinciden en el mismo instante.';this.sync();this.draw();}
  sync(){
@@ -83,19 +83,19 @@ window.InterceptionConsole = class {
  }
  startTrial(){
   if(this.running||!this.canRun?.()||!InterceptionPhysics.valid(this.params))return;
-  this.launchEpoch=this.missionTime;this.elapsed=0;this.running=true;this.ready=false;this.result=null;this.attempts++;
+  this.onAttemptStart?.({...this.params,epoch:this.missionTime});this.launchEpoch=this.missionTime;this.elapsed=0;this.running=true;this.ready=false;this.result=null;this.attempts++;
   this.feedback.textContent='Ensayo en curso · reloj ×20. Eric también avanza: los intentos consumen tiempo de misión.';this.sync();
  }
  tick(dt){
   if(!this.active||this.failed||this.ready||!this.canAdvance?.()){this.draw();return;}
   const finish=this.running?this.launchEpoch+this.params.delay+Math.min(this.params.duration,InterceptionPhysics.groundTime(this.params)):Infinity;
   this.missionTime=Math.min(InterceptionPhysics.moonTime,finish,this.missionTime+dt*(this.running?20:1));
-  if(this.missionTime>=InterceptionPhysics.moonTime){this.failed=true;this.running=false;this.ready=false;this.sync();this.draw();this.onFail?.();return;}
+  if(this.missionTime>=InterceptionPhysics.moonTime){if(this.running)this.onAttemptEnd?.('incorrect','moon');this.failed=true;this.running=false;this.ready=false;this.sync();this.draw();this.onFail?.();return;}
   if(this.running){
    this.elapsed=this.missionTime-this.launchEpoch;
    const landed=InterceptionPhysics.groundTime(this.params)<this.params.duration;
    if(this.missionTime>=finish){
-    this.result=InterceptionPhysics.evaluate(this.params,this.launchEpoch);this.running=false;this.ready=this.result.hit;
+    this.result=InterceptionPhysics.evaluate(this.params,this.launchEpoch);this.onAttemptEnd?.(this.result.hit?'correct':'incorrect',this.result.hit?'':landed?'ground':'miss');this.running=false;this.ready=this.result.hit;
     if(this.ready)this.feedback.textContent='¡Intercepción lograda! Iniciando el despegue con tu trayectoria.';
     else if(landed)this.feedback.textContent='El cohete vuelve al suelo antes del encuentro. Prueba más rapidez, otro ángulo o menos tiempo de vuelo.';
     else this.feedback.textContent='Separación al encuentro: '+this.result.distance.toFixed(1)+' km. Ajusta la ruta y vuelve a ensayar. No pierdes vidas.';

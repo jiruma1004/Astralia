@@ -75,11 +75,11 @@ window.ConceptMaze=class {
  choose(door,player={}){
   if(this.dungeon){
    if(!door||!this.doors.includes(door)||this.caught)return null;
-   if(door.correct){this.leaveDungeon();return true;}
+   this.onAnswer?.(door);if(door.correct){this.leaveDungeon();return true;}
    this.onEvent('wrong','Ese sello no responde. '+this.dungeonQuestion.hint+' ¡Iván sigue acercándose!');return false;
   }
   if(!door||door.stage!==this.stage||this.finished||this.caught||this.openDoors.has(door.stage+':'+door.choice))return null;
-  if(CONCEPT_QUESTIONS[this.stage].branch){if(this.routeChoice!==null)return null;this.routeChoice=door.choice;StoryRoute.choose(door.choice===0?'particle':'wave');}
+  this.onAnswer?.(door);if(CONCEPT_QUESTIONS[this.stage].branch){if(this.routeChoice!==null)return null;this.routeChoice=door.choice;StoryRoute.choose(door.choice===0?'particle':'wave');}
   this.room.map[door.y][door.x]=0;this.openDoors.add(door.stage+':'+door.choice);
   if(!door.correct||this.openDoors.size>=2)this.awaken();
   if(door.correct){this.passed.add(this.stage);this.onEvent('correct','La puerta se abre. Explora el pasaje y cruza hasta la siguiente galería.');return true;}
