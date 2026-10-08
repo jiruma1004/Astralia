@@ -1,6 +1,6 @@
 # Versión para aula — Aventura EPIK
 
-Implementación `polish-20261008`. Sigue siendo HTML, CSS y JavaScript estático, con Canvas/raycasting. No usa servidor, cuentas ni API de IA. Los siete retos, las dos rutas, la carga progresiva y la rapidez de Eric (0.308 km/s) se conservan.
+Implementación `csv-simple-20261008`. Sigue siendo HTML, CSS y JavaScript estático, con Canvas/raycasting. No usa servidor, cuentas ni API de IA. Los siete retos, las dos rutas, la carga progresiva y la rapidez de Eric (0.308 km/s) se conservan.
 
 ## Interfaz, progresión y ayuda
 
@@ -52,63 +52,23 @@ Las pequeñas diferencias de un frame en los límites son esperables. Las descar
 
 Se guarda una instantánea local en **`epik.metrics.v1.latest`** en los eventos relevantes. Si el almacenamiento está bloqueado o lleno, el juego y el CSV siguen funcionando en memoria. El proyecto no tenía restauración completa de partidas: no se implementa una restauración parcial. Recargar la página inicia una partida nueva; al iniciarla se reemplaza la instantánea local anterior. El docente debe pedir la descarga antes de recargar o iniciar otra aventura. No se envían métricas a servidores ni se solicitan datos personales.
 
-## CSV y diccionario
+## CSV sencillo para el docente
 
-El archivo local `examples/resultados-ejemplo.csv` se entrega por separado y se genera con `tests/classroom.browser.cjs`; no se publica en el repositorio. Consulta [cómo generarlo](../examples/README.md). Es una sesión **sintética de prueba automatizada**, con movimientos acelerados, respuestas, muertes y ayuda; sus tiempos no representan a un estudiante. El identificador es aleatorio.
+La descarga del diploma contiene **siete filas, una por sala, y siete columnas en español**. No mezcla eventos, parámetros ni datos técnicos. El nombre del archivo conserva la fecha y el identificador aleatorio de partida para distinguir las entregas. La exportación es igual aunque el alumno juegue en inglés.
 
-UTF-8 con BOM, separador coma, comillas escapadas y saltos CRLF. Campos no aplicables quedan vacíos. Los textos que podrían ejecutarse como fórmulas reciben un apóstrofo de protección; los números negativos legítimos se conservan. `parameters_json` es JSON dentro de una celda CSV. Nombre: `Aventura_EPIK_FECHA_UUID.csv`.
-
-| Campo | Tipo / significado |
+| Columna | Cómo leerla |
 | --- | --- |
-| schema_version | Entero; versión del contrato CSV, actualmente 1. |
-| game_version | Texto; versión de implementación para interpretar bancos y reglas. |
-| session_id | UUID aleatorio de la partida. |
-| record_type | `event` o `room_summary`. |
-| event_id | ID único de evento; vacío en resúmenes. |
-| event_sequence | Orden creciente dentro de la partida; vacío en resúmenes. |
-| timestamp_iso | Fecha UTC del evento; vacío en resúmenes. |
-| elapsed_session_ms | Duración desde comienzo de partida hasta evento o cierre. |
-| room_id | ID estable: `room-00` a `room-06`. |
-| room_name | Nombre de la sala en el catálogo base. |
-| challenge_type | ID estable del reto en el catálogo. |
-| question_id | ID o título estable de la pregunta, si aplica. |
-| variant_id | Variante, posición del blanco o visita al calabozo, si aplica. |
-| objective_id | Subobjetivo al que corresponde el intento o ayuda. |
-| attempt_id | ID compartido por envío y resultado de un mismo intento. Campo adicional para relacionarlos sin duplicarlos. |
-| attempt_number | Número de intento del objetivo dentro de la sala. |
-| event_type | Tipo descrito en la tabla siguiente. |
-| submitted_answer | Número, texto o JSON de los valores enviados. |
-| parameters_json | Fotografía de la pregunta/variante/condiciones: física del cañón, pregunta con campos y solución, ecuaciones y raíces, o época de Eric y parámetros de vuelo. No depende solo de un índice. |
-| result | `correct`, `incorrect`, `interrupted` en resultados; `completed` o `incomplete` en resumen. |
-| failure_reason | Razón estable: p. ej. `wrong_answer`, `wrong_door`, `overload`, `death`, `moon`, `flame`. |
-| assistance_used | Booleano; si esa sala ya había recibido ayuda extraordinaria. |
-| room_active_ms | Milisegundos activos acumulados de la sala. |
-| room_elapsed_ms | Milisegundos totales desde su primera entrada. |
-| room_solved_ms | Tiempo hasta resolver, en resumen; vacío si no se resolvió. Campo adicional. |
-| room_exit_ms | Tiempo hasta salir, en resumen; vacío si no se salió. Campo adicional. |
-| room_attempts_total | Intentos iniciados en esa sala, en resumen; incluye interrumpidos. |
-| room_correct_total | Intentos terminados correctamente, en resumen. |
-| room_incorrect_total | Intentos terminados incorrectamente, en resumen. |
-| room_deaths_total | Muertes de esa sala, en resumen. |
-| stars_earned | 1 si se completó sin IA, 0 si asistida o incompleta. No sumar eventos y resúmenes juntos. |
-| final_route | `particle` o `wave`; vacío antes de elegir. Todos los resúmenes conservan la ruta final. |
-| language | `es` o `en` vigente al crear la fila. |
+| Sala | Nombre del reto, en el orden en que se juega. |
+| Tiempo total (minutos) | Desde entrar por primera vez hasta salir a la siguiente sala. Incluye muertes, reapariciones, lectura y pausas. Dos decimales: 2.5 significa dos minutos y medio. En la última sala termina al comenzar el lanzamiento final. |
+| Muertes | Total de muertes en esa sala, aunque ocurran después de resolver el ejercicio. |
+| Errores | Respuestas o ensayos que terminaron fallando. En retos motores incluye caídas/choques antes de superar el reto. Una muerte no añade automáticamente un error matemático: recibir una poción puede aumentar muertes sin aumentar errores. |
+| Intentos hasta pasar | Respuestas o ensayos acumulados hasta resolver la sala, incluido el exitoso. En Galileo, dos disparos fallidos y uno acertado dan 3. En una sala con varias preguntas se suman sus respuestas: el sendero perfecto requiere 5 y los dos cortes de Eric requieren 2. Los ensayos iniciados y cancelados también cuentan como intentos, pero no como errores. No aumenta por morir después de resolver el ejercicio. |
+| Usó pistas | Sí o No: abrió las pistas normales de Paola o José Luis, mediante H o su botón. No penaliza. |
+| Usó IA | Sí o No: reveló la solución con el botón rojo. Conserva la penalización del certificado. |
 
-| Evento | Momento |
-| --- | --- |
-| room_enter | Primera entrada real a una sala. |
-| attempt_submitted | Inicio/envío de un intento válido. |
-| attempt_result | Resultado asociado al mismo `attempt_id`. |
-| objective_completed | Plataforma, puerta, pregunta o corte validado. En los retos de objetivo único el acierto y `room_solved` indican su resolución. |
-| normal_help | Apertura de la ayuda normal H. |
-| solution_revealed | Revelado de solución extraordinaria del objetivo/variante. |
-| death / respawn | Muerte y reaparición. Una respuesta incorrecta que causa muerte se enlaza como intento aparte del evento de muerte, sin contar dos respuestas. |
-| room_solved | Reto completado una sola vez. |
-| room_exit | Salida resuelta a la siguiente sala. |
-| route_selected | Elección final onda/partícula. |
-| session_complete | Siete retos completados; resultados congelados. |
+Los valores se conservan al morir y reaparecer. Descargar otra vez no cambia los contadores ni los tiempos finales. El juego conserva su registro interno para calcular estas métricas, pero **ese registro detallado ya no se exporta**. Las filas no contienen datos personales ni se envían a servidores.
 
-Para estadísticas de acierto usa **solo `attempt_result`**; para duración y estrellas usa **solo `room_summary`**. No cuentes cada fila como intento: el envío y el resultado comparten ID.
+Formato: UTF-8 con BOM para acentos en Excel, separador coma y escape de comillas/saltos de línea. Se mantiene la protección frente a fórmulas en campos de texto. El CSV de ejemplo local `examples/resultados-ejemplo.csv` se genera con `tests/classroom.browser.cjs` y se entrega por separado; no se publica en Git. Sus datos son sintéticos y sus tiempos no representan a un estudiante.
 
 ## Validación y límites
 

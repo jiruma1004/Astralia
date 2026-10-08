@@ -1,7 +1,7 @@
 /* Local classroom evidence. This is an auditable record, not a signed credential. */
 window.EpikSession = class {
-  static version = 'polish-20261008';
-  static columns = ['schema_version', 'game_version', 'session_id', 'record_type', 'event_id', 'event_sequence', 'timestamp_iso', 'elapsed_session_ms', 'room_id', 'room_name', 'challenge_type', 'question_id', 'variant_id', 'objective_id', 'attempt_id', 'attempt_number', 'event_type', 'submitted_answer', 'parameters_json', 'result', 'failure_reason', 'assistance_used', 'room_active_ms', 'room_elapsed_ms', 'room_solved_ms', 'room_exit_ms', 'room_attempts_total', 'room_correct_total', 'room_incorrect_total', 'room_deaths_total', 'stars_earned', 'final_route', 'language'];
+  static version = 'csv-simple-20261008';
+  static columns = ['Sala', 'Tiempo total (minutos)', 'Muertes', 'Errores', 'Intentos hasta pasar', 'Usó pistas', 'Usó IA'];
   constructor(rooms, {
     now = () => performance.now(),
     wall = () => new Date().toISOString(),
@@ -39,6 +39,7 @@ window.EpikSession = class {
       revealedObjectives: {},
       entered: null,
       solvedAt: null,
+      passedAttempt: null,
       exitAt: null
     });
     return this.states.get(id);
@@ -173,6 +174,7 @@ window.EpikSession = class {
     if (s.solved) return false;
     s.solved = true;
     s.solvedAt = this.now();
+    s.passedAttempt = s.attempts;
     this.event('room_solved', {
       stars_earned: s.assisted ? 0 : 1
     });
@@ -204,36 +206,22 @@ window.EpikSession = class {
       valid: !this.preview && this.finished !== null
     };
   }
+  // Teacher-facing export: one stable row per room, no event log or JSON cells.
   rows() {
-    const summaries = this.rooms.filter(r => this.state(r.id).entered !== null).map(r => {
-      const s = this.state(r.id),
-        at = s.entered,
-        end = s.exitAt ?? this.finished ?? this.now();
+    return this.rooms.filter(room => this.state(room.id).entered !== null).map(room => {
+      const state = this.state(room.id);
+      const end = state.exitAt ?? this.finished ?? this.now();
+      const usedHint = this.events.some(event => event.room_id === room.id && event.event_type === 'normal_help');
       return {
-        schema_version: 1,
-        game_version: EpikSession.version,
-        session_id: this.id,
-        record_type: 'room_summary',
-        room_id: r.id,
-        room_name: r.name,
-        challenge_type: r.challenge.id,
-        elapsed_session_ms: Math.round(this.elapsed()),
-        room_active_ms: Math.round(s.active),
-        room_elapsed_ms: Math.round(end - at),
-        room_solved_ms: s.solvedAt === null ? '' : Math.round(s.solvedAt - at),
-        room_exit_ms: s.exitAt === null ? '' : Math.round(s.exitAt - at),
-        room_attempts_total: s.attempts,
-        room_correct_total: s.correct,
-        room_incorrect_total: s.incorrect,
-        room_deaths_total: s.deaths,
-        assistance_used: s.assisted,
-        stars_earned: s.solved && !s.assisted ? 1 : 0,
-        result: s.solved ? 'completed' : 'incomplete',
-        final_route: this.route,
-        language: window.I18n?.lang || 'es'
+        'Sala': room.name,
+        'Tiempo total (minutos)': Number((Math.max(0, end - state.entered) / 60000).toFixed(2)),
+        'Muertes': state.deaths,
+        'Errores': state.incorrect,
+        'Intentos hasta pasar': state.solved ? state.passedAttempt : '',
+        'Usó pistas': usedHint ? 'Sí' : 'No',
+        'Usó IA': state.assisted ? 'Sí' : 'No'
       };
     });
-    return [...this.events, ...summaries];
   }
   static cell(value) {
     if (value == null) return '""';

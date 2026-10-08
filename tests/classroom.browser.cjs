@@ -74,6 +74,8 @@ const {
   for (const [route, assisted] of [['particle', true], ['wave', false], ['particle', false], ['wave', true]]) {
     await p.evaluate(() => newClassroomGame());
     await notice();
+    await p.evaluate(()=>{companions.help();companions.closeHelp()});
+    assert.equal(await p.evaluate(() => classroom.session.events.filter(e=>e.event_type==='normal_help').length),1);
     assert.equal(await p.evaluate(() => advanceRoom(5)), false);
     await p.evaluate(() => {
       for (let n = 0; n < 5; n++) {
@@ -224,7 +226,16 @@ const {
     await dialogueScene(route === 'particle' ? 'ceremonia-ignitia' : 'ceremonia-karla');
     assert(await p.locator('#certificate-csv').isVisible());
     assert.equal(await p.evaluate(() => classroom.session.totals().stars), assisted ? 6 : 7);
+    const rows=await p.evaluate(()=>classroom.session.rows());
+    assert.equal(rows.length,7);
+    assert.equal(Object.keys(rows[0]).length,7);
+    assert.equal(rows[0]['Usó pistas'],'Sí');
+    assert.equal(rows[0]['Intentos hasta pasar'],5);
+    assert.equal(rows[1]['Errores'],2);
+    assert.equal(rows[1]['Usó IA'],assisted?'Sí':'No');
     const csv = await p.evaluate(() => classroom.session.csv());
+    assert(!csv.includes('parameters_json'));
+    assert(!csv.includes('attempt_submitted'));
     if (route === 'particle' && assisted) fs.writeFileSync('examples/resultados-ejemplo.csv', csv);
     const download = p.waitForEvent('download');
     await p.locator('#certificate-csv').click();

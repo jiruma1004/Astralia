@@ -51,6 +51,7 @@ assert(s.available('main'));
 assert(s.assist(ctx, {}));
 assert(s.assist(ctx, {}));
 assert.equal(s.events.filter(e => e.event_type === 'solution_revealed').length, 1);
+s.event('normal_help');
 s.clock(true);
 now = 1000;
 s.clock(false);
@@ -74,12 +75,36 @@ assert.equal(s.totals().stars, 6);
 const csv = s.csv();
 now += 100000;
 assert.equal(s.csv(), csv);
-assert(csv.includes("'=1+1"));
+assert(!csv.includes('attempt_submitted'));
+assert(!csv.includes('parameters_json'));
+assert.equal(s.rows().length,7);
+assert.equal(Object.keys(s.rows()[0]).length,7);
+assert.equal(s.rows()[0]['Usó IA'],'Sí');
+assert.equal(s.rows()[1]['Usó IA'],'No');
+assert.equal(s.rows()[0]['Errores'],2);
+assert.equal(s.rows()[0]['Intentos hasta pasar'],2);
+assert.equal(w.EpikSession.cell('=1+1'), '"\'=1+1"');
 assert.equal(w.EpikSession.cell(-3), '"-3"');
 assert.equal(w.EpikSession.cell('a,"b\nc'), '"a,""b\nc"');
-assert.equal(s.rows().filter(r => r.record_type === 'room_summary').length, 7);
+assert.equal(s.rows()[0]['Usó pistas'],'Sí');
 fs.writeFileSync('/tmp/epik-csv-unit-example.csv', csv);
 assert(store.size > 0);
+// A room's total time includes retries and time after solving; its winning
+// attempt is frozen at solve(), even when the player dies on the way out.
+let reportTime=0;
+const report=new w.EpikSession([rooms[0]],{now:()=>reportTime});
+report.start();
+report.attempt(ctx,10,{},false);report.attempt(ctx,12,{},false);
+report.state('r0').deaths=1;report.event('normal_help');report.assist(ctx,{});
+reportTime=90000;report.attempt(ctx,18,{},true);report.solve();
+report.state('r0').deaths++;reportTime=150000;report.leave();report.finish();
+const row=report.rows()[0];
+assert.equal(row['Tiempo total (minutos)'],2.5);
+assert.equal(row['Muertes'],2);
+assert.equal(row['Errores'],2);
+assert.equal(row['Intentos hasta pasar'],3);
+assert.equal(row['Usó pistas'],'Sí');assert.equal(row['Usó IA'],'Sí');
+reportTime=900000;assert.equal(report.rows()[0]['Tiempo total (minutos)'],2.5);
 const broken = new w.EpikSession(rooms, {
   storage: {
     setItem() {

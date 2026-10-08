@@ -196,7 +196,7 @@ document.querySelector('#respawn').onclick=respawn;
 document.querySelector('#death-dialog').addEventListener('cancel',e=>{e.preventDefault();respawn();});
 
 companions.canHelp=()=>canPlay();
-window.addEventListener('astralia:help-open',()=>{classroom.session.event('normal_help',classroom.context());ignitia.speaking=false;document.querySelector('#ignitia-dialog').hidden=true;ignitia.closeConsole();});
+window.addEventListener('astralia:help-open',()=>{classroom.session.event('normal_help',classroom.context());if(rooms[index].rocket){ignitia.speaking=false;document.querySelector('#ignitia-dialog').hidden=true;ignitia.closeConsole();}});
 ignitia.canLaunch=()=>canPlay()&&ignitia.near(player);
 ignitia.simulator.canAdvance=()=>mission.state==='running'&&!death&&rooms[index].rocket&&ignitia.mode==='idle'&&!cinematics.active;
 measurement.canSubmit=()=>mission.state==='running'&&!death&&rooms[index].measurement&&measurement.near(player);
