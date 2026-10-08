@@ -16,8 +16,8 @@ window.CeremonyScene=class {
   document.querySelector('#ceremony-certificate footer span:last-child').innerHTML=karla?'Karla<br><small>Coordinadora académica del área de ciencias</small>':'EPI Paola<br><small>Tu guía en Aventura EPIK</small>';
   document.querySelector('#ceremony-preview').hidden=this.verified;
   const result=library.resultSummary?.()||{completed:0,stars:0,assisted:0};
-  document.querySelector('.certificate-score').textContent=(this.verified?result.completed:0)+' / 7';
-  document.querySelector('#certificate-results').textContent=`Resueltos sin ayuda extraordinaria: ${result.stars}/7 · Con ayuda: ${result.assisted}`;
+  document.querySelector('.certificate-score').textContent=(this.verified?result.stars:0)+' / 7';
+  document.querySelector('#certificate-results').textContent='';
   document.querySelector('#certificate-csv').hidden=!this.verified;
   document.querySelector('#certificate-instruction').textContent=this.verified?'Puedes tomar una captura de esta imagen y subirla a la actividad, junto con tus apuntes de los ejercicios, para validar tu trabajo.':'Vista previa: completa las siete pruebas para obtener tu certificado de la actividad.';
  }

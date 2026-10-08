@@ -79,60 +79,87 @@ window.EpikAssistance = class {
     this.context = getContext;
     this.revealed = false;
     this.elapsed = 0;
-    document.querySelector('.controls').insertAdjacentHTML('beforeend', '<button id="extra-help" hidden>IA</button>');
-    document.querySelector('.scene-view').insertAdjacentHTML('beforeend', '<section id="extra-help-panel" class="world-console" hidden><button id="extra-help-close" class="bubble-fold" aria-label="Cerrar ayuda">×</button><h2>IA · Ayuda automática local</h2><p id="extra-help-copy"></p><pre id="extra-help-answer" hidden></pre><button id="extra-help-confirm" class="primary">Ver solución</button><button id="extra-help-cancel">Seguir intentando</button></section>');
+    document.querySelector('.controls').insertAdjacentHTML('beforeend', '<button id="extra-help" hidden title="Revelar la solución resta un punto del certificado"><b>IA · Ver solución</b><small>Resta 1 punto</small></button>');
+    document.querySelector('.scene-view').insertAdjacentHTML('beforeend', '<section id="extra-help-panel" class="world-console" hidden aria-label="Solución automática"><header id="extra-help-handle" tabindex="0" aria-label="Mover solución: arrastra o usa las flechas"><strong>IA · Solución</strong><small>Arrastra para mover · Ajusta desde la esquina</small></header><button id="extra-help-close" class="bubble-fold" aria-label="Cerrar ayuda">×</button><p id="extra-help-copy"></p><pre id="extra-help-answer"></pre></section>');
     this.button = document.querySelector('#extra-help');
     this.panel = document.querySelector('#extra-help-panel');
+    this.handle = document.querySelector('#extra-help-handle');
     this.button.onclick = () => this.open();
-    document.querySelector('#extra-help-confirm').onclick = () => this.reveal();
-    for (const id of ['extra-help-close', 'extra-help-cancel']) document.querySelector('#' + id).onclick = () => this.close();
+    document.querySelector('#extra-help-close').onclick = () => this.close();
+    this.handle.onpointerdown = event => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      window.dispatchEvent(new Event('astralia:ui-open'));
+      this.drag = {id:event.pointerId, x:event.clientX, y:event.clientY, left:this.panel.offsetLeft, top:this.panel.offsetTop};
+      this.handle.setPointerCapture(event.pointerId);
+    };
+    this.handle.onpointermove = event => {
+      if (this.drag?.id !== event.pointerId) return;
+      this.position(this.drag.left + event.clientX - this.drag.x, this.drag.top + event.clientY - this.drag.y);
+    };
+    this.handle.onpointerup = this.handle.onpointercancel = this.handle.onlostpointercapture = () => { this.drag = null; };
+    this.handle.onkeydown = event => {
+      const delta = {ArrowLeft:[-24,0],ArrowRight:[24,0],ArrowUp:[0,-24],ArrowDown:[0,24]}[event.key];
+      if (!delta) return;
+      event.preventDefault();event.stopPropagation();
+      this.position(this.panel.offsetLeft + delta[0], this.panel.offsetTop + delta[1]);
+    };
+    // Keep the title and close control reachable after resize/fullscreen changes.
+    this.boundsObserver = new ResizeObserver(() => this.keepInBounds());
+    this.boundsObserver.observe(this.panel);
+    this.boundsObserver.observe(this.panel.parentElement);
+  }
+  eligible() {
+    const room = this.game().room;
+    return !!(room.physics || room.roulette || room.boss);
+  }
+  position(left, top) {
+    const scene = this.panel.parentElement;
+    this.panel.style.left = Math.max(8, Math.min(left, scene.clientWidth-this.panel.offsetWidth-8))+'px';
+    this.panel.style.top = Math.max(8, Math.min(top, scene.clientHeight-this.panel.offsetHeight-8))+'px';
+    this.panel.style.right = this.panel.style.bottom = 'auto';
+  }
+  keepInBounds() {
+    if (this.panel.hidden) return;
+    const scene=this.panel.parentElement;
+    if(this.panel.offsetLeft<8 || this.panel.offsetTop<8 || this.panel.offsetLeft+this.panel.offsetWidth>scene.clientWidth-8 || this.panel.offsetTop+this.panel.offsetHeight>scene.clientHeight-8) this.position(this.panel.offsetLeft,this.panel.offsetTop);
   }
   update() {
-    const hidden = !this.session.available(this.context().objective_id) || !this.canUse?.();
+    const hidden = !this.eligible() || !this.session.available(this.context().objective_id) || !this.canUse?.();
     if (this.button.hidden !== hidden) this.button.hidden = hidden;
+    if (!hidden) {
+      const text = I18n.t(this.session.state(this.game().room.id).assisted ? 'Reto penalizado' : 'Resta 1 punto');
+      const label=this.button.querySelector('small');
+      if(label.textContent!==text)label.textContent=text;
+    }
   }
   open() {
-    if (!this.canUse?.() || !this.session.available(this.context().objective_id)) return;
-    this.revealed = false;
-    this.contextAtOpen = this.context().objective_id;
-    this.panel.hidden = false;
-    document.querySelector('#extra-help-answer').hidden = true;
-    document.querySelector('#extra-help-confirm').hidden = false;
-    document.querySelector('#extra-help-copy').textContent = I18n.t('Usar esta ayuda revelará la solución. Podrás continuar jugando, pero este reto no contará como resuelto sin ayuda y perderás su estrella.');
-    window.dispatchEvent(new Event('astralia:ui-open'));
-    document.querySelector('#extra-help-confirm').focus();
-  }
-  reveal() {
-    if (!this.canUse?.() || this.panel.hidden || this.revealed || this.contextAtOpen !== this.context().objective_id) return;
-    if (!this.session.assist(this.context(), this.game().snapshot())) return;
+    if (!this.eligible() || !this.canUse?.() || !this.session.available(this.context().objective_id)) return;
+    const context=this.context();
+    // The visible button states the penalty; one click reveals the answer.
+    // assist() is idempotent: reopening never deducts another point.
+    if (!this.session.assist(context, this.game().snapshot())) return;
+    this.contextAtOpen = context.objective_id;
     this.revealed = true;
-    document.querySelector('#extra-help-answer').hidden = false;
-    document.querySelector('#extra-help-confirm').hidden = true;
-    document.querySelector('#extra-help-copy').textContent = I18n.t('Solución asistida · este reto ya no aporta estrella. El juego continúa mientras lees.');
-    this.render();
+    this.panel.hidden = false;
+    document.querySelector('#extra-help-copy').textContent = I18n.t('Este reto no suma al certificado. El juego continúa mientras lees.');
+    this.render();this.keepInBounds();
+    window.dispatchEvent(new Event('astralia:ui-open'));
+    document.querySelector('#extra-help-close').focus({preventScroll:true});
   }
   render() {
-    const el = document.querySelector('#extra-help-answer'),
-      text = EpikSolutions.text(this.game());
-    if (el.textContent !== text) el.textContent = text;
+    const el=document.querySelector('#extra-help-answer'), text=EpikSolutions.text(this.game());
+    if(el.textContent!==text)el.textContent=text;
   }
   tick(dt) {
     this.update();
-    if (this.panel.hidden) return;
-    if (!this.canUse?.() || this.contextAtOpen !== this.context().objective_id) {
-      this.close();
-      return;
-    }
-    if (this.revealed) {
-      this.elapsed += dt;
-      if (this.elapsed >= .25) {
-        this.elapsed = 0;
-        this.render();
-      }
-    }
+    if(this.panel.hidden)return;
+    if(!this.eligible() || !this.canUse?.() || this.contextAtOpen!==this.context().objective_id){this.close();return;}
+    this.elapsed+=dt;
+    if(this.elapsed>=.25){this.elapsed=0;this.render();}
   }
   close() {
-    this.panel.hidden = true;
-    this.revealed = false;
+    if (this.panel.contains(document.activeElement)) document.querySelector('#game').focus({preventScroll:true});
+    this.panel.hidden=true;this.revealed=false;this.drag=null;
   }
 };

@@ -1,26 +1,26 @@
 # Versión para aula — Aventura EPIK
 
-Implementación `classroom-20261008`. Sigue siendo HTML, CSS y JavaScript estático, con Canvas/raycasting. No usa servidor, cuentas ni API de IA. Los siete retos, las dos rutas, la carga progresiva y la rapidez de Eric (0.308 km/s) se conservan.
+Implementación `polish-20261008`. Sigue siendo HTML, CSS y JavaScript estático, con Canvas/raycasting. No usa servidor, cuentas ni API de IA. Los siete retos, las dos rutas, la carga progresiva y la rapidez de Eric (0.308 km/s) se conservan.
 
 ## Interfaz, progresión y ayuda
 
 La interfaz pública ya no ofrece navegación entre salas, galería ni botones para omitir escenas. Mantiene Espacio, Shift, mouse/Escape, pantalla completa, volumen e idioma. El código central comprueba la resolución real, la apertura de la salida y la interacción correspondiente antes de avanzar. Las instancias de la partida viven en un ámbito privado.
 
-**Una estrella por reto, siete como máximo.** Completar una sala y obtener su estrella son resultados distintos. La ayuda extraordinaria aparece tras dos fallos del objetivo actual. Abrir o cancelar su aviso no penaliza; revelar una solución marca esa sala como asistida para toda la partida. Morir, reaparecer y reiniciar la sala no devuelven la estrella. Una partida nueva sí reinicia el registro. H continúa dando pistas gratuitas. La ayuda no introduce valores, dispara, mueve al jugador ni desactiva peligros. Los paneles de ayuda mantienen las reglas de tiempo del juego.
+**Un punto por reto, siete como máximo.** Completar una sala para avanzar y acreditarla en el diploma son resultados distintos. IA solo está disponible en Galileo, la rueda y la parábola de Eric, después de dos fallos del objetivo actual. El botón rojo advierte «Resta 1 punto»; un clic revela directamente la solución y penaliza esa sala para toda la partida. La ventana se puede arrastrar por su encabezado y redimensionar desde la esquina. Reabrirla no vuelve a descontar puntos. Morir, reaparecer y reiniciar la sala no devuelven la estrella. Una partida nueva sí reinicia el registro. H continúa dando pistas gratuitas. La ayuda no introduce valores, dispara, mueve al jugador ni desactiva peligros. Los paneles de ayuda mantienen las reglas de tiempo del juego.
 
 | Reto | Intento real y disponibilidad de IA |
 | --- | --- |
-| Sendero | Elegir una plataforma al aterrizar; caer cuenta como fallo motor. Una plataforma incorrecta y su caída son un solo intento. Cada afirmación tiene su contador. |
+| Sendero | Elegir una plataforma al aterrizar; caer cuenta como fallo motor. Una plataforma incorrecta y su caída son un solo intento. Sin IA. |
 | Galileo | Un disparo con bala y datos válidos; fallar o sobrecargar cuenta. Disparar sin bala o con campos inválidos no cuenta. Los fallos se conservan cuando se mueve el blanco, y la solución usa la nueva distancia y la masa vigente. |
 | Rueda | Envío numérico válido desde el sello. Cada pregunta tiene su contador. Cambiar de pregunta no mezcla sus fallos. |
-| Laberinto | Elegir una puerta disponible; cada etapa y pregunta del calabozo tiene su contador. Onda y partícula son válidas. La muerte de Iván se registra separadamente de las respuestas. |
-| Corredor | Morir por lava, caída o símbolos es un fallo motor. Llegar e interactuar con la salida es el intento exitoso. |
+| Laberinto | Elegir una puerta disponible; cada etapa y pregunta del calabozo tiene su contador. Sin IA. Onda y partícula mantienen sus rutas, sin anunciar el resultado de la elección. La muerte de Iván se registra separadamente de las respuestas. |
+| Corredor | Morir por lava, caída o símbolos es un fallo motor. Llegar e interactuar con la salida es el intento exitoso. Sin IA. |
 | Parábola | Enviar coordenadas válidas a un láser todavía pendiente. Cada corte tiene su contador; el registro conserva las ecuaciones y raíces de la variante. Una poción no es un error matemático. |
-| Intercepción | Empezar un ensayo crea un intento; al terminar se registra acierto o fallo. Cancelar/reiniciar un ensayo produce `interrupted`, que no desbloquea ayuda. Mover sliders no cuenta. La solución se recalcula con el tiempo actual de Eric. |
+| Intercepción | Empezar un ensayo crea un intento; al terminar se registra acierto o fallo. Cancelar/reiniciar un ensayo produce `interrupted`, que no desbloquea ayuda. Mover sliders no cuenta. Sin IA; se conserva la pista normal de José Luis. |
 
 La ayuda revelada se registra una vez por objetivo/variante; la penalización se aplica una sola vez por sala. Clics repetidos sobre una respuesta ya resuelta no conceden estrellas ni respuestas adicionales.
 
-Ambos diplomas muestran aventuras completadas, retos sin ayuda y retos asistidos. Descargar CSV no avanza la historia; **Continuar** activa el epílogo de la ruta: partícula → Paola → celda vacía; onda → Karla → descenso de Iván. La ayuda no bloquea epílogos.
+Ambos diplomas muestran únicamente los retos acreditados: por ejemplo, 6/7 si se penalizó una sala. No aparecen categorías de «con ayuda» o «sin ayuda». El CSV mantiene las métricas completas de progreso y ayuda para análisis. Descargar CSV no avanza la historia; **Continuar** activa el epílogo de la ruta: partícula → Paola → celda vacía; onda → Karla → descenso de Iván. La ayuda no bloquea epílogos.
 
 ## Onda verde
 
@@ -32,7 +32,7 @@ La colisión usa el cruce entre las posiciones anteriores y actuales del jugador
 
 - `src/classroom/session.js`: registro, tiempo, reglas de estrellas, persistencia y CSV.
 - `src/classroom/runtime.js`: integración con eventos reales de los siete retos y datos de variantes.
-- `src/classroom/assistance.js`: cálculo de soluciones locales separado de la interfaz de confirmación.
+- `src/classroom/assistance.js`: cálculo de soluciones locales separado de la ventana movible de solución.
 - `src/rooms/room-05/flame-wave.js`: estado y colisión del segundo ataque.
 - `src/main.js`: comprobaciones de transición y conexión de los sistemas; no contiene un proveedor de IA.
 - `src/cinematics/ceremony.js` y `library.js`: diploma, descarga y continuación de la secuencia.
@@ -112,7 +112,7 @@ Para estadísticas de acierto usa **solo `attempt_result`**; para duración y es
 
 ## Validación y límites
 
-Pruebas en `tests/classroom.cjs`, `tests/classroom.browser.cjs`, `tests/classroom-controls.browser.cjs` y `tests/cinema-loading.browser.cjs`. Cubren registro, fórmulas dinámicas, colisión barrida, pausa de pociones, controles, progreso, ambas rutas con/sin ayuda, diplomas, CSV, carga por ruta, sprites opacos, fallos/reintentos de recursos y dobles clics. El navegador automatizado coloca al jugador para recorrer las validaciones reales; no sustituye una prueba de habilidad con estudiantes ni se han probado 60 dispositivos simultáneos.
+Pruebas en `tests/classroom.cjs`, `tests/classroom.browser.cjs`, `tests/classroom-controls.browser.cjs`, `tests/polish.browser.cjs` y `tests/cinema-loading.browser.cjs`. Cubren registro, fórmulas dinámicas, colisión barrida, pausa de pociones, controles, progreso, ambas rutas con/sin ayuda, diplomas, CSV, carga por ruta, sprites opacos, fallos/reintentos de recursos y dobles clics. El navegador automatizado coloca al jugador para recorrer las validaciones reales; no sustituye una prueba de habilidad con estudiantes ni se han probado 60 dispositivos simultáneos.
 
 Las comprobaciones bloquean la navegación pública y los intentos ordinarios de conceder progreso modificando botones. **Un usuario que controla JavaScript, DevTools y almacenamiento puede alterar una aplicación estática.** Ni el diploma ni el CSV están firmados o son evidencia inviolable. Verificación fuerte requeriría servidor, identidad de sesión y validación/firma de resultados del lado del servidor; no se añadieron servicios externos.
 

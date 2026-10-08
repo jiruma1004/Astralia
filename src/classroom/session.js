@@ -1,6 +1,6 @@
 /* Local classroom evidence. This is an auditable record, not a signed credential. */
 window.EpikSession = class {
-  static version = 'classroom-20261008';
+  static version = 'polish-20261008';
   static columns = ['schema_version', 'game_version', 'session_id', 'record_type', 'event_id', 'event_sequence', 'timestamp_iso', 'elapsed_session_ms', 'room_id', 'room_name', 'challenge_type', 'question_id', 'variant_id', 'objective_id', 'attempt_id', 'attempt_number', 'event_type', 'submitted_answer', 'parameters_json', 'result', 'failure_reason', 'assistance_used', 'room_active_ms', 'room_elapsed_ms', 'room_solved_ms', 'room_exit_ms', 'room_attempts_total', 'room_correct_total', 'room_incorrect_total', 'room_deaths_total', 'stars_earned', 'final_route', 'language'];
   constructor(rooms, {
     now = () => performance.now(),

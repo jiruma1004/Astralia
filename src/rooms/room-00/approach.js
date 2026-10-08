@@ -42,6 +42,68 @@ window.ApproachTrial=class {
   return noise>.3?'#9c815b':noise<-.4?'#806546':'#8b7250';
  }
 
+ // The cavity is real projected geometry below the walking plane. Its mouth
+ // matches the unsupported interval; this never changes jump/collision rules.
+ drawCrater(r,player){
+  const c=r.ctx,w=r.canvas.width,h=r.canvas.height,eye=.5+(player.jumpHeight||0),horizon=h*(.5+(player.pitch||0));
+  const cos=Math.cos(player.angle),sin=Math.sin(player.angle);
+  const view=([x,y,z])=>({side:-(x-player.x)*sin+(y-player.y)*cos,depth:(x-player.x)*cos+(y-player.y)*sin,z});
+  const screen=p=>({x:w/2+p.side/p.depth*w/1.32,y:horizon-(p.z-eye)*h/p.depth});
+  // Near-plane clipping prevents popping when the player jumps over the lip.
+  const project=points=>{
+   const input=points.map(view),out=[];
+   for(let i=0;i<input.length;i++){
+    const a=input[i],b=input[(i+1)%input.length],inside=a.depth>=.08,next=b.depth>=.08;
+    if(inside)out.push(a);
+    if(inside!==next){const t=(.08-a.depth)/(b.depth-a.depth);out.push({side:a.side+(b.side-a.side)*t,depth:.08,z:a.z+(b.z-a.z)*t});}
+   }
+   return out.map(screen);
+  };
+  const path=points=>{if(points.length<3)return false;c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();return true;};
+  if(!this.craterMesh){
+   const rim=[];
+   for(let side=0;side<4;side++)for(let n=0;n<8;n++){
+    const t=n/8;
+    rim.push(side===0?[4.2+12.5*t,0]:side===1?[16.7,7*t]:side===2?[16.7-12.5*t,7]:[4.2,7-7*t]);
+   }
+   const levels=[[1,0],[.98,-.55],[.89,-1.5],[.73,-2.8],[.49,-4.6]];
+   const rings=levels.map(([scale,z],level)=>rim.map(([x,y],i)=>{
+    const rough=level?Math.sin(i*17+level)*.025:0;
+    return [10.45+(x-10.45)*(scale+rough),3.5+(y-3.5)*(scale+rough),z+(level?Math.sin(i*9)*.10:0)];
+   }));
+   const faces=[];
+   for(let level=0;level<rings.length-1;level++)for(let i=0;i<rim.length;i++){
+    const j=(i+1)%rim.length;faces.push({level,i,points:[rings[level][i],rings[level][j],rings[level+1][j],rings[level+1][i]]});
+   }
+   this.craterMesh={rim:rings[0],faces};
+  }
+  const mouth=project(this.craterMesh.rim);if(mouth.length<3)return;
+  c.save();path(mouth);c.clip();c.fillStyle='#090c12';c.fillRect(0,0,w,h);
+  const faces=this.craterMesh.faces.map(face=>({...face,depth:face.points.reduce((sum,p)=>sum+view(p).depth,0)/4})).sort((a,b)=>b.depth-a.depth);
+  for(const face of faces){
+   const points=project(face.points);if(!path(points))continue;
+   const ys=points.map(p=>p.y),top=Math.max(-h,Math.min(...ys)),bottom=Math.min(h*2,Math.max(...ys));
+   const palette=[['#a58a62','#725c45'],['#755d48','#493c32'],['#493d34','#25242a'],['#27272d','#0b1019']][face.level];
+   const gradient=c.createLinearGradient(0,top,0,Math.max(top+1,bottom));gradient.addColorStop(0,palette[0]);gradient.addColorStop(1,palette[1]);c.fillStyle=gradient;c.fill();
+   c.fillStyle=`rgba(4,8,14,${.08+(face.i%4)*.045})`;c.fill();
+   c.strokeStyle=face.level===0?'#b89a7040':'#090e1840';c.lineWidth=1;c.stroke();
+   // Fractures and strata follow the projected cliff, not the flat floor.
+   if(face.i%3===0){const a=project([face.points[0],face.points[1],face.points[2]]);if(a.length===3){c.strokeStyle='#0b0c164d';c.beginPath();c.moveTo((a[0].x+a[1].x)/2,(a[0].y+a[1].y)/2);c.lineTo((a[1].x+a[2].x)/2,(a[1].y+a[2].y)/2);c.stroke();}}
+  }
+  // Redraw the surviving planks above the hole, with visible timber thickness.
+  for(const p of [...this.platforms()].sort((a,b)=>view([b.x,b.y,0]).depth-view([a.x,a.y,0]).depth)){
+   if(this.broken.has(p.key))continue;
+   for(const [a,b] of [[[p.x,p.y],[p.x+p.w,p.y]],[[p.x+p.w,p.y],[p.x+p.w,p.y+p.h]],[[p.x+p.w,p.y+p.h],[p.x,p.y+p.h]],[[p.x,p.y+p.h],[p.x,p.y]]]){
+    if(path(project([[...a,0],[...b,0],[...b,-.12],[...a,-.12]]))){c.fillStyle='#352218';c.fill();}
+   }
+   for(let board=0;board<6;board++){
+    const x=p.x+board*.25;
+    if(path(project([[x+.018,p.y,.012],[x+.235,p.y,.012],[x+.235,p.y+p.h,.012],[x+.018,p.y+p.h,.012]]))){c.fillStyle=board%2?'#8a6844':'#a18054';c.fill();c.strokeStyle='#4a3328';c.lineWidth=1;c.stroke();}
+   }
+  }
+  c.restore();
+ }
+
  draw(r,player,actors){this.drawLights(r,player,actors);for(const p of [...this.platforms()].reverse()){if(this.broken.has(p.key)||p.stage!==Math.min(this.stage,4))continue;const pos=actors.project(r,player,p.x+.75,p.y+.7,.13);if(!pos)continue;
    const c=r.ctx,label=I18n.t(p.answer?'VERDADERO':'FALSO');c.save();c.textAlign='center';c.font='bold '+Math.max(10,Math.min(34,pos.scale*.14))+'px Trebuchet MS';c.strokeStyle='#071321';c.lineWidth=4;c.strokeText(label,pos.x,pos.y);c.fillStyle='#ffedb9';c.fillText(label,pos.x,pos.y);c.restore();}
  }

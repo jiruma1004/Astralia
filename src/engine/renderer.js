@@ -68,6 +68,7 @@ window.EscapeRenderer = class {
         }
       }
     }
+    if(room.trial)room.approach.drawCrater(this,player);
     for(let x=0;x<w;x+=3){
       const angle=player.angle+Math.atan((x/w*2-1)*.66);
       const hit=this.cast(room,player.x,player.y,angle,opened);

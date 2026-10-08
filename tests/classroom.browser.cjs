@@ -75,34 +75,6 @@ const {
     await p.evaluate(() => newClassroomGame());
     await notice();
     assert.equal(await p.evaluate(() => advanceRoom(5)), false);
-    if (assisted) {
-      await p.evaluate(() => {
-        const q = trial.platforms().find(p => p.stage === 0 && p.answer);
-        Object.assign(player, {
-          x: q.x + .5,
-          y: q.y + .5
-        });
-        trial.land(player);
-        respawn();
-        die('pit');
-        respawn();
-        classroom.aid.update();
-      });
-      assert.equal(await p.evaluate(() => classroom.session.state('room-00').attempts), 2);
-      await p.locator('#extra-help').click();
-      await p.locator('#extra-help-cancel').click();
-      assert.equal(await p.evaluate(() => classroom.session.state('room-00').assisted), false);
-      await p.locator('#extra-help').click();
-      await p.locator('#extra-help-confirm').click();
-      await p.locator('#extra-help-confirm').evaluate(el => el.click());
-      assert.equal(await p.evaluate(() => classroom.session.events.filter(e => e.event_type === 'solution_revealed').length), 1);
-      await p.locator('#extra-help-close').click();
-      await p.evaluate(() => {
-        die('pit');
-        respawn();
-      });
-      assert.equal(await p.evaluate(() => classroom.session.state('room-00').assisted), true);
-    }
     await p.evaluate(() => {
       for (let n = 0; n < 5; n++) {
         const q = trial.platforms().find(p => p.stage === trial.stage && p.answer === trial.question.answer);
@@ -136,6 +108,17 @@ const {
       lab.tick(20);
     });
     assert.equal(await p.evaluate(() => classroom.session.state('room-01').incorrect), 2);
+    if (assisted) {
+      await p.locator('#extra-help').click();
+      assert(await p.locator('#extra-help-answer').isVisible());
+      assert.equal(await p.evaluate(() => classroom.session.state('room-01').assisted), true);
+      await p.locator('#extra-help').click();
+      assert.equal(await p.evaluate(() => classroom.session.events.filter(e=>e.event_type==='solution_revealed').length),1);
+      await p.locator('#extra-help-close').click();
+      await p.evaluate(()=>{die('fall');respawn();Object.assign(player,{x:2.6,y:3.5,angle:0})});
+      assert.equal(await p.evaluate(()=>classroom.session.state('room-01').assisted),true);
+    }
+
     await p.evaluate(async () => {
       const a = EpikSolutions.cannon(lab);
       lab.v.value = a.speed;
@@ -250,7 +233,9 @@ const {
     assert.equal(await p.evaluate(() => classroom.session.csv()), csv);
     assert.equal(await p.evaluate(() => cinematics.item.id), route === 'particle' ? 'ceremonia-ignitia' : 'ceremonia-karla');
     await p.evaluate(() => I18n.set('en'));
-    assert.match(await p.locator('#certificate-results').textContent(), /Solved without/);
+    assert.equal(await p.locator('#certificate-results').textContent(), '');
+    assert.equal(await p.locator('.certificate-score').textContent(), (assisted?6:7)+' / 7');
+    assert.equal(await p.locator('#ceremony-certificate h3').textContent(), 'CREDITED CHALLENGES');
     assert.equal(await p.locator('#certificate-csv').textContent(), 'Download results CSV');
     await p.evaluate(() => I18n.set('es'));
     await p.locator('.scene-view').screenshot({
@@ -266,7 +251,7 @@ const {
   }
   assert.deepEqual(errors, []);
   await b.close();
-  console.log('PASS public controls, progression, 7 real challenge validations, aid penalty/cancel/death, attempt logs, both diplomas/CSV/epilogues, duplicate clicks');
+  console.log('PASS public controls, progression, 7 real challenge validations, single-click aid/penalty/death, attempt logs, both diplomas/CSV/epilogues, duplicate clicks');
 })().catch(e => {
   console.error(e);
   process.exit(1);
