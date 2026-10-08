@@ -7,14 +7,14 @@ window.FirstPersonControls=class {
   document.addEventListener('mousemove',e=>{if(document.pointerLockElement===canvas&&this.canPlay())this.look(e.movementX,e.movementY);});
   canvas.addEventListener('pointerdown',e=>{
    if(!this.canPlay()||e.button!==0)return;canvas.focus({preventScroll:true});this.skipClick=false;
-   if(e.pointerType==='touch'){this.drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:0};canvas.setPointerCapture(e.pointerId);}
+   if(e.pointerType==='touch'){if(this.drag)return;const r=canvas.getBoundingClientRect();if(document.documentElement.classList.contains('touch-mode')&&e.clientX<r.left+r.width/2)return;this.drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:0};canvas.setPointerCapture(e.pointerId);}
   });
   canvas.addEventListener('pointermove',e=>{
    if(!this.canPlay())return;
    if(this.drag&&e.pointerId===this.drag.id){const dx=e.clientX-this.drag.x,dy=e.clientY-this.drag.y;this.drag.moved+=Math.hypot(dx,dy);if(this.drag.moved>5){this.look(dx,dy);this.skipClick=true;}this.drag.x=e.clientX;this.drag.y=e.clientY;}
    else if(this.fallback&&e.pointerType==='mouse'&&document.activeElement===canvas&&document.pointerLockElement!==canvas)this.look(e.movementX,e.movementY);
   });
-  canvas.addEventListener('pointerup',()=>{this.drag=null;});canvas.addEventListener('pointercancel',()=>{this.drag=null;this.skipClick=true;});
+  for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,e=>{if(this.drag?.id===e.pointerId){this.drag=null;if(event!=='pointerup')this.skipClick=true;}});
   canvas.addEventListener('click',e=>{
    if(!this.canPlay()||this.skipClick)return;
    const locked=document.pointerLockElement===canvas,r=canvas.getBoundingClientRect();

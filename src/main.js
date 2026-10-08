@@ -11,13 +11,14 @@ const cannon=new CannonConsole(lab),companions=new RoomCompanions(),actors=new R
 const spawnPlayer=room=>({...room.spawn,pitch:0,jumpHeight:0,jumpVelocity:0});
 const message=document.querySelector('#message');
 let classroom;
+let touch=null;
 const development=['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(location.search).get('dev')==='1';
 const mission=new AdventureClock({onChange:updateCountdown,onExpire:expireAdventure});
 const ignitia=new IgnitiaMission(ignitiaEvent);
 const cinematics=new CinematicLibrary();cinematics.legacySource=ignitia;cinematics.isComplete=()=>completed&&classroom.session.totals().valid;cinematics.resultSummary=()=>classroom.certificate();ignitia.cinematics=cinematics;
 const measurement=new MeasurementRoom(()=>{opened=true;Sound.success();document.querySelector('#door-status').textContent='MEDICIÓN ACEPTADA';companions.toast('¡Medición aceptada! Cruza la puerta real para llegar a la sala II.');},returnFromMeasurement);
 const canPlay=()=>!arrival.active&&!cinematics.active&&!measurement.isOpen&&!ignitia.blocking&&mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
-const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>keys.clear()});
+const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>{keys.clear();touch?.reset();}});
 window.addEventListener('astralia:ui-open',()=>camera.release());
 cinematics.onToggle=active=>{keys.clear();camera.release();if(active){mission.pause();cannon.close();companions.closeHelp();companions.closeConsole();ignitia.closeConsole();}else mission.resume();};
 cinematics.canOpen=()=>!death&&!['escape','briefing','launch','sequence','ceremony','debrief','epilogue','ending'].includes(ignitia.mode);
@@ -158,7 +159,10 @@ window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
 window.addEventListener('keydown',e=>{if(e.key==='Escape'){camera.release();classroom.aid.close();measurement.close();ignitia.closeConsole();cannon.close();boss?.close();companions.closeHelp();companions.closeConsole();}});
 document.querySelector('#station-fire').onclick=()=>shoot();
 document.querySelector('#jump').onclick=()=>{jump();canvas.focus({preventScroll:true});};
-document.querySelectorAll('[data-key]').forEach(b=>{b.onpointerdown=e=>{if(!canPlay())return;b.setPointerCapture(e.pointerId);keys.add(b.dataset.key.toLowerCase());};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.key.toLowerCase());});
+// Panels own the fingers while open. Do not leave a movement gesture running behind them.
+const touchPanels=['#paola-dialog','#answer-console','#boss-panel','#rocket-console','#extra-help-panel'];
+const canTouchPlay=()=>canPlay()&&!cannon.isOpen&&!touchPanels.some(id=>{const p=document.querySelector(id);return p&&!p.hidden;});
+touch=new TouchControls(canvas,{canUse:canTouchPlay,jump,interact,releaseCamera:()=>camera.release()});
 function walkable(x,y){const room=rooms[index];if(opened&&room.bridge){const b=room.bridge;if(x>b.start-.18&&x<b.end+.18&&[b.y+.03,b.y+.97].some(edge=>Math.abs(y-edge)<.20))return false;}if(room.bounds&&(y-.18<room.bounds.minY||y+.18>room.bounds.maxY))return false;if(rooms[index].rocket&&Math.hypot(x-7.5,y-5.5)<.6)return false;if(boss?.lasers.some(l=>Math.hypot(x-l.x,y-l.y)<.45))return false;if(corridor?.blocks(x,y,player.jumpHeight))return false;if(room.answerDesk&&Math.hypot(x-room.answerDesk.x,y-room.answerDesk.y)<.65)return false;if(room.table&&Math.hypot(x-room.table.x,y-room.table.y)<.8)return false;if(room.physics&&Math.hypot(x-room.physics.originX,y-room.physics.originY)<.38)return false;return [[-.18,-.18],[.18,-.18],[-.18,.18],[.18,.18]].every(([dx,dy])=>{const tile=room.map[Math.floor(y+dy)]?.[Math.floor(x+dx)]??1;return tile===0||(tile===2&&opened)||tile===3;});}
 // El abismo permite caminar: perder el suelo inicia la caída.
 function supported(x,y){const room=rooms[index];if(room.trial)return trial.supports(x,y);if(room.lava)return room.lava.supports(x,y);const tile=room.floorTile?room.floorTile(x,y):room.map[Math.floor(y)]?.[Math.floor(x)];return tile!==3||(opened&&Math.floor(y)===(rooms[index].boss?7:3));}
@@ -201,7 +205,8 @@ ignitia.canLaunch=()=>canPlay()&&ignitia.near(player);
 ignitia.simulator.canAdvance=()=>mission.state==='running'&&!death&&rooms[index].rocket&&ignitia.mode==='idle'&&!cinematics.active;
 measurement.canSubmit=()=>mission.state==='running'&&!death&&rooms[index].measurement&&measurement.near(player);
 function tick(time){const simulationActive=ignitia.simulator.running&&ignitia.simulator.canAdvance();classroom.tick(Math.min((time-last)/1000,.04),(canPlay()||simulationActive)&&!document.hidden&&mission.pausedAt===null);const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);arrival.tick(dt,player);mission.tick();ignitia.tick(dt);
- if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0),s=(keys.has('d')?1:0)-(keys.has('a')?1:0),speed=dt*2.3*(keys.has('shift')?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
+ touch.sync();
+ if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0)+touch.forward,s=(keys.has('d')?1:0)-(keys.has('a')?1:0)+touch.strafe,speed=dt*2.3*((keys.has('shift')||touch.sprinting)?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
  if(walkable(nx,player.y))player.x=nx;if(walkable(player.x,ny))player.y=ny;
  // Altura en celdas (2 m en Galileo): salto corto, sin doble salto ni apoyo sobre el vacío.
  if(player.jumpHeight>0||player.jumpVelocity>0){player.jumpVelocity-=4.905*dt;player.jumpHeight=Math.max(0,player.jumpHeight+player.jumpVelocity*dt);if(player.jumpHeight===0)player.jumpVelocity=0;}
@@ -220,6 +225,7 @@ function tick(time){const simulationActive=ignitia.simulator.running&&ignitia.si
  if(rooms[index].measurementEntrance&&opened){const h=document.querySelector('#interaction-hint');h.hidden=!canPlay();h.textContent='Puerta lateral al norte · Sala 1.5 opcional';}
  if(boss)document.querySelector('#interaction-hint').textContent=boss.near(player,renderer,rooms[index],opened)>=0?'Clic o E · Programar láser':'Busca los láseres a ambos lados';
  if(trial){const h=document.querySelector('#interaction-hint');h.hidden=!canPlay();h.textContent='Salta a tu respuesta · Shift corre · Espacio salta · H pista';}
+ if(touch.enabled){const h=document.querySelector('#interaction-hint'),en=I18n.lang==='en';h.textContent=I18n.t(h.textContent).replace(/Clic o E|Click or E/g,en?'Use':'Usar').replace(/Shift corre|Shift to sprint/g,en?'Run':'Correr').replace(/Espacio salta|Space to jump/g,en?'Jump':'Saltar');}
  if(canPlay()&&rooms[index].physics)lab.tick(dt);if(canPlay()&&rooms[index].roulette)roulette.tick(dt);
  ignitia.updateCamera(player);renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);InteriorAtmosphere.draw(renderer,rooms[index],player,time);actors.draw(renderer,rooms[index],player,opened,time,maze);if(trial){drawArrivalCart(renderer,rooms[index],player);trial.draw(renderer,player,actors);}if(corridor)corridor.draw(renderer,player,actors);if(boss)boss.draw(renderer,player,actors);if(rooms[index].environment.kind==='courtyard')renderer.outdoor.draw(renderer,rooms[index],player,actors,time);ignitia.draw(renderer,player,actors);animateDeath(dt);cinematics.tick(dt);requestAnimationFrame(tick);
 }
@@ -246,5 +252,5 @@ window.addEventListener('astralia:language',()=>{
 const controls=document.querySelector('.controls');controls.append(document.querySelector('.audio-controls'),document.querySelector('.language-corner'));
 for(const el of controls.querySelectorAll('button,summary,input'))el.addEventListener('pointerdown',()=>camera.release());
 if(!development){for(const id of ['story-skip','cinematics-open','cinema-skip','cinema-replay','cinema-close'])document.getElementById(id)?.remove();document.querySelector('[data-arrival-skip]')?.remove();}
-if(development){const getters={player:()=>player,index:()=>index,opened:()=>opened,death:()=>death,trial:()=>trial,maze:()=>maze,boss:()=>boss,corridor:()=>corridor,last:()=>last,completed:()=>completed};for(const [k,get] of Object.entries(getters))Object.defineProperty(window,k,{get,configurable:true});Object.assign(window,{rooms,lab,roulette,companions,cinematics,ignitia,mission,camera,cannon,keys,renderer,prologue,arrival,classroom,tick,jump,shoot,interact,die,respawn,load:(i)=>load(i,'preview'),advanceRoom:(i)=>load(i),newClassroomGame:()=>{StoryRoute.reset();classroom.newSession();load(rooms.findIndex(r=>r.trial),'new');mission.restart();classroom.session.start();}});}
+if(development){const getters={player:()=>player,index:()=>index,opened:()=>opened,death:()=>death,trial:()=>trial,maze:()=>maze,boss:()=>boss,corridor:()=>corridor,last:()=>last,completed:()=>completed};for(const [k,get] of Object.entries(getters))Object.defineProperty(window,k,{get,configurable:true});Object.assign(window,{rooms,lab,roulette,companions,cinematics,ignitia,mission,camera,cannon,touch,keys,renderer,prologue,arrival,classroom,tick,jump,shoot,interact,die,respawn,load:(i)=>load(i,'preview'),advanceRoom:(i)=>load(i),newClassroomGame:()=>{StoryRoute.reset();classroom.newSession();load(rooms.findIndex(r=>r.trial),'new');mission.restart();classroom.session.start();}});}
 })();
