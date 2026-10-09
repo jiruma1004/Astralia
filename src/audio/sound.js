@@ -35,6 +35,9 @@ window.Sound={
  selectBackground(name){if(!this.backgroundNames.includes(name)||name===this.sceneTrack)return;this.sceneTrack=name;if(this.enabled&&!this.dead)this.play(name,true);this.apply();},
  pursuit(dt,distance){if(this.dead)return;this.heartbeat-=dt;if(this.heartbeat<=0){const near=Math.max(0,1-distance/10);this.tone(65,.13,'sine',.025+near*.12);this.tone(55,.12,'sine',.02+near*.08,.17);this.heartbeat=1.5-near*.8;}},
  tone(hz,duration=.18,type='sine',volume=.3,delay=0){if(!this.enabled||!this.ctx||document.hidden)return;const t=this.ctx.currentTime+delay,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.setValueAtTime(hz,t);g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(volume,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g).connect(this.master);o.start(t);o.stop(t+duration+.02);},
+ applause(){if(!this.enabled||!this.ctx||document.hidden)return;const ctx=this.ctx;if(!this.clapBuffer){this.clapBuffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*.16),ctx.sampleRate);const d=this.clapBuffer.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/d.length*8);}
+  for(const delay of [0,.045,.10]){const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),gain=ctx.createGain();source.buffer=this.clapBuffer;filter.type='bandpass';filter.frequency.value=1200+delay*5000;gain.gain.value=.16;source.connect(filter).connect(gain).connect(this.master);source.onended=()=>{source.disconnect();filter.disconnect();gain.disconnect();};source.start(ctx.currentTime+delay);}
+ },
  woodBreak(){this.play('bridge',true);},
  flare(){if(!this.enabled||!this.ctx||document.hidden)return;const t=this.ctx.currentTime;if(t-(this.lastFlare??-10)<.15)return;this.lastFlare=t;
   const length=.5,buffer=this.ctx.createBuffer(1,Math.ceil(this.ctx.sampleRate*length),this.ctx.sampleRate),data=buffer.getChannelData(0);

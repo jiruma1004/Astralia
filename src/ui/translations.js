@@ -1005,3 +1005,10 @@ Object.assign(window.ENGLISH,{
 });
 
 Object.assign(window.ENGLISH,{'Blanco:':'Target:','Altura:':'Height:'});
+
+Object.assign(ENGLISH,{
+ 'Cerrar celebración':'Close celebration',
+ 'Un aplauso para ti':'A round of applause for you',
+ 'Los cinco personajes celebran tu esfuerzo bajo el cielo de Ignitia.':'The five characters celebrate your effort beneath the sky of Ignitia.',
+ 'Gracias por jugar · Aventura EPIK':'Thank you for playing · Aventura EPIK'
+});

@@ -41,7 +41,7 @@ const assert=require('node:assert/strict');
  assert.equal(await page.evaluate(()=>death.type),'flame');assert.equal(await page.evaluate(()=>boss.potions.bottles.length),0);
  await page.evaluate(()=>respawn());assert.equal(await page.evaluate(()=>boss.wave.phase),'idle');assert.equal(await page.evaluate(()=>boss.attacksStopped),false);
  // Re-entering the same room preserves assistance, while previews cannot certify it.
- await page.evaluate(()=>{load(0);document.querySelector('#maze-notice').hidden=true;const c=classroom.context();classroom.session.attempt(c,'x',{},false);classroom.session.attempt(c,'x',{},false);classroom.aid.open();advanceRoom(index)});
+ await page.evaluate(()=>{load(0);document.querySelector('#maze-notice').hidden=true;const c=classroom.context();classroom.session.attempt(c,'x',{},false);classroom.session.attempt(c,'x',{},false);classroom.session.attempt(c,'x',{},false);classroom.aid.open();advanceRoom(index)});
  assert.equal(await page.evaluate(()=>classroom.session.state(rooms[index].id).assisted),true);assert.equal(await page.evaluate(()=>classroom.session.totals().valid),false);
  assert.deepEqual(errors,[]);await browser.close();console.log('PASS mouse/Escape/panels, jump/sprint, integrated warning/wave/jump/death/cleanup/potion cooldown, persisted penalty on room reload');
 })().catch(e=>{console.error(e);process.exit(1)});

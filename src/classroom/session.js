@@ -152,7 +152,7 @@ window.EpikSession = class {
     for (const id of [...this.pending.keys()]) this.resolve(id, 'interrupted', reason);
   }
   available(objective) {
-    return !this.state(this.current).solved && (this.state(this.current).failures[objective] || 0) >= 2;
+    return !this.state(this.current).solved && (this.state(this.current).failures[objective] || 0) >= 3;
   }
   assist(context, parameters) {
     if (!this.available(context.objective_id)) return false;

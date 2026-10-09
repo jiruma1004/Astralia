@@ -16,6 +16,8 @@ window.ApproachTrial=class {
   if(this.broken.has(p.key))return;
   if(p.stage!==this.stage){this.onEvent('fall');return;}
   this.onAnswer?.(p.answer,p.answer===this.question.answer);if(p.answer!==this.question.answer){this.broken.add(p.key);this.onEvent('break');return;}
+  // Al acertar también desaparece la alternativa incorrecta de ese nivel.
+  this.broken.add(p.stage+':'+!p.answer);
   this.stage++;this.finished=this.stage===5;this.onEvent('safe',{x:p.x+.75,y:p.y+.7,angle:0});
  }
  restore(){/* Los tablones rotos permanecen ausentes hasta reiniciar la sala. */}

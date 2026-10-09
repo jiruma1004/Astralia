@@ -21,7 +21,7 @@ const canPlay=()=>!arrival.active&&!cinematics.active&&!measurement.isOpen&&!ign
 const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>{keys.clear();touch?.reset();}});
 window.addEventListener('astralia:ui-open',()=>camera.release());
 cinematics.onToggle=active=>{keys.clear();camera.release();if(active){mission.pause();cannon.close();companions.closeHelp();companions.closeConsole();ignitia.closeConsole();}else mission.resume();};
-cinematics.canOpen=()=>!death&&!['escape','briefing','launch','sequence','ceremony','debrief','epilogue','ending'].includes(ignitia.mode);
+cinematics.canOpen=()=>!death&&!['escape','briefing','launch','sequence','ceremony','debrief','epilogue','applause','ending'].includes(ignitia.mode);
 
 function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
  const timer=document.querySelector('#adventure-timer');timer.dataset.phase=phase;

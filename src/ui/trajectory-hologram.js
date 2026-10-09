@@ -5,8 +5,11 @@ window.TrajectoryHologram=class {
   this.toggle.onclick=()=>this.panel.hidden?this.open():this.hide();document.querySelector('#hologram-close').onclick=()=>this.hide();
   this.preview.onchange=()=>{lab.prediction.checked=this.preview.checked;lab.draw();};lab.prediction.addEventListener('change',()=>{this.preview.checked=lab.prediction.checked;this.draw();});
  }
- open(){this.panel.hidden=false;this.toggle.setAttribute('aria-expanded','true');this.preview.checked=this.lab.prediction.checked;this.draw();}
- hide(){this.panel.hidden=true;this.toggle.setAttribute('aria-expanded','false');}
+ open(){this.closeAfter=null;this.panel.hidden=false;this.toggle.setAttribute('aria-expanded','true');this.preview.checked=this.lab.prediction.checked;this.draw();}
+ hide(){this.closeAfter=null;this.panel.hidden=true;this.toggle.setAttribute('aria-expanded','false');}
+ // Cuenta tiempo de juego; un disparo nuevo o el cierre manual cancela el anterior.
+ complete(){if(!this.panel.hidden)this.closeAfter=3;}
+ tick(dt){if(this.closeAfter!==null&&this.closeAfter!==undefined){this.closeAfter-=dt;if(this.closeAfter<=0)this.hide();}}
  draw(){
   if(this.panel.hidden||!this.lab.room)return;
   const lab=this.lab,p=lab.room.physics,s=lab.shot,c=this.ctx,w=this.canvas.width,h=this.canvas.height,predict=!lab.room.calculationMode&&this.preview.checked;

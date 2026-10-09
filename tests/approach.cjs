@@ -5,3 +5,15 @@ trial.land({x:good.x+.7,y:good.y+.7,jumpHeight:0});assert.equal(trial.stage,1,'F
 // A skipped question must not permanently remove its correct platform.
 const future=trial.platforms().find(p=>p.stage===3&&p.answer===true);trial.land({x:future.x+.7,y:future.y+.7,jumpHeight:0});assert(!trial.broken.has(future.key));
 const fresh=new w.ApproachTrial(room,()=>{});assert(fresh.supports(bad.x+.7,bad.y+.7));console.log('OK: wrong planks remain broken, valid False survives, sound event once, skips cannot destroy the solution and room reset restores wood.');
+
+// Even without choosing any wrong answer, exactly five boards survive.
+const perfect=new w.ApproachTrial(room,()=>{});
+for(let stage=0;stage<5;stage++){
+ const correct=perfect.platforms().find(p=>p.stage===stage&&p.answer===w.APPROACH_QUESTIONS[stage].answer);
+ const incorrect=perfect.platforms().find(p=>p.stage===stage&&p!==correct);
+ perfect.land({x:correct.x+.7,y:correct.y+.7,jumpHeight:0});
+ assert(perfect.supports(correct.x+.7,correct.y+.7));
+ assert(!perfect.supports(incorrect.x+.7,incorrect.y+.7));
+ perfect.restore();assert(!perfect.supports(incorrect.x+.7,incorrect.y+.7));
+}
+assert.equal(perfect.platforms().filter(p=>!perfect.broken.has(p.key)).length,5);

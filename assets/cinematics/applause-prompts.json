@@ -1,0 +1,15 @@
+{
+  "tool": "Built-in image_gen",
+  "background": {
+    "path": "assets/cinematics/applause-sky.webp",
+    "prompt": "Use case: illustration-story. Create one wide 16:9 pixel art game background for the final congratulatory scene of Aventura EPIK, a fantasy physics academy RPG. An uplifting dreamlike landscape inspired by the open sky and congratulatory mood of the ending of Evangelion, but belonging to this game's medieval castle world. Bright blue sky with expansive soft clouds, distant forested hills and a small old stone castle on the horizon, warm sunlight, an elegant round stone terrace floating above a sea of clouds in the foreground. The terrace is empty, flat, wide, with enough open space to place five standing characters across its lower half. Gentle tiny glimmers suggesting science and stars, restrained cream/blue/gold palette, crisp visible pixel art, nostalgic 1990s RPG atmosphere. No people, no words, no captions, no logos. Landscape 1536 by 864 if possible. This will be a lightweight backdrop; avoid tiny intricate details.",
+    "source": "exec-0b56ff92-06c8-4de9-80c1-80858614b25d.png",
+    "delivery": "960 × 540 WebP"
+  },
+  "sprites": {
+    "path": "assets/cinematics/applause-cast.webp",
+    "prompt": "Use case: identity-preserve. Asset: a transparent sprite animation atlas for Aventura EPIK, matching the provided five character references. Create EXACTLY 5 columns and 2 rows of equal-sized cells (10 full-body sprites total), no text, no separators. Order of columns: 1 Eric (reference 1 white lab coat and glasses), 2 Ivan (reference 2 pink short sleeve shirt and dark pants), 3 Karla (reference 3 white turtleneck sweater and black trousers), 4 Paola (reference 4 pink glasses brown cardigan white blouse cream trousers), 5 Angelica (reference 5 glasses mustard blazer navy blouse cream trousers). All face the viewer and smile, full bodies from head to shoes, same pixel-art RPG illustration as references. In top row all five have hands at chest level with palms separated by a small gap, mid-applause. Bottom row repeats exactly same figures, faces, feet, height and positions but palms together in a clap. Animate ONLY forearms and hands between rows: feet and heads remain aligned exactly. No books, tablets or other props in hands. Hands visible and natural, two hands per person. Preserve each person's recognizable face, hair, glasses and clothing. Genuinely transparent background, no glows, no shadows beyond bodies, no scenery. Each figure contained within its cell with generous transparent margin; consistent feet baseline in every cell. This is a production sprite sheet that will be sliced as 5 columns and 2 rows.",
+    "source": "exec-96537bc9-2092-40d1-988f-2c0cacf050ad.png",
+    "delivery": "1536 × 1024 WebP, original alpha; 5 columns × 2 poses"
+  }
+}

@@ -14,7 +14,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  await page.locator('.scene-view').screenshot({path:'/tmp/epik-crater-side.png'});
  for(const id of ['room-00','room-03','room-04','room-06','room-01','room-02','room-05']){
   const eligible=['room-01','room-02','room-05'].includes(id);
-  await page.evaluate(id=>{load(rooms.findIndex(r=>r.id===id));document.querySelector('#maze-notice').hidden=true;if(rooms[index].roulette)roulette.present(0);const c=classroom.context();classroom.session.attempt(c,'wrong',{},false);classroom.session.attempt(c,'wrong',{},false);classroom.aid.update()},id);
+  await page.evaluate(id=>{load(rooms.findIndex(r=>r.id===id));document.querySelector('#maze-notice').hidden=true;if(rooms[index].roulette)roulette.present(0);const c=classroom.context();classroom.session.attempt(c,'wrong',{},false);classroom.session.attempt(c,'wrong',{},false);classroom.session.attempt(c,'wrong',{},false);classroom.aid.update()},id);
   assert.equal(await page.locator('#extra-help').isVisible(),eligible,id);
   if(!eligible){await page.evaluate(()=>classroom.aid.open());assert.equal(await page.locator('#extra-help-panel').isVisible(),false,id+' cannot reveal via stale callback');continue;}
   await page.locator('#extra-help').click();assert(await page.locator('#extra-help-answer').isVisible());assert((await page.locator('#extra-help-answer').textContent()).length>40);
