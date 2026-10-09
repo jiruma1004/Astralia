@@ -6,7 +6,17 @@ const assert=require('node:assert/strict');
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(()=>window.requestAnimationFrame=()=>0);
   await page.goto(process.env.EPIK_TEST_URL||'http://127.0.0.1:8767/?dev=1');
-  await page.evaluate(()=>{document.querySelector('#epik-dev')?.close();prologue.finish(true);document.querySelector('#maze-notice').hidden=true;});
+  await page.evaluate(()=>document.querySelector('#epik-dev')?.close());
+  assert.equal(await page.evaluate(()=>Sound.sceneTrack),'grassland');
+  await page.evaluate(()=>prologue.advance());
+  for(const expected of ['villain','villain','missing','grassland']){
+   await page.evaluate(()=>{prologue.reveal();prologue.advance()});
+   assert.equal(await page.evaluate(()=>Sound.sceneTrack),expected);
+  }
+  await page.evaluate(()=>{window.grasslandPlayId=Sound.playIds.grassland;prologue.reveal();prologue.advance()});
+  assert(await page.evaluate(()=>arrival.active));
+  assert.equal(await page.evaluate(()=>Sound.playIds.grassland),await page.evaluate(()=>grasslandPlayId),'Carriage keeps the same track without restarting');
+  await page.evaluate(()=>{arrival.finish();document.querySelector('#maze-notice').hidden=true;});
   assert.equal(await page.evaluate(()=>Sound.sceneTrack),'grassland');
   for(const [kind,track] of [['trial','grassland'],['roulette','seal'],['conceptual','maze'],['physics','music']]){
    await page.evaluate(kind=>load(rooms.findIndex(r=>r[kind])),kind);assert.equal(await page.evaluate(()=>Sound.sceneTrack),track);
