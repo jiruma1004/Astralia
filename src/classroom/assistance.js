@@ -1,4 +1,4 @@
-/* Deterministic local solutions. Rendering the answer never executes a game action. */
+/* Local calculation hints and an explicit assisted crossing for the first trial. */
 window.EpikSolutions = {
   cannon(lab) {
     const p = lab.room.physics,
@@ -111,7 +111,7 @@ window.EpikAssistance = class {
   }
   eligible() {
     const room = this.game().room;
-    return !!(room.physics || room.roulette || room.boss);
+    return !!(room.trial || room.physics || room.roulette || room.boss);
   }
   position(left, top) {
     const scene = this.panel.parentElement;
@@ -128,6 +128,9 @@ window.EpikAssistance = class {
     const hidden = !this.eligible() || !this.session.available(this.context().objective_id) || !this.canUse?.();
     if (this.button.hidden !== hidden) this.button.hidden = hidden;
     if (!hidden) {
+      const trial = this.game().room.trial;
+      this.button.querySelector('b').textContent = I18n.t(trial ? 'Ayuda IA' : 'IA · Ver solución');
+      this.button.title = I18n.t(trial ? 'Cruzar en tirolesa resta un punto del certificado' : 'Revelar la solución resta un punto del certificado');
       const text = I18n.t(this.session.state(this.game().room.id).assisted ? 'Reto penalizado' : 'Resta 1 punto');
       const label=this.button.querySelector('small');
       if(label.textContent!==text)label.textContent=text;
@@ -139,6 +142,13 @@ window.EpikAssistance = class {
     // The visible button states the penalty; one click reveals the answer.
     // assist() is idempotent: reopening never deducts another point.
     if (!this.session.assist(context, this.game().snapshot())) return;
+    if (this.game().room.trial) {
+      this.close();
+      window.dispatchEvent(new Event('astralia:ui-open'));
+      this.game().trial.startZipline();
+      this.update();
+      return;
+    }
     this.contextAtOpen = context.objective_id;
     this.revealed = true;
     this.panel.hidden = false;

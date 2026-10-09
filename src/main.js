@@ -17,7 +17,7 @@ const mission=new AdventureClock({onChange:updateCountdown,onExpire:expireAdvent
 const ignitia=new IgnitiaMission(ignitiaEvent);
 const cinematics=new CinematicLibrary();cinematics.legacySource=ignitia;cinematics.isComplete=()=>completed&&classroom.session.totals().valid;cinematics.resultSummary=()=>classroom.certificate();ignitia.cinematics=cinematics;
 const measurement=new MeasurementRoom(()=>{opened=true;Sound.success();document.querySelector('#door-status').textContent='MEDICIÓN ACEPTADA';companions.toast('¡Medición aceptada! Cruza la puerta real para llegar a la sala II.');},returnFromMeasurement);
-const canPlay=()=>!arrival.active&&!cinematics.active&&!measurement.isOpen&&!ignitia.blocking&&mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
+const canPlay=()=>!trial?.zipline?.active&&!arrival.active&&!cinematics.active&&!measurement.isOpen&&!ignitia.blocking&&mission.state==='running'&&!completed&&!death&&!document.querySelector('#eric-ready').open&&document.querySelector('#maze-notice').hidden;
 const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>{keys.clear();touch?.reset();}});
 window.addEventListener('astralia:ui-open',()=>camera.release());
 cinematics.onToggle=active=>{keys.clear();camera.release();if(active){mission.pause();cannon.close();companions.closeHelp();companions.closeConsole();ignitia.closeConsole();}else mission.resume();};
@@ -74,6 +74,9 @@ if(arrival.active)arrival.finish();cinematics.close();measurement.reset(rooms[i]
  classroom?.enter();return true;
 }
 function trialEvent(type,position){
+ if(type==='zipline-start'){document.querySelector('#question-bubble').hidden=true;document.querySelector('#world-toast').hidden=true;keys.clear();touch?.reset();camera.release();companions.closeHelp();Sound.load();message.textContent=I18n.t('Ayuda IA · Cruzando en tirolesa');return;}
+ if(type==='zipline-end'){opened=true;checkpoint={room:index,stage:5,position:{...position,pitch:0,jumpHeight:0,jumpVelocity:0}};classroom.solve();document.querySelector('#door-status').textContent=I18n.t('CRUCE COMPLETADO');document.querySelector('#question-bubble').hidden=true;companions.toast(I18n.t('Has cruzado en tirolesa. Este reto no suma al certificado.'));Sound.click();canvas.focus({preventScroll:true});return;}
+
  if(type==='fall'||type==='break'){die('pit',type==='break'?'wood':null);return;}
  checkpoint={room:index,stage:trial.stage,position:spawnPlayer(rooms[index])};opened=trial.finished;if(opened)classroom.solve();
  document.querySelector('#door-status').textContent=opened?'SENDERO SUPERADO':`SALTO ${trial.stage+1} / 5`;
@@ -204,7 +207,8 @@ window.addEventListener('astralia:help-open',()=>{classroom.session.event('norma
 ignitia.canLaunch=()=>canPlay()&&ignitia.near(player);
 ignitia.simulator.canAdvance=()=>mission.state==='running'&&!death&&rooms[index].rocket&&ignitia.mode==='idle'&&!cinematics.active;
 measurement.canSubmit=()=>mission.state==='running'&&!death&&rooms[index].measurement&&measurement.near(player);
-function tick(time){const simulationActive=ignitia.simulator.running&&ignitia.simulator.canAdvance();classroom.tick(Math.min((time-last)/1000,.04),(canPlay()||simulationActive)&&!document.hidden&&mission.pausedAt===null);const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);arrival.tick(dt,player);mission.tick();ignitia.tick(dt);
+function tick(time){const simulationActive=ignitia.simulator.running&&ignitia.simulator.canAdvance();classroom.tick(Math.min((time-last)/1000,.04),(canPlay()||simulationActive||!!trial?.zipline?.active)&&!document.hidden&&mission.pausedAt===null);const dt=Math.min((time-last)/1000,.04);last=time;flash=Math.max(0,flash-dt);Sound.mix(dt);prologue.tick(dt);arrival.tick(dt,player);mission.tick();ignitia.tick(dt);
+ if(trial?.zipline?.active&&!death&&!document.hidden&&mission.state==='running'&&mission.pausedAt===null)trial.tickZipline(dt,player);
  touch.sync();
  if(canPlay()){player.angle+=((keys.has('arrowright')?1:0)-(keys.has('arrowleft')?1:0))*dt*1.8;const f=(keys.has('w')?1:0)-(keys.has('s')?1:0)+touch.forward,s=(keys.has('d')?1:0)-(keys.has('a')?1:0)+touch.strafe,speed=dt*2.3*((keys.has('shift')||touch.sprinting)?1.55:1)/Math.max(1,Math.hypot(f,s));const nx=player.x+(Math.cos(player.angle)*f-Math.sin(player.angle)*s)*speed,ny=player.y+(Math.sin(player.angle)*f+Math.cos(player.angle)*s)*speed;
  if(walkable(nx,player.y))player.x=nx;if(walkable(player.x,ny))player.y=ny;

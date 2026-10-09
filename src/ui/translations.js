@@ -1,4 +1,9 @@
 window.ENGLISH={
+ "Ayuda IA":"AI help",
+ "Cruzar en tirolesa resta un punto del certificado":"Using the zipline deducts one certificate point",
+ "Ayuda IA · Cruzando en tirolesa":"AI help · Crossing by zipline",
+ "CRUCE COMPLETADO":"CROSSING COMPLETE",
+ "Has cruzado en tirolesa. Este reto no suma al certificado.":"You crossed by zipline. This challenge does not count toward the certificate.",
  "IA · Ver solución":"IA · Reveal solution",
  "Resta 1 punto":"Costs 1 point",
  "Reto penalizado":"Challenge penalized",

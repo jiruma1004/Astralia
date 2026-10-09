@@ -8,6 +8,38 @@ window.APPROACH_QUESTIONS=[
 ];
 window.ApproachTrial=class {
  constructor(room,onEvent){this.room=room;this.onEvent=onEvent;this.stage=0;this.broken=new Set();this.finished=false;this.art=new Map();}
+ // Assistance transports the player; it never fabricates correct answers.
+ startZipline(){
+  if(this.finished||this.zipline?.active)return false;
+  this.zipline={active:true,time:0,duration:7,from:null};this.onEvent('zipline-start');return true;
+ }
+ tickZipline(dt,player){
+  const z=this.zipline;if(!z?.active)return;
+  z.from??={x:player.x,y:player.y};z.time=Math.min(z.duration,z.time+dt);
+  const t=z.time/z.duration,e=t*t*(3-2*t);
+  player.x=z.from.x+(17.6-z.from.x)*e;player.y=z.from.y+(3.85-z.from.y)*e;
+  player.angle=0;player.pitch=-.06;player.jumpVelocity=0;player.jumpHeight=1.25*Math.sin(Math.PI*t);
+  if(t===1){z.active=false;player.jumpHeight=0;player.pitch=0;this.finished=true;this.stage=5;this.onEvent('zipline-end',{x:17.6,y:3.85,angle:0});}
+ }
+ drawZipline(r,player,actors){
+  if(!this.zipline)return;
+  const c=r.ctx,w=r.canvas.width,h=r.canvas.height;
+  const line=(a,b,color,width)=>{const p=actors.project(r,player,...a),q=actors.project(r,player,...b);if(!p||!q)return;c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(p.x,p.y);c.lineTo(q.x,q.y);c.stroke();};
+  c.save();
+  for(const x of [3.3,18]){
+   for(const y of [2.9,4.8])line([x,y,0],[x,y,3.1],'#795234',8);
+   line([x,2.9,3.1],[x,4.8,3.1],'#be995f',9);
+  }
+  for(let x=3.3;x<18;x+=.3){const end=Math.min(18,x+.3),height=a=>3.05-.45*Math.sin((a-3.3)/14.7*Math.PI);line([x,3.85,height(x)],[end,3.85,height(end)],'#c0d6dc',4);}
+  if(this.zipline.active){
+   // Foreground pulley and handle make the ride legible in first person.
+   c.strokeStyle='#536976';c.lineWidth=8;c.beginPath();c.moveTo(w*.5,0);c.lineTo(w*.5,h*.23);c.stroke();
+   c.fillStyle='#cfb777';c.beginPath();c.arc(w*.5,h*.10,15,0,Math.PI*2);c.fill();c.stroke();
+   c.strokeStyle='#d7aa62';c.lineWidth=13;c.beginPath();c.moveTo(w*.39,h*.23);c.lineTo(w*.61,h*.23);c.stroke();
+   c.fillStyle='#132b36dd';c.fillRect(w*.24,h*.78,w*.52,48);c.fillStyle='#c3ffe1';c.textAlign='center';c.font='bold 20px Trebuchet MS';c.fillText(I18n.t('Ayuda IA · Cruzando en tirolesa'),w*.5,h*.78+30);
+  }
+  c.restore();
+ }
  get question(){return APPROACH_QUESTIONS[Math.min(this.stage,4)];}
  platforms(){return this.tiles??=APPROACH_QUESTIONS.flatMap((q,stage)=>[true,false].map((answer,lane)=>({stage,answer,x:5+stage*2.3,y:lane?4.05:2.25,w:1.5,h:1.4,key:stage+':'+answer})));}
  platformAt(x,y){return this.platforms().find(p=>x>=p.x&&x<=p.x+p.w&&y>=p.y&&y<=p.y+p.h);}
@@ -106,7 +138,7 @@ window.ApproachTrial=class {
   c.restore();
  }
 
- draw(r,player,actors){this.drawLights(r,player,actors);for(const p of [...this.platforms()].reverse()){if(this.broken.has(p.key)||p.stage!==Math.min(this.stage,4))continue;const pos=actors.project(r,player,p.x+.75,p.y+.7,.13);if(!pos)continue;
+ draw(r,player,actors){this.drawZipline(r,player,actors);this.drawLights(r,player,actors);for(const p of [...this.platforms()].reverse()){if(this.zipline||this.broken.has(p.key)||p.stage!==Math.min(this.stage,4))continue;const pos=actors.project(r,player,p.x+.75,p.y+.7,.13);if(!pos)continue;
    const c=r.ctx,label=I18n.t(p.answer?'VERDADERO':'FALSO');c.save();c.textAlign='center';c.font='bold '+Math.max(10,Math.min(34,pos.scale*.14))+'px Trebuchet MS';c.strokeStyle='#071321';c.lineWidth=4;c.strokeText(label,pos.x,pos.y);c.fillStyle='#ffedb9';c.fillText(label,pos.x,pos.y);c.restore();}
  }
  drawLights(r,player,actors){
