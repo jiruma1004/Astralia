@@ -1,0 +1,12 @@
+[
+  {
+    "key": "ivan",
+    "ref": "ivan-walk-right.webp",
+    "prompt": "Edit this exact pixel-art RPG character Iván for a humorous scene AFTER falling through tree canopies. Transparent sprite sheet TWO equal square cells side by side, exactly matching the source two right-facing walk poses and same head/feet positions. Keep his face, dark short hair and beard, pink short-sleeve button shirt, navy trousers, brown boots, right-facing direction and anatomy. Add visible clusters of small green leaves, twigs tangled in hair and shoulders, fern sprigs on shirt and trousers, a few dirt smudges. Clothes intact, no wounds. Scattered foliage as though he tumbled through treetops, not a bush costume; face remains unobstructed. Preserve distinct gait of BOTH original frames so legs alternate. Crisp chibi pixel-art Astralia game sprite style, true alpha-transparent background with no scenery, generous margins."
+  },
+  {
+    "key": "forest",
+    "ref": "ivan-descent-atlas.webp",
+    "prompt": "Create ONE seamless scene, NOT a grid or collage. A wide 16:9 pixel-art RPG forest background for Aventura EPIK, inspired by the TOP TWO panels of reference: same dusk indigo sky, orange horizon, mossy ancient trees, ferns and dark pine woods, a dirt trail BEFORE reaching that isolated wooden cabin. Trail crosses left to right along foreground for side-on character walking. Keep bottom quarter largely clear of big objects for walking and tripping animation. A few broken leafy twigs suggest a rough landing from trees. Far upper right through trunks is a VERY small hint of the cabin's warm window/roof, still some distance away. No people, no sprites, no text, no UI. Detailed cozy mysterious 16-bit pixel-art landscape, clear depth, dusky blues/greens, soft muted amber light. Upper third relatively dark and quiet for overlay credits. One landscape only."
+  }
+]

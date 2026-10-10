@@ -104,7 +104,7 @@ window.EscapeRenderer = class {
       if(hit.tile===2 && u>.28){c.fillStyle='#ffcb78';c.fillRect(x,top+height*.43,3,height*.14);}
       this.decorate(room,hit,x,top,height,player);
     }
-    if(room.environment?.portal&&opened)this.drawPortal(room,player,time,horizon,eye);
+    for(const portal of this.exitPortals(room,opened))this.drawPortal(room,player,time,horizon,eye,portal,opened);
     if(room.castleGate)this.castleGate.draw(this,room,player,time,opened);
     if(room.physics){
       const p=room.physics;
@@ -137,7 +137,7 @@ window.EscapeRenderer = class {
           c.fillStyle='#dfcb95';for(const x of [-72,62])c.fillRect(x,-12-lift,10,22);
           if(recoil){c.strokeStyle='#fff1b1';c.lineWidth=4;c.beginPath();c.arc(0,-42-lift,35,0,Math.PI*2);c.stroke();}c.restore();
         }
-        c.fillStyle='#c4d7ef';c.font='10px Georgia';c.textAlign='center';c.fillText(lab.destroyed?'SOBRECARGA':'TORRETA PRISMA · 180 J',0,59);c.restore();
+        c.fillStyle='#c4d7ef';c.font='10px Georgia';c.textAlign='center';c.fillText(lab.destroyed?'SOBRECARGA':'TORRETA PRISMA · 200 J',0,59);c.restore();
         this.cannonBounds={x:cx-115*scale,y:cy-165*scale,w:230*scale,h:225*scale};
       }
       const screen=project(p.originX+.3,p.originY+.7,.75);if(screen){const sc=Math.min(1.1,screen.scale/320);c.save();c.translate(screen.x,screen.y);c.scale(sc,sc);c.fillStyle='#111d3bea';c.strokeStyle='#96b7db';c.lineWidth=2;c.fillRect(-75,-55,150,110);c.strokeRect(-75,-55,150,110);c.font='13px Georgia';c.fillStyle='#e4d3a0';c.fillText('ASTROLABIO',-57,-30);c.fillStyle='#bce6ff';c.fillText('Elevación  '+lab.angle+'°',-57,-6);c.fillText('Giro  '+lab.azimuth+'°',-57,15);c.fillText(lab.loaded?lab.loaded.mass+' kg · CARGADO':'RECÁMARA VACÍA',-57,38);c.restore();}
@@ -164,13 +164,22 @@ window.EscapeRenderer = class {
     }
     c.fillStyle=room.environment.tint;c.globalAlpha=.13;c.fillRect(0,0,w,horizon);c.globalAlpha=1;
   }
-  drawPortal(room,player,time,horizon,eye){
+  exitPortals(room,opened){
+    if(room.maze&&!room.maze.dungeon){
+      return room.maze.doors.filter(d=>d.branch&&room.maze.openDoors.has(d.stage+':'+d.choice)).map(d=>({x:room.exitX,y:d.y}));
+    }
+    if(!opened)return [];
+    if(room.corridor)return [{x:room.exitX,y:room.oakDoor.y}];
+    if(room.boss)return [{x:room.oakDoor.x+.02,y:room.oakDoor.y}];
+    return room.environment?.portal?[{x:7,y:3}]:[];
+  }
+  drawPortal(room,player,time,horizon,eye,portal={x:7,y:3},opened=true){
     const c=this.ctx,w=this.canvas.width,h=this.canvas.height;
-    // El mismo plano que la puerta física: visible desde ambos lados y atravesable.
+    // Match the physical passage, and keep wall occlusion from either side.
     for(let x=0;x<w;x+=3){const angle=player.angle+Math.atan((x/w*2-1)*.66),dx=Math.cos(angle);if(Math.abs(dx)<1e-7)continue;
-      const distance=(7-player.x)/dx;if(distance<=.03)continue;const y=player.y+Math.sin(angle)*distance;if(y<3||y>=4)continue;
-      const hit=this.cast(room,player.x,player.y,angle,true);if(hit.distance<distance-.01)continue;
-      const height=h/(distance*Math.cos(angle-player.angle)),top=horizon-(1-eye)*height;c.globalAlpha=.88+.12*Math.sin(time/650);c.drawImage(this.art.portalOpen,Math.floor((y-3)*512),0,1,512,x,top,3,height);c.globalAlpha=1;
+      const distance=(portal.x-player.x)/dx;if(distance<=.03)continue;const y=player.y+Math.sin(angle)*distance;if(y<portal.y||y>=portal.y+1)continue;
+      const hit=this.cast(room,player.x,player.y,angle,opened);if(hit.distance<distance-.01)continue;
+      const height=h/(distance*Math.cos(angle-player.angle)),top=horizon-(1-eye)*height;c.globalAlpha=.88+.12*Math.sin(time/650);c.drawImage(this.art.portalOpen,Math.floor((y-portal.y)*512),0,1,512,x,top,3,height);c.globalAlpha=1;
     }
   }
   drawTable(room,player,opened,roulette,time){

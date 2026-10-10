@@ -107,7 +107,7 @@ window.ConceptMaze=class {
    const portal=this.doors.find(d=>!d.correct&&this.openDoors.has(d.stage+':'+d.choice)&&player.x>=d.x&&player.x<d.x+4&&Math.abs(player.y-(d.y+.5))<1.5);
    if(portal){this.enterDungeon(player,portal);return;}
   }
-  if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage===3?48.2:(this.stage+1)*12+1)){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
+  if(!this.dungeon&&this.passed.has(this.stage)&&player.x>(this.stage===3?this.room.exitX:(this.stage+1)*12+1)){this.stage++;if(this.stage===CONCEPT_QUESTIONS.length){this.finished=true;this.onEvent('complete','¡Superaste el laberinto!');return;}this.onEvent('advance','Punto seguro guardado. Nueva galería: lee la pregunta y elige una puerta.');}
   if(!this.chasing||this.finished||this.caught||this.freezeLeft>0)return;
   dt=pursuitDt;if(dt<=0)return;
   this.grace=Math.max(0,this.grace-dt);if(this.grace>0)return;this.returnGrace=false;

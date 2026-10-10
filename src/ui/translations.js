@@ -1,4 +1,5 @@
 window.ENGLISH={
+ "Continuar a los agradecimientos":"Continue to acknowledgements",
  "Ayuda IA":"AI help",
  "Cruzar en tirolesa resta un punto del certificado":"Using the zipline deducts one certificate point",
  "Ayuda IA · Cruzando en tirolesa":"AI help · Crossing by zipline",
@@ -354,7 +355,7 @@ window.ENGLISH={
   "Confundiste una salida con la hora de la comida.": "You mistook the exit for lunchtime.",
   "Las matemáticas también pueden ser un deporte de contacto.": "Math can be a contact sport too.",
   "La gravedad funciona. Tu estrategia necesita ajustes.": "Gravity works. Your strategy needs work.",
-  "La torreta superó los 180 J.": "The turret exceeded 180 J.",
+  "La torreta superó los 200 J.": "The turret exceeded 200 J.",
   "La persecución terminó aquí.": "The chase ended here.",
   "Esquiva los carriles o salta sobre los símbolos.": "Dodge the lanes or jump over the symbols.",
   "Corta el soporte para activar el puente central.": "Cut the support to activate the central bridge.",
@@ -383,7 +384,7 @@ window.ENGLISH={
   "Sobre la torreta": "About the turret",
   "Ajusta la puntería aquí. Mirar alrededor no mueve la torreta.": "Adjust your aim here. Looking around does not move the turret.",
   "φ = 0° hacia el botón · − izquierda / + derecha": "φ = 0° toward the button · − left / + right",
-  "Límite de la torreta: 180 J. Superarlo provoca una explosión.": "Turret limit: 180 J. Exceeding it causes an explosion.",
+  "Límite de la torreta: 200 J. Superarlo provoca una explosión.": "Turret limit: 200 J. Exceeding it causes an explosion.",
   "Recámara vacía. Elige una bala del estante.": "Empty chamber. Choose an orb from the shelf.",
   "Recámara vacía. Elige una bala y cárgala.": "Empty chamber. Choose and load an orb.",
   "Primero elige una bala del estante.": "Choose an orb from the shelf first.",
@@ -392,8 +393,8 @@ window.ENGLISH={
   "● Cargada:": "● Loaded:",
   "Predice qué cambiará con la masa, la elevación y el giro horizontal.": "Predict what will change with mass, elevation and horizontal angle.",
   "Propuesta lista. Carga un orbe y ponla a prueba.": "Proposal ready. Load an orb and test it.",
-  "Escribe valores dentro de los límites: rapidez 6–20 m/s o energía 10–240 J, elevación 5–80°, giro −60–60°.": "Enter values within the limits: speed 6–20 m/s or energy 10–240 J, elevation 5–80°, horizontal angle −60–60°.",
-  "Límite de la torreta: 180 J. Calcula antes de disparar.": "Turret limit: 180 J. Calculate before firing.",
+  "Escribe valores dentro de los límites: rapidez 1–30 m/s, elevación 0–89°, giro −60–60°.": "Enter values within the limits: speed 1–30 m/s, elevation 0–89°, horizontal angle −60–60°.",
+  "Límite de la torreta: 200 J. Calcula antes de disparar.": "Turret limit: 200 J. Calculate before firing.",
   "Escribe tu propuesta y observa el resultado después de disparar.": "Enter your proposal and observe the result after firing.",
   "Carga una bala para fijar su masa. Vista previa con 1 kg.": "Load an orb to set its mass. Preview uses 1 kg.",
   "Disparar hará explotar la torreta.": "Firing will explode the turret.",
@@ -781,7 +782,7 @@ window.ENGLISH={
   "EL PUENTE ESTÁ ACTIVO. CRUZA POR EL CENTRO.": "THE BRIDGE IS ACTIVE. CROSS THROUGH THE CENTER.",
   "LA SINGULARIDAD GANÓ ESTA RONDA.": "THE SINGULARITY WON THIS ROUND.",
   "LA GRAVEDAD FUNCIONA. TU ESTRATEGIA NECESITA AJUSTES.": "GRAVITY WORKS. YOUR STRATEGY NEEDS WORK.",
-  "LA TORRETA SUPERÓ LOS 180 J.": "THE TURRET EXCEEDED 180 J.",
+  "LA TORRETA SUPERÓ LOS 200 J.": "THE TURRET EXCEEDED 200 J.",
   "LA PERSECUCIÓN TERMINÓ AQUÍ.": "THE CHASE ENDED HERE.",
   "EL RELOJ SIGUE CORRIENDO.": "THE CLOCK KEEPS RUNNING.",
   "EL PUENTE SIGUE ACTIVO.": "THE BRIDGE IS STILL ACTIVE.",
@@ -1014,6 +1015,6 @@ Object.assign(window.ENGLISH,{'Blanco:':'Target:','Altura:':'Height:'});
 Object.assign(ENGLISH,{
  'Cerrar celebración':'Close celebration',
  'Un aplauso para ti':'A round of applause for you',
- 'Los cinco personajes celebran tu esfuerzo bajo el cielo de Ignitia.':'The five characters celebrate your effort beneath the sky of Ignitia.',
+ 'Los seis personajes celebran tu esfuerzo bajo el cielo de Ignitia.':'The six characters celebrate your effort beneath the sky of Ignitia.',
  'Gracias por jugar · Aventura EPIK':'Thank you for playing · Aventura EPIK'
 });

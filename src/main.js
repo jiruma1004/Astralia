@@ -21,7 +21,7 @@ const canPlay=()=>!trial?.zipline?.active&&!arrival.active&&!cinematics.active&&
 const camera=new FirstPersonControls(canvas,{canPlay,look:(dx,dy)=>{player.angle+=dx*.0035;player.pitch=Math.max(-.24,Math.min(.24,player.pitch-dy*.0015));},click:worldClick,clearKeys:()=>{keys.clear();touch?.reset();}});
 window.addEventListener('astralia:ui-open',()=>camera.release());
 cinematics.onToggle=active=>{keys.clear();camera.release();if(active){mission.pause();cannon.close();companions.closeHelp();companions.closeConsole();ignitia.closeConsole();}else mission.resume();};
-cinematics.canOpen=()=>!death&&!['escape','briefing','launch','sequence','ceremony','debrief','epilogue','applause','ending'].includes(ignitia.mode);
+cinematics.canOpen=()=>!death&&!['escape','briefing','launch','sequence','ceremony','debrief','epilogue','applause','credits','ending'].includes(ignitia.mode);
 
 function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
  const timer=document.querySelector('#adventure-timer');timer.dataset.phase=phase;
@@ -55,7 +55,12 @@ function returnFromMeasurement(){load(0);opened=true;Object.assign(player,{x:18.
 function bonusInteraction(angle=player.angle){const room=rooms[index],target=room.measurementEntrance||(room.measurement?{x:.99,y:3.5}:null);if(!target||Math.hypot(player.x-target.x,player.y-target.y)>1.8||Math.cos(Math.atan2(target.y-player.y,target.x-player.x)-angle)<.9)return false;if(room.measurement)returnFromMeasurement();else load(rooms.findIndex(r=>r.measurement));return true;}
 function load(i,reason='transition'){
  if(!rooms[i])return false;
- if(classroom&&reason!=='preview'&&!classroom.session.canEnter(rooms[i].id))return false;
+ // A local preview may start midway through the adventure. Still require the
+ // current challenge and exit to be complete before entering its next room.
+ const previewNext=development&&classroom?.session.preview&&reason==='transition'
+  &&ADVENTURE_ORDER[ADVENTURE_ORDER.indexOf(rooms[index])+1]===rooms[i]
+  &&classroom.solved()&&opened&&!death;
+ if(classroom&&reason!=='preview'&&!previewNext&&!classroom.session.canEnter(rooms[i].id))return false;
  if(classroom?.session.current&&classroom.session.current!==rooms[i].id&&reason==='transition'&&classroom.session.started!==null){if(!classroom.solved()||!opened||death)return false;classroom.session.interrupt('room_exit');classroom.session.leave();}
  if(classroom)classroom.session.interrupt('room_reload');
  if(reason==='preview')classroom.session.preview=true;
@@ -187,7 +192,7 @@ function animateDeath(dt){if(!death)return;death.t=(performance.now()-death.star
   document.querySelector('#death-kind').textContent='GAME OVER · '+(death.type==='moon'?'LUNA':death.type==='lava'?'LAVA':explosion?'SOBRECARGA':ivan?'EPI IVAN':death.type==='symbol'?'IMPACTO':death.type==='flame'?'ONDA VERDE':death.type==='potion'?'POCIÓN':death.type==='pit'?'LA FOSA':'AGUJERO NEGRO');
   document.querySelector('#death-title').textContent=death.type==='moon'?'Eric llegó primero.':death.type==='lava'?'El suelo estaba demasiado caliente.':explosion?'Te pasaste de energía.':ivan?'Ivan te atrapó.':death.type==='symbol'?'Una idea te pasó por encima.':death.type==='flame'?'Te faltó elevarte.':death.type==='potion'?'Una reacción inesperada.':death.type==='pit'?'Cuidado con el borde.':'La singularidad ganó esta ronda.';
   document.querySelector('#death-quote').textContent=death.type==='moon'?'La divergencia ha alcanzado la Luna.':death.type==='lava'?'La lava no cuenta como plataforma.':explosion?'en papel nada se quema':ivan?'Confundiste una salida con la hora de la comida.':death.type==='symbol'?'Las matemáticas también pueden ser un deporte de contacto.':death.type==='flame'?'La química pasó a ras del suelo. La próxima vez, salta.':death.type==='potion'?chemistryQuotes[Math.min(2,potionDeaths-1)]:gravityQuotes[(death.type==='fall'||death.type==='pit')?Math.min(2,Math.max(0,gravityFalls-1)):0];
-  document.querySelector('#death-detail').textContent=(death.type==='moon'?'Vuelve a la plataforma de Ignitia y prepara otra intercepción. ':death.type==='lava'?'Salta entre las plataformas de piedra. Usa Shift para tomar impulso y Espacio para saltar. ':explosion?'La torreta superó los 180 J. ':ivan?'La persecución terminó aquí. ':death.type==='symbol'?'Esquiva los carriles o salta sobre los símbolos. ':death.type==='flame'?'Salta sobre el frente verde cuando se acerque. ':death.type==='potion'?'Evita los charcos verdes: desaparecen en dos segundos. ':death.type==='pit'?(trial?'Elige la respuesta correcta y salta a su plataforma. Conservas los aciertos anteriores. ':'Corta el soporte para activar el puente central. '):'Has caído en el agujero negro. ')+`Volverás a tu último punto seguro: ${checkpointLabel()}. El reloj sigue corriendo.`;
+  document.querySelector('#death-detail').textContent=(death.type==='moon'?'Vuelve a la plataforma de Ignitia y prepara otra intercepción. ':death.type==='lava'?'Salta entre las plataformas de piedra. Usa Shift para tomar impulso y Espacio para saltar. ':explosion?'La torreta superó los 200 J. ':ivan?'La persecución terminó aquí. ':death.type==='symbol'?'Esquiva los carriles o salta sobre los símbolos. ':death.type==='flame'?'Salta sobre el frente verde cuando se acerque. ':death.type==='potion'?'Evita los charcos verdes: desaparecen en dos segundos. ':death.type==='pit'?(trial?'Elige la respuesta correcta y salta a su plataforma. Conservas los aciertos anteriores. ':'Corta el soporte para activar el puente central. '):'Has caído en el agujero negro. ')+`Volverás a tu último punto seguro: ${checkpointLabel()}. El reloj sigue corriendo.`;
   document.querySelector('#death-dialog').showModal();Sound.gameOver();
  }
 }

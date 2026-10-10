@@ -18,7 +18,8 @@ const {
     errors = [];
   publicPage.on('pageerror', e => errors.push(e.message));
   await publicPage.addInitScript(() => window.requestAnimationFrame = () => 0);
-  await publicPage.goto('http://127.0.0.1:8765');
+  const baseUrl=process.env.EPIK_TEST_BASE_URL||'http://127.0.0.1:8765';
+  await publicPage.goto(baseUrl);
   assert.equal(await publicPage.locator('#rooms,#story-skip,#cinematics-open,#cinema-skip').count(), 0);
   assert.equal(await publicPage.evaluate(() => typeof load), 'undefined');
   assert.equal(await publicPage.evaluate(() => typeof classroom), 'undefined');
@@ -43,7 +44,8 @@ const {
   });
   p.on('pageerror', e => errors.push(e.message));
   await p.addInitScript(() => window.requestAnimationFrame = () => 0);
-  await p.goto('http://127.0.0.1:8765/?dev=1');
+  await p.goto(baseUrl+'/?dev=1');
+  await p.evaluate(() => document.querySelector('#epik-dev')?.close());
   await p.locator('#story-skip').click();
   const notice = async () => p.evaluate(() => {
     document.querySelector('#maze-notice').hidden = true;
@@ -72,7 +74,7 @@ const {
     });
   }
   for (const [route, assisted] of [['particle', true], ['wave', false], ['particle', false], ['wave', true]]) {
-    await p.evaluate(() => newClassroomGame());
+    await p.evaluate(() => {newClassroomGame();classroom.session.preview=false;});
     await notice();
     await p.evaluate(()=>{companions.help();companions.closeHelp()});
     assert.equal(await p.evaluate(() => classroom.session.events.filter(e=>e.event_type==='normal_help').length),1);
@@ -97,7 +99,6 @@ const {
         y: 3.5,
         angle: 0
       });
-      lab.mode.value = 'speed';
       lab.a.value = 45;
       lab.az.value = 0;
       lab.selected = 0;
@@ -108,8 +109,11 @@ const {
       lab.loadAmmo();
       await shoot();
       lab.tick(20);
+      lab.loadAmmo();
+      await shoot();
+      lab.tick(20);
     });
-    assert.equal(await p.evaluate(() => classroom.session.state('room-01').incorrect), 2);
+    assert.equal(await p.evaluate(() => classroom.session.state('room-01').incorrect), 3);
     if (assisted) {
       await p.locator('#extra-help').click();
       assert(await p.locator('#extra-help-answer').isVisible());
@@ -231,12 +235,12 @@ const {
     assert.equal(Object.keys(rows[0]).length,7);
     assert.equal(rows[0]['Usó pistas'],'Sí');
     assert.equal(rows[0]['Intentos hasta pasar'],5);
-    assert.equal(rows[1]['Errores'],2);
+    assert.equal(rows[1]['Errores'],3);
     assert.equal(rows[1]['Usó IA'],assisted?'Sí':'No');
     const csv = await p.evaluate(() => classroom.session.csv());
     assert(!csv.includes('parameters_json'));
     assert(!csv.includes('attempt_submitted'));
-    if (route === 'particle' && assisted) fs.writeFileSync('examples/resultados-ejemplo.csv', csv);
+    if (route === 'particle' && assisted) fs.writeFileSync('/tmp/epik-resultados-prueba.csv', csv);
     const download = p.waitForEvent('download');
     await p.locator('#certificate-csv').click();
     const f = await download;
@@ -258,7 +262,7 @@ const {
       document.querySelector('#certificate-continue').click();
     });
     await dialogueScene(route === 'particle' ? 'eric-fuga' : 'ivan-descenso');
-    assert.equal(await p.evaluate(() => ignitia.mode), 'ending');
+    assert.equal(await p.evaluate(() => ignitia.mode), 'credits');
   }
   assert.deepEqual(errors, []);
   await b.close();

@@ -1,6 +1,6 @@
 /* Despedida común a las dos rutas. Atlas propio de dos poses, pies anclados;
    solo se carga tras el diploma, junto con el epílogo elegido. */
-window.FinalApplause={delay:3,duration:18,names:['Dr. Eric','EPI Iván','Karla','EPI Paola','Angélica'],
+window.FinalApplause={joseBounds:[[110,26,326,523],[32,26,246,523]],delay:3,duration:18,names:['Dr. Eric','EPI Iván','Karla','EPI Paola','Angélica','José Luis'],
  // Bounding boxes of the opaque figures within each 1/5 × 1/2 atlas cell.
  bounds:[[[54,14,296,507],[54,15,246,507],[43,16,257,507],[37,15,252,507],[22,17,237,507]],[[58,7,292,498],[56,11,245,498],[49,10,250,498],[40,10,251,498],[25,12,234,498]]]
 };
@@ -10,14 +10,21 @@ window.ApplauseScene=class {
  draw(t){
   const l=this.lib,c=l.ctx,w=l.canvas.width,h=l.canvas.height,bg=l.images.applauseSky,cast=l.images.applauseCast;
   const s=Math.max(w/bg.naturalWidth,h/bg.naturalHeight);c.drawImage(bg,(w-bg.naturalWidth*s)/2,(h-bg.naturalHeight*s)/2,bg.naturalWidth*s,bg.naturalHeight*s);
-  const wide=w/h>1.2,body=wide?Math.min(h*.49,w*.24):Math.min(h*.26,w*.46);
-  for(let i=0;i<5;i++){
-   const x=wide?w*(.13+i*.185):w*(i<3?.18+i*.32:.34+(i-3)*.32),feet=wide?h*.81:(i<3?h*.54:h*.84);
+  // Back-to-front arc: the middle pair stands farther away, the ends closer.
+  // José Luis has his own two-frame sheet, loaded only for this final scene.
+  const arrangement=[0,1,3,4,5,2].map((index,slot)=>{
+   const a=(-80+slot*32)*Math.PI/180,depth=1-Math.cos(a);
+   return {index,x:w*(.5+.425*Math.sin(a)),feet:h*(.69+.21*depth),body:Math.min(h*(.39+.13*depth),w*(w/h>1.2?.27:.34))};
+  }).sort((a,b)=>a.feet-b.feet);
+  for(const {index:i,x,feet,body} of arrangement){
    const phase=(this.motion+i*.09)%.65,frame=phase>.29&&phase<.45?1:0;
-   const [left,top,right,bottom]=FinalApplause.bounds[frame][i],scale=body/(bottom-top),sx=Math.round(i*cast.naturalWidth/5),sw=Math.round((i+1)*cast.naturalWidth/5)-sx,sh=cast.naturalHeight/2;
+   const jose=i===5,img=jose?l.images.applauseJose:cast;
+   const [left,top,right,bottom]=jose?FinalApplause.joseBounds[frame]:FinalApplause.bounds[frame][i];
+   const scale=body/(bottom-top),sx=jose?frame*img.naturalWidth/2:Math.round(i*img.naturalWidth/5);
+   const sy=jose?0:frame*img.naturalHeight/2,sw=jose?img.naturalWidth/2:Math.round((i+1)*img.naturalWidth/5)-sx,sh=jose?img.naturalHeight:img.naturalHeight/2;
    c.save();c.globalAlpha=Math.min(1,t/1.1);c.fillStyle='#1b355733';c.beginPath();c.ellipse(x,feet,body*.18,body*.026,0,0,Math.PI*2);c.fill();
-   c.drawImage(cast,sx,frame*sh,sw,sh,x-(left+right)/2*scale,feet-bottom*scale,sw*scale,sh*scale);
-   c.fillStyle='#172943';c.textAlign='center';c.font=`bold ${Math.max(11,Math.min(18,body*.07))}px Georgia`;c.fillText(FinalApplause.names[i],x,feet+body*.07);c.restore();
+   c.drawImage(img,sx,sy,sw,sh,x-(left+right)/2*scale,feet-bottom*scale,sw*scale,sh*scale);
+   c.fillStyle='#172943';c.textAlign='center';c.font=`bold ${(w/h>1.2?Math.max(11,Math.min(18,body*.07)):26)}px Georgia`;c.fillText(FinalApplause.names[i],x,feet+body*.07);c.restore();
   }
   for(let i=0;i<45;i++){const x=(i*.618+Math.sin(this.motion+i)*.006)%1*w,y=(i*.17+this.motion*.037)%1*h;c.fillStyle=['#eaca72','#c692cf','#89d9c5'][i%3];c.fillRect(x,y,3,6);}
   const en=I18n.lang==='en',messages=en?['Congratulations!','You kept trying. You learned. You made it.','From all of us: congratulations!']:['¡Felicidades!','Lo intentaste. Aprendiste. Lo lograste.','De parte de todos: ¡felicidades!'];

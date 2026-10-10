@@ -1,0 +1,6 @@
+{
+  "tool": "Built-in image_gen",
+  "prompt": "Use case: identity-preserve. Create a game sprite sheet for Aventura EPIK. Reference 1 is José Luis's existing portrait: preserve his short black hair, full neatly trimmed dark beard, face and blue-gray shirt with broad white vertical stripes. Reference 2 is ONLY a style and pose guide for the other congratulating characters. Make ONLY José Luis, full body in dark navy trousers and brown shoes, friendly smile looking directly at the viewer. Match the slightly chibi pixel-art RPG proportions and crisp outlines of reference 2. Exactly TWO frames SIDE BY SIDE in equally sized cells on a genuinely transparent alpha background. Left frame: hands raised at chest, palms facing each other slightly apart mid-applause. Right frame: hands together clapping. Identical head, torso, legs, feet position, body size and floor baseline across frames, only forearms and hands move. Full head and shoes visible with small transparent margins. No other people, no ground, no shadows, no text, no checkerboard painted into image, no background scenery. Desired canvas 1024x768.",
+  "source": "exec-87bffae2-c2ed-4979-af4f-98977a2faa2b.png",
+  "delivery": "724 × 543 WebP, two applause poses, transparency preserved"
+}

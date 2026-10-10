@@ -23,7 +23,7 @@ const assert=require('node:assert/strict');
   }
   for(const name of ['grassland','ceremony','seal','maze']){
    const result=await page.evaluate(async name=>{const a=Sound.tracks[name];await new Promise((resolve,reject)=>{if(a.readyState>=1)return resolve();a.addEventListener('loadedmetadata',resolve,{once:true});a.addEventListener('error',()=>reject(new Error(name+' decode error')),{once:true});a.load()});return {duration:a.duration,loop:a.loop,src:a.src};},name);
-   assert(result.duration>0);assert(result.loop);
+   assert(result.duration>0);assert(result.loop);if(name==='grassland')assert(result.src.endsWith('/legende-du-royaume.mp3'));
   }
   for(const id of ['ceremonia-ignitia','ceremonia-karla']){
    await page.evaluate(id=>cinematics.play(id),id);await page.evaluate(()=>cinematics.ready);assert.equal(await page.evaluate(()=>Sound.sceneTrack),'ceremony');

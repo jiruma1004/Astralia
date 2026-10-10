@@ -1,0 +1,24 @@
+[
+  {
+    "key": "eric",
+    "files": [
+      "bloopers-actors.webp"
+    ],
+    "prompt": "Create a transparent pixel-art RPG sprite sheet, 1024x1024, exact 2 columns x 2 rows equal cells, no backgrounds or text. Use ONLY the scientist from reference: Dr Eric short brown hair black glasses white labcoat navy trousers yellow mining helmet and headlamp. Four walk-cycle frames, ALWAYS facing RIGHT, same scale and foot baseline in every cell. Upper left: right leg leads extended forward, left leg behind. Upper right: passing pose left knee raised crossing the supporting right leg. Bottom left: LEFT leg leads extended forward, right leg behind, reverse arm swing. Bottom right: passing pose right knee raised crossing the supporting left leg. Distinct anatomical leg gait, do not repeat the identical pose. Keep face and head facing right all frames. Entire figure visible within each cell with 30px padding. True alpha transparency. Crisp Astralia fantasy educational game style matching reference."
+  },
+  {
+    "key": "classroom",
+    "files": [
+      "paola-glasses-a-gesture.webp"
+    ],
+    "prompt": "Create a transparent pixel-art sprite atlas for an Astralia RPG classroom blooper. 1536x1024 exact THREE columns TWO rows of equal 512px cells. No background no text. Top-left: Paola teacher full-body, matching reference face hair rose clear glasses brown cardigan white outfit, turned three quarters facing RIGHT, holding tablet on left arm and pointing a raised admonishing index finger to students, open speaking mouth. Bottom-left: SAME Paola aligned size and feet and direction, hand resting near tablet mouth closed. Top-middle: university student boy navy sweater gray trousers brown short hair looking LEFT sheepishly one hand scratching head. Bottom-middle: SAME student boy with both palms up shrugging looking LEFT. Top-right: university student girl curly shoulder-length brown hair burgundy sweater beige trousers holding open notebook looking LEFT at teacher. Bottom-right: different university student boy dark short hair green sweatshirt dark jeans holding pencil looking LEFT. All characters complete head to shoes, same tall human RPG proportions as reference not chibi, no furniture. Each isolated in own cell with generous margins, clear alpha transparency, no halo or solid colored backgrounds. Consistent outlines and crisp pixel art."
+  },
+  {
+    "key": "tea",
+    "files": [
+      "angelica-gesture.webp",
+      "karla-white-sweater.webp"
+    ],
+    "prompt": "Create a transparent pixel-art RPG animation sprite atlas, 1024x1024 exactly TWO columns and TWO rows with equal cells. Left column Angelica from image1 (long hair glasses mustard yellow blazer navy blouse ivory trousers), seated in an elegant wood chair facing inward RIGHT, full body including shoes/chair. Right column Karla from image2 (dark hair tied back, ivory white turtleneck black trousers), seated in matching chair facing inward LEFT. Top row both holding delicate white porcelain teacup near chest and saucer on lap, friendly conversation, no books. Bottom row exact same aligned poses and chair/body scale but each raising the teacup to mouth to SIP TEA. True transparent background, no scenery no table no text; generous 20px margins within each cell. Preserve identities, outfits, formal grownup proportions, Astralia warm detailed pixel-art sprite style. Teacups obvious and white with small gold rim. Four discrete frames, cup moves while chairs and feet stay anchored exactly."
+  }
+]
