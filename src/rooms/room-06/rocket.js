@@ -9,7 +9,7 @@ window.IvanLaunchScene={
 };
 window.IgnitiaMission=class {
  constructor(onEvent){
-  this.onEvent=onEvent;this.mode='idle';this.time=0;this.scene=null;this.rocket=new Image();this.rocket.src='assets/sprites/ignitia-rocket.png';this.jose=new Image();this.jose.src='assets/sprites/jose-luis-talk.png';this.rider=new Image();this.rider.src='assets/sprites/eric-cockpit-rocket.png';this.jose.onload=()=>this.drawPortrait();this.ivan=new Image();this.ivan.src='assets/sprites/ivan-launch-sheet.png';this.launchIgnited=false;
+  this.onEvent=onEvent;this.mode='idle';this.time=0;this.scene=null;this.rocket=new Image();this.rocket.src='assets/cinematics/ignitia-star-rocket.webp';this.jose=new Image();this.jose.src='assets/sprites/jose-luis-talk.png';this.rider=new Image();this.rider.src='assets/sprites/eric-cockpit-rocket.png';this.jose.onload=()=>this.drawPortrait();this.ivan=new Image();this.ivan.src='assets/sprites/ivan-launch-sheet.png';this.launchIgnited=false;
   document.querySelector('.scene-view').insertAdjacentHTML('beforeend',`<aside id="ignitia-dialog" hidden><canvas id="ignitia-portrait" width="160" height="160" aria-label="José Luis hablando"></canvas><div><p class="eyebrow">JOSÉ LUIS · LÍDER DE IGNITIA</p><p id="ignitia-text"></p><button id="ignitia-next">Mostrar todo</button></div></aside><section id="rocket-console" class="world-console" hidden></section><div id="flight-banner" hidden role="status"></div>`);
   this.simulator=new InterceptionConsole(document.querySelector('#rocket-console'),this.rider,this.rocket,()=>this.startLaunch());this.simulator.canRun=()=>this.canLaunch?.();this.simulator.onFail=()=>this.onEvent('moon');
   document.querySelector('#rocket-close').onclick=()=>this.closeConsole();
