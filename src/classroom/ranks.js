@@ -1,6 +1,6 @@
 /* Display-only RPG ratings. Accreditation and the teacher CSV remain separate. */
 window.EpikRanks = {
-  thresholds: [0, 40, 60, 75, 90],
+  thresholds: [0, 40, 60, 80, 100],
   titles: {
     trial: [
       ['Catador de Tablones', 'Plank Taster'],
@@ -54,7 +54,7 @@ window.EpikRanks = {
   },
   kind(room) { return Object.keys(this.titles).find(key => room[key]); },
   stars(score) { return this.thresholds.filter(threshold => score >= threshold).length; },
-  academicValue(errors) { return Math.max(60, 100 - 10 * errors); },
+  academicValue(errors) { return Math.max(0, 100 - 20 * errors); },
   room(session, room) {
     const state = session.state(room.id), kind = this.kind(room);
     const events = session.events.filter(e => e.room_id === room.id);
@@ -68,12 +68,11 @@ window.EpikRanks = {
       if (!objectives.has(key)) objectives.set(key, {errors: 0});
       if (e.result === 'incorrect') objectives.get(key).errors++;
     }
-    const academic = objectives.size
-      ? [...objectives.values()].reduce((sum, o) => sum + this.academicValue(o.errors), 0) / objectives.size
-      : 100;
-    const survival = Math.max(0, 100 - 10 * Math.max(0, state.deaths - 2));
-    const eligible = state.solved && !state.assisted;
-    const score = eligible ? Math.round(kind === 'corridor' ? survival : academic * .8 + survival * .2) : 0;
+    const errors = [...objectives.values()].reduce((sum,o)=>sum+o.errors,0);
+    const academic = this.academicValue(errors);
+    const survival = Math.max(0, 100 - (kind === 'corridor' ? 15 : 10) * state.deaths);
+    const eligible = state.solved;
+    const score = eligible ? state.assisted ? 20 : Math.round(kind === 'corridor' ? survival : academic * .8 + survival * .2) : 0;
     return {
       id: room.id, name: room.name, kind, solved: state.solved, assisted: state.assisted,
       score, stars: eligible ? this.stars(score) : 0,
@@ -87,7 +86,7 @@ window.EpikRanks = {
   },
   summary(session) {
     const rooms = session.rooms.map(room => this.room(session, room));
-    const score = Math.round(rooms.reduce((sum, r) => sum + r.score * r.weight, 0) / rooms.reduce((sum, r) => sum + r.weight, 0));
+    const score = Math.floor(rooms.reduce((sum, r) => sum + r.score * r.weight, 0) / rooms.reduce((sum, r) => sum + r.weight, 0));
     return {rooms, score, stars: this.stars(score)};
   }
 };

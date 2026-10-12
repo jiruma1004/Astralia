@@ -79,7 +79,7 @@ window.EpikAssistance = class {
     this.context = getContext;
     this.revealed = false;
     this.elapsed = 0;
-    document.querySelector('.controls').insertAdjacentHTML('beforeend', '<button id="extra-help" hidden title="Revelar la solución resta un punto del certificado"><img src="assets/ui/palma-ia.webp" width="52" height="52" alt="" aria-hidden="true"><span><b>Palma IA</b><small>Resta 1 punto</small></span></button>');
+    document.querySelector('.controls').insertAdjacentHTML('beforeend', '<button id="extra-help" hidden title="Revelar la solución limita esta sala a una estrella"><img src="assets/ui/palma-ia.webp" width="52" height="52" alt="" aria-hidden="true"><span><b>Palma IA</b><small>Máximo 1 estrella</small></span></button>');
     document.querySelector('.scene-view').insertAdjacentHTML('beforeend', '<section id="extra-help-panel" class="world-console" hidden aria-label="Solución automática"><header id="extra-help-handle" tabindex="0" aria-label="Mover solución: arrastra o usa las flechas"><strong>Palma IA · Solución</strong><small>Arrastra para mover · Ajusta desde la esquina</small></header><button id="extra-help-close" class="bubble-fold" aria-label="Cerrar ayuda">×</button><p id="extra-help-copy"></p><pre id="extra-help-answer"></pre></section>');
     this.button = document.querySelector('#extra-help');
     this.panel = document.querySelector('#extra-help-panel');
@@ -130,8 +130,8 @@ window.EpikAssistance = class {
     if (!hidden) {
       const trial = this.game().room.trial;
       this.button.querySelector('b').textContent = I18n.t('Palma IA');
-      this.button.title = I18n.t(trial ? 'Cruzar en tirolesa resta un punto del certificado' : 'Revelar la solución resta un punto del certificado');
-      const text = I18n.t(this.session.state(this.game().room.id).assisted ? 'Reto penalizado' : 'Resta 1 punto');
+      this.button.title = I18n.t(trial ? 'Cruzar en tirolesa limita esta sala a una estrella' : 'Revelar la solución limita esta sala a una estrella');
+      const text = I18n.t(this.session.state(this.game().room.id).assisted ? '1 estrella · Palma IA' : 'Máximo 1 estrella');
       const label=this.button.querySelector('small');
       if(label.textContent!==text)label.textContent=text;
     }
@@ -152,7 +152,7 @@ window.EpikAssistance = class {
     this.contextAtOpen = context.objective_id;
     this.revealed = true;
     this.panel.hidden = false;
-    document.querySelector('#extra-help-copy').textContent = I18n.t('Este reto no suma al certificado. El juego continúa mientras lees.');
+    document.querySelector('#extra-help-copy').textContent = I18n.t('Esta sala tendrá una estrella al completarla. El juego continúa mientras lees.');
     this.render();this.keepInBounds();
     window.dispatchEvent(new Event('astralia:ui-open'));
     document.querySelector('#extra-help-close').focus({preventScroll:true});

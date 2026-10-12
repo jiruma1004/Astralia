@@ -73,7 +73,7 @@ for (let i = 1; i < 7; i++) {
 }
 assert(s.finish());
 assert(!s.finish());
-assert.equal(s.totals().stars, 6);
+assert.equal(s.totals().stars, 7);
 const csv = s.csv();
 now += 100000;
 assert.equal(s.csv(), csv);

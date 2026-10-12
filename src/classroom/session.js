@@ -177,7 +177,7 @@ window.EpikSession = class {
     s.solvedAt = this.now();
     s.passedAttempt = s.attempts;
     this.event('room_solved', {
-      stars_earned: s.assisted ? 0 : 1
+      stars_earned: 1
     });
     return true;
   }
@@ -203,7 +203,7 @@ window.EpikSession = class {
     return {
       completed: solved.length,
       assisted: solved.filter(s => s.assisted).length,
-      stars: solved.filter(s => !s.assisted).length,
+      stars: solved.length,
       valid: !this.preview && this.finished !== null
     };
   }

@@ -2,7 +2,6 @@
 window.SceneDialogueStops={
  'ceremonia-ignitia':[7.95,15.95,23.95,32.95,37.95],
  'ceremonia-karla':[7.95,15.95,23.95,32.95,37.95],
- 'ivan-descenso':[2.99,5.99,11.99,15.99,23.99,27.99,34.99],
  'eric-fuga':[5.9,12.9,19.9]
 };
 window.EricEscapeScene=class {

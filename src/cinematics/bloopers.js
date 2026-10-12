@@ -2,7 +2,7 @@
 Object.assign(CINEMA_ASSETS,{blooperIvan:'assets/cinematics/ivan-forest-leaves.webp',blooperForest:'assets/cinematics/blooper-cabin-trail.webp',bloopersAtlas:'assets/cinematics/bloopers-backgrounds.webp',blooperActors:'assets/cinematics/bloopers-actors.webp',blooperEric:'assets/cinematics/eric-walk-v2.webp',blooperClass:'assets/cinematics/classroom-v2.webp',blooperTea:'assets/cinematics/office-tea.webp',blooperJoseReaction:'assets/cinematics/jose-workshop-reaction.webp',blooperKarlaReaction:'assets/cinematics/karla-tea-reaction.webp'});
 window.EpikBlooperScenes=[
  {id:'blooper-ivan',title:['Una rama inesperada','An unexpected branch'],assets:['blooperForest','blooperIvan'],lines:[['Iván','¡Ahora sí, nada me detiene!','Nothing can stop me now!'],['Iván','Todos mis planes, arruinados por una rama.','All my plans, ruined by a branch.']]},
- {id:'blooper-eric',title:['La ruta secreta','The secret route'],assets:['bloopersAtlas','blooperEric'],lines:[['Eric','Según mis cálculos, la salida está cerca.','According to my calculations, the exit is close.'],['Eric','¿Quién apagó el túnel?','Who turned off the tunnel?'],['Eric','Ay… la salida no era por aquí.','Ow… the exit wasn’t this way.']],lineTimes:[.6,4.8,7.4/1.2+.3]},
+ {id:'blooper-eric',title:['La ruta secreta','The secret route'],assets:['bloopersAtlas','blooperEric'],lines:[['Eric','Según mis cálculos, la salida está cerca.','According to my calculations, the exit is close.'],['Eric','¿Quién apagó el túnel?','Who turned off the tunnel?'],['Eric','Ay… la salida no era por aquí.','Ow… the exit wasn’t this way.']],lineTimes:[.6,2.4,7.4/2.4+.3]},
  {id:'blooper-jose',title:['Ingeniería de precisión','Precision engineering'],assets:['bloopersAtlas','blooperActors','ignitiaRocket','blooperJoseReaction'],lines:[['José Luis','Solo le falta un pequeño ajuste.','It only needs a small adjustment.'],['José Luis','Ese tornillo… seguro era de repuesto.','That screw… must have been a spare.'],['José Luis','¡No, no! ¡Por ahí no es!','No, no! Not that way!']],lineTimes:[.6,4,5.6]},
  {id:'blooper-paola',title:['La última advertencia','The final warning'],assets:['bloopersAtlas','blooperClass'],lines:[['Paola','¿Y las unidades de tu respuesta?','And the units for your answer?'],['Estudiante','Las dejé… en la otra dimensión.','I left them… in the other dimension.']]},
  {id:'blooper-office',title:['Todo bajo control','Everything under control'],assets:['bloopersAtlas','blooperTea','blooperKarlaReaction'],lines:[['Angélica','¿Todo tranquilo en el área de Ciencias?','Everything quiet in the Sciences area?'],['Karla','Todo tranquilo.','Everything is quiet.'],['Angélica','Solo falta encontrar al Dr. Eric.','We just need to find Dr. Eric.']],lineTimes:[.6,3.8,6]}
@@ -93,9 +93,9 @@ window.EpikBloopers=class {
  }
  // The lamp fails before the collision: walking remains independent of lighting.
  ericPose(t){
-  const speed=75*1.2,hit=7.4/1.2,after=Math.max(0,t-hit),lamp=t<4?1:t<4.3?.12:t<4.45?.7:t<4.8?.06:0;
+  const speed=180,hit=7.4/2.4,after=Math.max(0,t-hit),lamp=t<1.7?1:t<2?.12:t<2.15?.7:t<2.4?.06:0;
   const recoil=t<hit?0:Math.min(1,after/.22)*18;
-  return {lamp,hit:t>=hit,x:180+Math.min(t,hit)*speed-recoil,frame:t<hit?Math.floor(t*8*1.2)%4:1,after};
+  return {lamp,hit:t>=hit,x:180+Math.min(t,hit)*speed-recoil,frame:t<hit?Math.floor(t*8*2.4)%4:1,after};
  }
  eric(c,im,t){
   const pose=this.ericPose(t),{x,frame,lamp,hit,after}=pose,feet=478+(hit?0:Math.sin(t*10)*3),h=270;

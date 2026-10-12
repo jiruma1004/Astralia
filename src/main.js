@@ -83,7 +83,7 @@ if(arrival.active)arrival.finish();cinematics.close();measurement.reset(rooms[i]
 }
 function trialEvent(type,position){
  if(type==='zipline-start'){document.querySelector('#question-bubble').hidden=true;document.querySelector('#world-toast').hidden=true;keys.clear();touch?.reset();camera.release();companions.closeHelp();Sound.load();message.textContent=I18n.t('Ayuda IA · Cruzando en tirolesa');return;}
- if(type==='zipline-end'){opened=true;checkpoint={room:index,stage:5,position:{...position,pitch:0,jumpHeight:0,jumpVelocity:0}};classroom.solve();document.querySelector('#door-status').textContent=I18n.t('CRUCE COMPLETADO');document.querySelector('#question-bubble').hidden=true;companions.toast(I18n.t('Has cruzado en tirolesa. Este reto no suma al certificado.'));Sound.click();canvas.focus({preventScroll:true});return;}
+ if(type==='zipline-end'){opened=true;checkpoint={room:index,stage:5,position:{...position,pitch:0,jumpHeight:0,jumpVelocity:0}};classroom.solve();document.querySelector('#door-status').textContent=I18n.t('CRUCE COMPLETADO');document.querySelector('#question-bubble').hidden=true;companions.toast(I18n.t('Has cruzado en tirolesa. Esta sala se completa con una estrella.'));Sound.click();canvas.focus({preventScroll:true});return;}
 
  if(type==='fall'||type==='break'){die('pit',type==='break'?'wood':null);return;}
  checkpoint={room:index,stage:trial.stage,position:spawnPlayer(rooms[index])};opened=trial.finished;if(opened)classroom.solve();
@@ -133,7 +133,7 @@ async function interact(){
  if(!canPlay())return;
  if(bonusInteraction())return;
  if(rooms[index].measurement){if(!measurement.open(player))companions.toast('Acércate a la puerta real y pulsa E.');return;}
- if(rooms[index].rocket){if(!ignitia.open(player))companions.toast('Acércate al terminal azul de Ignitia y pulsa E.');return;}
+ if(rooms[index].rocket){if(!ignitia.open(player))companions.toast('Acércate a la consola de operaciones de Ignitia y pulsa E.');return;}
  if(rooms[index].physics){if(!cannon.open(player,renderer,opened))companions.toast('Acércate al cañón y míralo para abrir sus controles.');return;}
  if(maze?.activateFreeze(player,renderer))return;
  if(openNearbyDoor())return;
@@ -232,7 +232,7 @@ function tick(time){const simulationActive=ignitia.simulator.running&&ignitia.si
  companions.tick(dt,player,renderer,opened,canPlay());cannon.tick(player,renderer,opened,canPlay());
  if(rooms[index].physics){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||cannon.isOpen;hint.textContent=cannon.near(player,renderer,opened)?'Clic o E · Usar el cañón':'Acércate al cañón para configurar el disparo';}
  if(maze)document.querySelector('#chase-indicator').classList.toggle('frozen',maze.freezeLeft>0);
- if(rooms[index].rocket){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||!document.querySelector('#rocket-console').hidden;hint.textContent=ignitia.near(player)?'Clic o E · Programar el cohete':'Acércate al terminal azul de Ignitia';if(!ignitia.near(player)&&!document.querySelector('#rocket-console').hidden)ignitia.closeConsole();}
+ if(rooms[index].rocket){const hint=document.querySelector('#interaction-hint');hint.hidden=!canPlay()||!document.querySelector('#rocket-console').hidden;hint.textContent=ignitia.near(player)?'Clic o E · Programar el cohete':'Acércate a la consola de operaciones de Ignitia';if(!ignitia.near(player)&&!document.querySelector('#rocket-console').hidden)ignitia.closeConsole();}
  if(rooms[index].measurement){const h=document.querySelector('#interaction-hint');h.hidden=!canPlay();h.textContent=opened?'Cruza la puerta real para continuar.':'Clic o E junto a la puerta · Medir';}
  if(rooms[index].measurementEntrance&&opened){const h=document.querySelector('#interaction-hint');h.hidden=!canPlay();h.textContent='Puerta lateral al norte · Sala 1.5 opcional';}
  if(boss)document.querySelector('#interaction-hint').textContent=boss.near(player,renderer,rooms[index],opened)>=0?'Clic o E · Programar láser':'Busca los láseres a ambos lados';

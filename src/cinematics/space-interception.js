@@ -1,6 +1,12 @@
 /* Final alternativo visual. Una copia de la ruta evita modificar el simulador. */
 window.SpaceInterception={
  duration:43,impactAt:17,
+ // Accelerate only the approach in space. Animation and audio share this clock.
+ advance(time,dt,start=6,end=17){
+  if(time<start){const before=Math.min(dt,start-time);time+=before;dt-=before;}
+  if(time<end&&dt>0){const flight=Math.min(dt,(end-time)/1.3);time+=flight*1.3;dt-=flight;}
+  return time+dt;
+ },
  phase(t){return t<6?'launch':t<17?'flight':t<20?'impact':t<27?'parachute':t<31?'cell-entry':t<34?'bars':'captured';},
  plan(simulator){
   if(simulator?.ready&&InterceptionPhysics.evaluate(simulator.params,simulator.launchEpoch).hit)

@@ -23,3 +23,21 @@
 @media(max-width:650px){.rank-list{grid-template-columns:1fr}.rank-title{font-size:17px}#ceremony-certificate .certificate-actions button{font-size:14px;flex:1 1 140px}#certificate-back h2{font-size:22px}}
 #certificate-back .rank-rules,#certificate-back .rank-rules summary{color:#354462}
 @media(min-width:1100px){.rank-list{grid-template-columns:repeat(3,minmax(0,1fr))}.rank-card:last-child{grid-column:2}}
+
+/* Fit the complete diploma and its actions; paginate ranks rather than scroll. */
+#cinema-player #ceremony-certificate{inset:3% 4%!important;padding:0!important;overflow:hidden!important;display:block}
+.certificate-sheet{position:absolute;top:12px;left:50%;width:calc(100% - 28px);transform:translateX(-50%) scale(var(--sheet-scale,1));transform-origin:top center;display:flex;flex-direction:column;align-items:center;gap:8px;box-sizing:border-box}
+#certificate-front{gap:6px;margin:0}
+#certificate-back .rank-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#certificate-back .rank-card:last-child{grid-column:auto}
+.rank-pagination{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0;font:13px sans-serif;color:#253c53}
+#ceremony-certificate .rank-pagination button{font:13px sans-serif;padding:6px 10px;margin:0}
+#certificate-back .rank-card{padding:8px}
+#certificate-back .rank-rules{margin:4px 0}
+@media(max-width:650px){
+ #certificate-back .rank-list{grid-template-columns:1fr}
+ #certificate-front .certificate-brand{font-size:18px!important}
+ #certificate-front .certificate-score{font-size:38px}
+ #ceremony-certificate .certificate-actions button{flex:1 1 90px;font-size:12px;padding:7px}
+ #ceremony-certificate #certificate-student{font-size:21px;margin:4px 0}
+}

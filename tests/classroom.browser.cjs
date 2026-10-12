@@ -231,7 +231,7 @@ const {
     await dialogueScene('ignitia-intercepcion');
     await dialogueScene(route === 'particle' ? 'ceremonia-ignitia' : 'ceremonia-karla');
     assert(await p.locator('#certificate-csv').isVisible());
-    assert.equal(await p.evaluate(() => classroom.session.totals().stars), assisted ? 6 : 7);
+    assert.equal(await p.evaluate(() => classroom.session.totals().stars), 7);
     const rows=await p.evaluate(()=>classroom.session.rows());
     assert.equal(rows.length,7);
     assert.equal(Object.keys(rows[0]).length,7);
@@ -251,8 +251,8 @@ const {
     assert.equal(await p.evaluate(() => cinematics.item.id), route === 'particle' ? 'ceremonia-ignitia' : 'ceremonia-karla');
     await p.evaluate(() => I18n.set('en'));
     assert.equal(await p.locator('#certificate-results').textContent(), '');
-    assert.equal(await p.locator('.certificate-score').textContent(), (assisted?6:7)+' / 7');
-    assert.equal(await p.locator('#ceremony-certificate h3').textContent(), 'CREDITED CHALLENGES');
+    assert.equal(await p.locator('.certificate-score').textContent(), '7 / 7');
+    assert.equal(await p.locator('#ceremony-certificate h3').textContent(), 'COMPLETED CHALLENGES');
     assert.equal(await p.locator('#certificate-csv').textContent(), 'Download results CSV');
     await p.evaluate(() => I18n.set('es'));
     await p.locator('.scene-view').screenshot({

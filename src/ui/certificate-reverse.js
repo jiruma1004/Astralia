@@ -14,10 +14,27 @@ window.CertificateReverse = class {
     this.flip.setAttribute('aria-controls', 'certificate-front certificate-back');
     this.flip.onclick = () => {this.back.hidden = !this.back.hidden;this.front.hidden = !this.back.hidden;this.updateButton();certificate.scrollTop = 0;};
     actions.append(this.flip, ...buttons);certificate.append(actions);
+    this.sheet=document.createElement('div');this.sheet.className='certificate-sheet';
+    this.sheet.append(...certificate.children);certificate.append(this.sheet);
+    this.page=0;
+    this.fit=()=>{
+      if(certificate.hidden||!certificate.clientHeight)return;
+      const scale=Math.min(1,(certificate.clientHeight-24)/Math.max(1,this.sheet.offsetHeight));
+      this.sheet.style.setProperty('--sheet-scale',String(scale));
+    };
+    new ResizeObserver(()=>this.fit()).observe(certificate);
+    new ResizeObserver(()=>this.fit()).observe(this.sheet);
+    let visible=false;
+    new MutationObserver(()=>{
+      const next=!certificate.hidden;
+      if(next!==visible){visible=next;if(visible)this.fit();}
+    }).observe(certificate,{attributes:true,attributeFilter:['hidden']});
+    window.addEventListener('resize',()=>{this.page=0;this.render();});
+
     window.addEventListener('astralia:language', () => this.render());
   }
   reset(performance, verified) {
-    this.performance = performance;this.verified = verified;
+    this.performance = performance;this.verified = verified;this.page=0;
     this.front.hidden = false;this.back.hidden = true;this.el.scrollTop = 0;this.render();
   }
   updateButton() {
@@ -40,20 +57,30 @@ window.CertificateReverse = class {
     add(this.back, 'p', `${'★'.repeat(stars)}${'☆'.repeat(5-stars)} · ${score} / 100`, 'rank-total');
     add(this.back, 'p', say('Puntaje de aventura · Los retos de cálculo tienen doble peso.', 'Adventure score · Calculation challenges carry double weight.'), 'rank-caption');
     const list = add(this.back, 'ol', '', 'rank-list');
-    rooms.forEach((r, index) => {
+    const pageSize=innerWidth<650?2:4,pages=Math.ceil(rooms.length/pageSize);
+    this.page=Math.min(this.page,pages-1);
+    rooms.slice(this.page*pageSize,(this.page+1)*pageSize).forEach((r, offset) => {
+      const index=this.page*pageSize+offset;
       const item = add(list, 'li', '', 'rank-card');item.dataset.room = r.id;
       add(item, 'small', `${index + 1} · ${I18n.t(r.name)}`, 'rank-room');
       const rating = add(item, 'span', r.stars ? '★'.repeat(r.stars)+'☆'.repeat(5-r.stars) : '—', 'rank-stars');
       rating.setAttribute('aria-label', say(`${r.stars} de 5 estrellas`, `${r.stars} out of 5 stars`));
-      add(item, 'strong', r.titles ? r.titles[en?1:0] : r.assisted ? say('Sin acreditar · IA', 'Not credited · AI') : say('Pendiente', 'Pending'), 'rank-title');
+      add(item, 'strong', r.titles ? r.titles[en?1:0] : say('Pendiente', 'Pending'), 'rank-title');
       add(item, 'span', `${r.score} / 100`, 'rank-score');
       add(item, 'p', say(`Intentos: ${r.attempts} · Errores: ${r.errors} · Muertes: ${r.deaths}`, `Attempts: ${r.attempts} · Errors: ${r.errors} · Deaths: ${r.deaths}`), 'rank-metrics');
       add(item, 'p', say(`Pistas: ${r.hints?'sí':'no'} · IA: ${r.assisted?'sí':'no'}`, `Hints: ${r.hints?'yes':'no'} · AI: ${r.assisted?'yes':'no'}`), 'rank-metrics');
     });
+    const pager=add(this.back,'nav','','rank-pagination');
+    const previous=add(pager,'button',say('◂ Anterior','◂ Previous'));previous.disabled=this.page===0;
+    add(pager,'span',say(`Salas · página ${this.page+1} / ${pages}`,`Rooms · page ${this.page+1} / ${pages}`));
+    const next=add(pager,'button',say('Siguiente ▸','Next ▸'));next.disabled=this.page===pages-1;
+    previous.onclick=()=>{this.page--;this.render();};next.onclick=()=>{this.page++;this.render();};
     const details = document.createElement('details');details.className = 'rank-rules';this.back.append(details);
     add(details, 'summary', say('Cómo se obtienen las estrellas', 'How stars are earned'));
-    add(details, 'p', say('5★: 90–100 · 4★: 75–89 · 3★: 60–74 · 2★: 40–59 · 1★: 0–39.', '5★: 90–100 · 4★: 75–89 · 3★: 60–74 · 2★: 40–59 · 1★: 0–39.'));
-    add(details, 'p', say('Cada sala: 80 % resolución y 20 % supervivencia. Cada pregunta parte de 100; pierde 10 por error, hasta un mínimo de 60. Se promedian las preguntas, sin penalizar por haber varias. La supervivencia parte de 100: las primeras 2 muertes no restan; las siguientes restan 10 cada una. En el corredor solo cuenta la supervivencia.', 'Each room: 80% problem solving and 20% survival. Each question starts at 100 and loses 10 per error, down to 60. Questions are averaged, so having several is not a penalty. Survival starts at 100: the first 2 deaths are free, then each death deducts 10. The corridor uses survival only.'));
-    add(details, 'p', say('Usar IA deja la sala en 0 puntos y sin estrellas. Las pistas y el tiempo no restan. Estas estrellas son logros del juego, no una calificación oficial del curso.', 'AI assistance leaves that room at 0 points with no stars. Hints and time do not deduct points. These stars are game achievements, not an official course grade.'));
+    add(details, 'p', say('5★: 100 · 4★: 80–99 · 3★: 60–79 · 2★: 40–59 · 1★: 0–39.', '5★: 100 · 4★: 80–99 · 3★: 60–79 · 2★: 40–59 · 1★: 0–39.'));
+    add(details, 'p', say('Cinco estrellas requieren cero errores y cero muertes. Resolución: 100 puntos menos 20 por respuesta incorrecta, mínimo 0. Supervivencia: 100 menos 10 por muerte, mínimo 0. La sala combina 80 % resolución y 20 % supervivencia. En el corredor solo cuentan las muertes: cada una resta 15 puntos.', 'Five stars require zero errors and zero deaths. Problem solving: 100 points minus 20 per incorrect answer, minimum 0. Survival: 100 minus 10 per death, minimum 0. Rooms combine 80% problem solving and 20% survival. The corridor counts deaths only: each deducts 15 points.'));
+    add(details, 'p', say('Palma IA: una estrella y 20 puntos al completar la sala. Los intentos correctos, las pistas y el tiempo no restan. Las estrellas son logros del juego, no una calificación oficial.', 'Palma IA: one star and 20 points on completing the room. Correct attempts, hints and time do not deduct points. Stars are game achievements, not an official grade.'));
+    queueMicrotask(()=>this.fit());
+
   }
 };

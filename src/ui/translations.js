@@ -1,4 +1,14 @@
 window.ENGLISH={
+"Revelar la solución limita esta sala a una estrella":"Revealing the solution limits this room to one star",
+"Cruzar en tirolesa limita esta sala a una estrella":"Using the zipline limits this room to one star",
+"Máximo 1 estrella":"Maximum 1 star",
+"1 estrella · Palma IA":"1 star · Palma IA",
+"Esta sala tendrá una estrella al completarla. El juego continúa mientras lees.":"This room will earn one star when completed. Gameplay continues while you read.",
+"Has cruzado en tirolesa. Esta sala se completa con una estrella.":"You crossed by zipline. This room is completed with one star.",
+"RETOS COMPLETADOS":"COMPLETED CHALLENGES",
+"Acércate a la consola de operaciones iluminada y pulsa E.":"Approach the illuminated operations console and press E.",
+"Acércate a la consola de operaciones de Ignitia":"Approach the Ignitia operations console",
+
  "Antes de empezar, ¿cómo te llamas?":"Before we begin, what is your name?",
  "Nombre para tu certificado":"Name for your certificate",
  "Tu nombre aparecerá en el certificado y se guardará solo en este navegador.":"Your name will appear on the certificate and will be saved only in this browser.",
