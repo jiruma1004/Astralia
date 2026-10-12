@@ -1,0 +1,17 @@
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+const ctx={window:{}};vm.createContext(ctx);vm.runInContext(fs.readFileSync('src/classroom/ranks.js','utf8'),ctx);const R=ctx.window.EpikRanks;
+const room={id:'bridge',name:'Bridge',trial:true},state={solved:true,assisted:false,deaths:0,attempts:5,passedAttempt:5,incorrect:0};
+const session={rooms:[room],state:()=>state,events:Array.from({length:5},(_,i)=>({room_id:'bridge',event_type:'attempt_result',objective_id:'plank-'+i,result:'correct',submitted_answer:'true'}))};
+assert.equal(R.room(session,room).score,100,'five distinct correct answers are not five failed attempts');
+for(const [score,stars] of [[0,1],[39,1],[40,2],[59,2],[60,3],[74,3],[75,4],[89,4],[90,5],[100,5]])assert.equal(R.stars(score),stars);
+for(const [errors,value] of [[0,100],[1,90],[2,80],[3,70],[4,60],[20,60]])assert.equal(R.academicValue(errors),value);
+session.events.push({room_id:'bridge',event_type:'attempt_result',objective_id:'plank-0',result:'incorrect',submitted_answer:'movement'});assert.equal(R.room(session,room).score,100,'movement failure not counted twice');
+session.events.push({room_id:'bridge',event_type:'attempt_result',objective_id:'plank-0',result:'interrupted'});assert.equal(R.room(session,room).score,100);
+session.events.push({room_id:'bridge',event_type:'normal_help'});assert.equal(R.room(session,room).score,100);assert(R.room(session,room).hints);
+state.deaths=3;assert.equal(R.room(session,room).score,98);state.deaths=100;assert.equal(R.room(session,room).score,80);
+const corridor={id:'bridge',corridor:true};state.deaths=7;assert.equal(R.room(session,corridor).score,50);assert.equal(R.room(session,corridor).stars,2);
+state.assisted=true;assert.equal(R.room(session,room).score,0);assert.equal(R.room(session,room).stars,0);assert.equal(R.room(session,room).titles,null);
+state.assisted=false;state.solved=false;assert.equal(R.room(session,room).stars,0);
+assert.equal(R.titles.trial[2][0],'Pequeño Mapache Fanfarrón');assert.equal(R.titles.conceptual[4][0],'Maestro de la Teoría');
+state.solved=true;state.deaths=0;assert.equal(R.room(session,{id:'bridge',physics:true}).weight,2);assert.equal(R.room(session,room).weight,1);
+console.log('PASS star boundaries, per-question scoring, deaths, no double penalties, hints, IA exclusion and weighted calculations');

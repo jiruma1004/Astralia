@@ -161,6 +161,7 @@ window.EpikClassroom = class {
     const totals = this.session.totals();
     return {
       ...totals,
+      performance: EpikRanks.summary(this.session),
       download: () => this.session.download()
     };
   }
