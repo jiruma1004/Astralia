@@ -1,4 +1,7 @@
 window.ENGLISH={
+ "Antes de empezar, ¿cómo te llamas?":"Before we begin, what is your name?",
+ "Nombre para tu certificado":"Name for your certificate",
+ "Tu nombre aparecerá en el certificado y se guardará solo en este navegador.":"Your name will appear on the certificate and will be saved only in this browser.",
  "Palma IA":"Palma IA",
  "Palma IA · Solución":"Palma IA · Solution",
  "Continuar a los agradecimientos":"Continue to acknowledgements",

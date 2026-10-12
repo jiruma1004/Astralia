@@ -11,6 +11,7 @@ const cannon=new CannonConsole(lab),companions=new RoomCompanions(),actors=new R
 const spawnPlayer=room=>({...room.spawn,pitch:0,jumpHeight:0,jumpVelocity:0});
 const message=document.querySelector('#message');
 let classroom;
+let recovery;
 let touch=null;
 const development=['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(location.search).get('dev')==='1';
 const mission=new AdventureClock({onChange:updateCountdown,onExpire:expireAdventure});
@@ -32,6 +33,7 @@ function updateCountdown({state,remaining,phase,phaseChanged,musicCue}){
  if(phaseChanged){window.dispatchEvent(new CustomEvent('astralia:urgency',{detail:{phase,remainingSeconds:remaining,musicCue}}));if(phase==='warning'||phase==='danger')document.querySelector('#timer-announcement').textContent='Quedan '+Math.ceil(remaining/60)+' minutos. '+hint;}
 }
 function expireAdventure(){
+ recovery?.remove();
  measurement.close();ignitia.reset(rooms[index]);document.querySelector('#ignitia-dialog').hidden=true;
  document.querySelector('#eric-ready').close();boss?.close();
  keys.clear();clearDeath();boss?.stopAttacks();classroom.aid.close();classroom.session.interrupt('timeout');cannon.close();companions.closeHelp();companions.closeConsole();lab.hologram.hide();lab.dead=true;lab.lock(true);if(lab.shot)lab.shot.done=true;Sound.failure('timeout');
@@ -40,11 +42,12 @@ function expireAdventure(){
 }
 const arrival=new CartArrival(saved=>{Object.assign(player,saved);keys.clear();mission.start();classroom.session.start();canvas.focus({preventScroll:true});});
 function enterAdventure(skipArrival=false){
+ classroom.session.studentName=prologue.studentName||'';if(recovery)recovery.enabled=true;
  const intro=document.querySelector('#adventure-intro');if(intro.open)intro.close();keys.clear();if(skipArrival){mission.start();classroom.session.start();}else arrival.start(player);canvas.focus({preventScroll:true});canvas.scrollIntoView({block:'center'});
 }
 const prologue=new AdventurePrologue(enterAdventure);
 document.querySelector('#adventure-expired').addEventListener('cancel',e=>e.preventDefault());
-document.querySelector('#adventure-restart').onclick=()=>{gravityFalls=0;potionDeaths=0;document.querySelector('#adventure-expired').close();StoryRoute.reset();classroom.newSession();load(rooms.findIndex(r=>r.trial),'new');mission.restart();classroom.session.start();canvas.focus({preventScroll:true});};
+document.querySelector('#adventure-restart').onclick=()=>{recovery?.remove();gravityFalls=0;potionDeaths=0;document.querySelector('#adventure-expired').close();StoryRoute.reset();classroom.newSession();load(rooms.findIndex(r=>r.trial),'new');mission.restart();classroom.session.start();canvas.focus({preventScroll:true});};
 document.addEventListener('visibilitychange',()=>{keys.clear();classroom?.session.clock(false);mission.tick();});
 setInterval(()=>mission.tick(),250);
 new ResizeObserver(entries=>{const r=entries[0].contentRect;if(r.width&&r.height){canvas.width=960;canvas.height=Math.round(960*r.height/r.width);}}).observe(canvas);
@@ -238,8 +241,102 @@ function tick(time){const simulationActive=ignitia.simulator.running&&ignitia.si
  if(canPlay()&&rooms[index].physics)lab.tick(dt);if(canPlay()&&rooms[index].roulette)roulette.tick(dt);
  ignitia.updateCamera(player);renderer.draw(rooms[index],player,opened,flash,time,rooms[index].physics?lab:null,rooms[index].roulette?roulette:null);InteriorAtmosphere.draw(renderer,rooms[index],player,time);actors.draw(renderer,rooms[index],player,opened,time,maze);if(trial){drawArrivalCart(renderer,rooms[index],player);trial.draw(renderer,player,actors);}if(corridor)corridor.draw(renderer,player,actors);if(boss)boss.draw(renderer,player,actors);if(rooms[index].environment.kind==='courtyard')renderer.outdoor.draw(renderer,rooms[index],player,actors,time);ignitia.draw(renderer,player,actors);animateDeath(dt);cinematics.tick(dt);requestAnimationFrame(tick);
 }
+// Recovery stores stable puzzle state, never DOM, renderer caches or callbacks.
+const mazeRecoveryFields = ['stage','finished','chasing','enemy','dungeon','dungeonVisit',
+ 'dungeonQuestion','questionPool','lastDungeonQuestion','savedWorld','routeChoice',
+ 'freezeLeft','grace','returnGrace'];
+const pick = (object, fields) => Object.fromEntries(fields.map(key => [key, object[key]]));
+function captureRecovery() {
+ if(classroom.session.preview||classroom.session.started===null)return null;
+ if(mission.state==='expired')return {expired:true};
+ classroom.session.clock(!document.hidden&&canPlay());
+ const room=rooms[index], world={room:room.id,opened,checkpoint,gravityFalls,potionDeaths};
+ if(trial)world.trial={stage:trial.stage,finished:trial.finished,broken:[...trial.broken]};
+ if(room.physics)world.cannon={target:pick(lab.target,['index','misses']),physics:{...room.physics},
+  values:[lab.v.value,lab.a.value,lab.az.value],history:lab.history,selected:lab.selected,loaded:lab.loaded,
+  shot:lab.shot?.done&&lab.shot.result.hit?lab.shot:null};
+ if(room.roulette)world.roulette={current:roulette.current?.id,selected:roulette.selected,remaining:roulette.remaining,solved:[...roulette.solved],angle:roulette.angle};
+ if(maze)world.maze={...pick(maze,mazeRecoveryFields),map:room.map,environment:room.environment,doors:maze.doors,
+  passed:[...maze.passed],openDoors:[...maze.openDoors],usedFreezeButtons:[...maze.usedFreezeButtons]};
+ if(boss)world.boss={support:boss.puzzle.support.id,cuts:boss.puzzle.cuts};
+ if(room.rocket)world.rocket={...pick(ignitia.simulator,['params','missionTime','attempts','launchEpoch','ready']),ending:classroom.session.finished!==null};
+ return {world,session:classroom.session.recoverySnapshot(),remaining:mission.remaining,
+  clockComplete:mission.state==='complete',language:I18n.lang};
+}
+function restoreRecovery(saved,away) {
+ const w=saved.world,i=rooms.findIndex(room=>room.id===w.room);
+ if(i<0||!ADVENTURE_ORDER.includes(rooms[i]))throw Error('Unknown room');
+ if(saved.session.states.some(([id,state])=>!ADVENTURE_ORDER.some(room=>room.id===id)||!state||!Number.isFinite(state.active)))throw Error('Invalid metrics');
+ classroom.newSession();classroom.session.restoreSnapshot(saved.session,away);
+ if(!classroom.session.canEnter(w.room))throw Error('Invalid progression');
+ if(saved.language==='en'||saved.language==='es')I18n.set(saved.language);
+ StoryRoute.reset();if(saved.session.route)StoryRoute.choose(saved.session.route);
+ prologue.done=true;prologue.speaking=false;prologue.studentName=classroom.session.studentName;
+ if(!load(i,'recovery'))throw Error('Cannot restore room');
+ opened=!!w.opened;gravityFalls=w.gravityFalls||0;potionDeaths=w.potionDeaths||0;
+ checkpoint=w.checkpoint||checkpoint;
+ player={...checkpoint.position,pitch:0,jumpHeight:0,jumpVelocity:0};
+ if(trial&&w.trial){Object.assign(trial,{stage:w.trial.stage,finished:w.trial.finished,broken:new Set(w.trial.broken)});companions.updateTrial();}
+ if(rooms[i].physics&&w.cannon){
+  Object.assign(rooms[i].physics,w.cannon.physics);Object.assign(lab.target,w.cannon.target);
+  [lab.v.value,lab.a.value,lab.az.value]=w.cannon.values;
+  Object.assign(lab,{history:w.cannon.history,loaded:w.cannon.loaded,selected:w.cannon.selected,shot:w.cannon.shot});
+  lab.renderHistory();lab.update();
+ }
+ if(rooms[i].roulette&&w.roulette){
+  Object.assign(roulette,{remaining:w.roulette.remaining,solved:new Set(w.roulette.solved),angle:w.roulette.angle});
+  const q=PHYSICS_PROBLEMS.findIndex(q=>q.id===w.roulette.current);
+  if(q>=0)roulette.present(q);
+  else if(Number.isInteger(w.roulette.selected))roulette.present(w.roulette.selected);
+ }
+ if(maze&&w.maze){
+  const m=w.maze;Object.assign(maze,pick(m,mazeRecoveryFields));
+  Object.assign(maze,{doors:m.doors,passed:new Set(m.passed),openDoors:new Set(m.openDoors),usedFreezeButtons:new Set(m.usedFreezeButtons),
+   caught:false,path:[],pathClock:0,grace:Math.max(3,m.grace||0),freezeLeft:Math.max(0,m.freezeLeft-away/1000)});
+  rooms[i].map=m.map;rooms[i].environment=m.environment;
+  if(maze.dungeon)player={x:6.5,y:6.5,angle:0,pitch:0,jumpHeight:0,jumpVelocity:0};
+  else if(maze.finished)player={...maze.checkpointPosition(3),pitch:0,jumpHeight:0,jumpVelocity:0};
+  maze.enemy=maze.dungeon?{x:2.5,y:6.5}:{x:maze.stage*12+1.5,y:8.5};
+  companions.updateConcept();
+ }
+ if(boss&&w.boss){
+  const support=EricVariants.bank.find(v=>v.id===w.boss.support);if(!support)throw Error('Unknown puzzle');
+  boss.puzzle=new ParabolaPuzzle(support);boss.puzzle.cuts=w.boss.cuts;
+  document.querySelector('#boss-parabola').textContent='y = '+support.parabolaText;
+  document.querySelector('#boss-line').textContent='y = '+support.lineText;
+  document.querySelector('#boss-equality').textContent=support.parabolaText+' = '+support.lineText;
+  document.querySelector('#boss-progress').textContent=w.boss.cuts.filter(Boolean).length+' / 2 cortes';
+  if(boss.puzzle.solved){boss.fall=2;opened=true;}
+ }
+ if(rooms[i].rocket&&w.rocket){
+  Object.assign(ignitia.simulator,pick(w.rocket,['params','missionTime','attempts','launchEpoch','ready']));
+  if(!w.rocket.ending)ignitia.simulator.missionTime+=away/1000;
+  ignitia.simulator.sync();ignitia.simulator.draw();
+ }
+ mission.pausedAt=null;mission.remaining=Math.max(0,saved.remaining-(saved.clockComplete?0:Math.ceil(away/1000)));
+ mission.state=saved.clockComplete?'complete':'running';mission.deadline=Date.now()+mission.remaining*1000;mission.lastDisplay=null;
+ document.querySelector('#adventure-intro').close();
+ document.querySelector('#maze-notice').hidden=true;document.querySelector('#ignitia-dialog').hidden=true;ignitia.speaking=false;
+ classroom.aid.update();mission.notify();keys.clear();canvas.focus({preventScroll:true});
+ if(w.rocket?.ending){
+  // The completed assessment is preserved even if power failed during the ending.
+  // Resume at the ceremony so the student can retrieve the named diploma and CSV.
+  ignitia.mode='sequence';ignitia.beginCeremony();
+ }else{
+  mission.tick();
+  if(mission.state==='running'&&rooms[i].rocket&&ignitia.simulator.missionTime>=InterceptionPhysics.moonTime)die('moon');
+ }
+}
+
 classroom=new EpikClassroom(ADVENTURE_ORDER,()=>({room:rooms[index],lab,maze,roulette,boss,trial,ignitia,opened}),()=>canPlay());
 document.querySelector('#reset-lab').onclick=()=>load(index);document.querySelector('#reset-roulette').onclick=()=>load(index);load(rooms.findIndex(r=>r.trial),'new');mission.notify();document.querySelector('#adventure-intro').showModal();Sound.enable({automatic:true});requestAnimationFrame(tick);
+recovery=new EpikRecovery({capture:captureRecovery,restore:restoreRecovery,reset:()=>{
+ StoryRoute.reset();classroom.newSession();classroom.session.studentName='';
+ mission.state='ready';mission.remaining=ADVENTURE_CONFIG.durationSeconds;mission.deadline=null;mission.pausedAt=null;
+ prologue.done=false;prologue.started=false;prologue.step=0;prologue.studentName='';
+ document.querySelector('#story-name-box').hidden=false;document.querySelector('#story-student-name').value='';
+ load(rooms.findIndex(r=>r.trial),'new');prologue.renderPage();mission.notify();
+}});recovery.offer();
 
 window.addEventListener('astralia:language',()=>{
  Object.assign(renderer.art,makeWallArt(),makeScenery());boss?.art.clear();actors.doorArt.clear();
@@ -261,5 +358,5 @@ window.addEventListener('astralia:language',()=>{
 const controls=document.querySelector('.controls');controls.append(document.querySelector('.audio-controls'),document.querySelector('.language-corner'));
 for(const el of controls.querySelectorAll('button,summary,input'))el.addEventListener('pointerdown',()=>camera.release());
 if(!development){for(const id of ['story-skip','cinematics-open','cinema-skip','cinema-replay','cinema-close'])document.getElementById(id)?.remove();document.querySelector('[data-arrival-skip]')?.remove();}
-if(development){const getters={player:()=>player,index:()=>index,opened:()=>opened,death:()=>death,trial:()=>trial,maze:()=>maze,boss:()=>boss,corridor:()=>corridor,last:()=>last,completed:()=>completed};for(const [k,get] of Object.entries(getters))Object.defineProperty(window,k,{get,configurable:true});Object.assign(window,{rooms,lab,roulette,companions,cinematics,ignitia,mission,camera,cannon,touch,keys,renderer,prologue,arrival,classroom,tick,jump,shoot,interact,die,respawn,load:(i)=>load(i,'preview'),advanceRoom:(i)=>load(i),newClassroomGame:()=>{StoryRoute.reset();classroom.newSession();load(rooms.findIndex(r=>r.trial),'new');mission.restart();classroom.session.start();}});}
+if(development){const getters={player:()=>player,index:()=>index,opened:()=>opened,death:()=>death,trial:()=>trial,maze:()=>maze,boss:()=>boss,corridor:()=>corridor,last:()=>last,completed:()=>completed};for(const [k,get] of Object.entries(getters))Object.defineProperty(window,k,{get,configurable:true});Object.assign(window,{rooms,lab,roulette,companions,cinematics,ignitia,mission,camera,cannon,touch,keys,renderer,prologue,arrival,classroom,recovery,tick,jump,shoot,interact,die,respawn,load:(i)=>load(i,'preview'),advanceRoom:(i)=>load(i),newClassroomGame:()=>{StoryRoute.reset();classroom.newSession();load(rooms.findIndex(r=>r.trial),'new');mission.restart();classroom.session.start();}});}
 })();

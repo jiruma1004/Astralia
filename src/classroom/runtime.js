@@ -13,6 +13,7 @@ window.EpikClassroom = class {
     this.session.onChange = () => this.aid.update();
   }
   newSession() {
+    const studentName = this.session?.studentName || '';
     let storage = null;
     try {
       storage = localStorage;
@@ -20,6 +21,7 @@ window.EpikClassroom = class {
     this.session = new EpikSession(this.rooms, {
       storage
     });
+    this.session.studentName = studentName;
     if (this.aid) {
       this.aid.session = this.session;
       this.session.onChange = () => this.aid.update();
@@ -161,6 +163,7 @@ window.EpikClassroom = class {
     const totals = this.session.totals();
     return {
       ...totals,
+      studentName: this.session.studentName,
       performance: EpikRanks.summary(this.session),
       download: () => this.session.download()
     };

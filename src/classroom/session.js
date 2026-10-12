@@ -12,6 +12,7 @@ window.EpikSession = class {
     this.wall = wall;
     this.storage = storage;
     this.id = crypto.randomUUID();
+    this.studentName = '';
     this.events = [];
     this.states = new Map();
     this.pending = new Map();
@@ -241,6 +242,31 @@ window.EpikSession = class {
     a.download = 'Aventura_EPIK_' + new Date().toISOString().slice(0, 10) + '_' + this.id + '.csv';
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  recoverySnapshot() {
+    return {
+      id:this.id, studentName:this.studentName, at:this.now(),
+      started:this.started, finished:this.finished, seq:this.seq,
+      events:this.events, states:[...this.states], pending:[...this.pending],
+      current:this.current, route:this.route, preview:this.preview
+    };
+  }
+  restoreSnapshot(saved, away) {
+    // performance.now() starts over on reload. Rebase all absolute timestamps
+    // while keeping durations, attempt IDs and the original session ID intact.
+    const shift = this.now() - saved.at - away;
+    this.id = saved.id; this.studentName = String(saved.studentName || '').slice(0,80);
+    this.events = saved.events; this.seq = saved.seq;
+    this.states = new Map(saved.states);
+    for (const state of this.states.values())
+      for (const key of ['entered','solvedAt','exitAt'])
+        if (state[key] !== null) state[key] += shift;
+    this.started = saved.started === null ? null : saved.started + shift;
+    this.finished = saved.finished === null ? null : saved.finished + shift;
+    this.current = saved.current; this.route = saved.route; this.preview = false;
+    this.pending = new Map(saved.pending || []);
+    this.previousTick = this.now(); this.wasActive = false;
+    this.interrupt('browser_closed');
   }
   persist() {
     try {

@@ -25,6 +25,7 @@ const {
   assert.equal(await publicPage.evaluate(() => typeof classroom), 'undefined');
   await publicPage.keyboard.press('Escape');
   assert(await publicPage.locator('#adventure-intro').isVisible());
+  await publicPage.locator('#story-student-name').fill('Estudiante de prueba');
   for (let i = 0; i < 11; i++) await publicPage.locator('#adventure-start').click();
   assert(await publicPage.locator('#cart-arrival').isVisible());
   await publicPage.evaluate(() => {
@@ -46,6 +47,7 @@ const {
   await p.addInitScript(() => window.requestAnimationFrame = () => 0);
   await p.goto(baseUrl+'/?dev=1');
   await p.evaluate(() => document.querySelector('#epik-dev')?.close());
+  await p.locator('#story-student-name').fill('Estudiante de prueba');
   await p.locator('#story-skip').click();
   const notice = async () => p.evaluate(() => {
     document.querySelector('#maze-notice').hidden = true;
