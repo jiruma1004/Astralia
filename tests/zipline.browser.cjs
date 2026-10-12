@@ -3,7 +3,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright'),assert=req
  const p=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.addInitScript(()=>window.requestAnimationFrame=()=>0);
  await p.goto('http://127.0.0.1:8767/?dev=1');await p.evaluate(()=>{document.querySelector('#epik-dev')?.close();prologue.finish(true);newClassroomGame();document.querySelector('#maze-notice').hidden=true;});
  for(let i=0;i<2;i++){await p.evaluate(()=>{die('pit');respawn();classroom.aid.update()});assert(await p.locator('#extra-help').isHidden());}
- await p.evaluate(()=>{die('pit');respawn();classroom.aid.update()});assert(await p.locator('#extra-help').isVisible());assert.equal(await p.locator('#extra-help b').innerText(),'Ayuda IA');
+ await p.evaluate(()=>{die('pit');respawn();classroom.aid.update()});assert(await p.locator('#extra-help').isVisible());assert.equal(await p.locator('#extra-help b').innerText(),'Palma IA');
  await p.click('#extra-help');await p.evaluate(()=>{classroom.aid.open();jump();interact()});assert(await p.evaluate(()=>trial.zipline.active));assert(await p.locator('#extra-help-panel').isHidden());assert(await p.evaluate(()=>classroom.session.state(rooms[index].id).assisted));
  await p.evaluate(()=>{for(let i=0;i<88;i++)tick(last+40)});assert(await p.evaluate(()=>player.x>4.2&&player.x<16.7&&player.jumpHeight>0&&!death));
  await p.locator('#game').screenshot({path:'/tmp/epik-zipline.png'});

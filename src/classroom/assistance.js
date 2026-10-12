@@ -79,8 +79,8 @@ window.EpikAssistance = class {
     this.context = getContext;
     this.revealed = false;
     this.elapsed = 0;
-    document.querySelector('.controls').insertAdjacentHTML('beforeend', '<button id="extra-help" hidden title="Revelar la solución resta un punto del certificado"><b>IA · Ver solución</b><small>Resta 1 punto</small></button>');
-    document.querySelector('.scene-view').insertAdjacentHTML('beforeend', '<section id="extra-help-panel" class="world-console" hidden aria-label="Solución automática"><header id="extra-help-handle" tabindex="0" aria-label="Mover solución: arrastra o usa las flechas"><strong>IA · Solución</strong><small>Arrastra para mover · Ajusta desde la esquina</small></header><button id="extra-help-close" class="bubble-fold" aria-label="Cerrar ayuda">×</button><p id="extra-help-copy"></p><pre id="extra-help-answer"></pre></section>');
+    document.querySelector('.controls').insertAdjacentHTML('beforeend', '<button id="extra-help" hidden title="Revelar la solución resta un punto del certificado"><img src="assets/ui/palma-ia.webp" width="52" height="52" alt="" aria-hidden="true"><span><b>Palma IA</b><small>Resta 1 punto</small></span></button>');
+    document.querySelector('.scene-view').insertAdjacentHTML('beforeend', '<section id="extra-help-panel" class="world-console" hidden aria-label="Solución automática"><header id="extra-help-handle" tabindex="0" aria-label="Mover solución: arrastra o usa las flechas"><strong>Palma IA · Solución</strong><small>Arrastra para mover · Ajusta desde la esquina</small></header><button id="extra-help-close" class="bubble-fold" aria-label="Cerrar ayuda">×</button><p id="extra-help-copy"></p><pre id="extra-help-answer"></pre></section>');
     this.button = document.querySelector('#extra-help');
     this.panel = document.querySelector('#extra-help-panel');
     this.handle = document.querySelector('#extra-help-handle');
@@ -129,7 +129,7 @@ window.EpikAssistance = class {
     if (this.button.hidden !== hidden) this.button.hidden = hidden;
     if (!hidden) {
       const trial = this.game().room.trial;
-      this.button.querySelector('b').textContent = I18n.t(trial ? 'Ayuda IA' : 'IA · Ver solución');
+      this.button.querySelector('b').textContent = I18n.t('Palma IA');
       this.button.title = I18n.t(trial ? 'Cruzar en tirolesa resta un punto del certificado' : 'Revelar la solución resta un punto del certificado');
       const text = I18n.t(this.session.state(this.game().room.id).assisted ? 'Reto penalizado' : 'Resta 1 punto');
       const label=this.button.querySelector('small');

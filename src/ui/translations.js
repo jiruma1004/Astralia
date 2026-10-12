@@ -1,4 +1,6 @@
 window.ENGLISH={
+ "Palma IA":"Palma IA",
+ "Palma IA · Solución":"Palma IA · Solution",
  "Continuar a los agradecimientos":"Continue to acknowledgements",
  "Ayuda IA":"AI help",
  "Cruzar en tirolesa resta un punto del certificado":"Using the zipline deducts one certificate point",
