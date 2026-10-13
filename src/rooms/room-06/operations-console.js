@@ -18,10 +18,10 @@ window.IgnitiaOperationsConsole={
  },
  draw(r,player,actors,time){
   const c=r.ctx;
-  // Uniform 40% reduction about the console's ground anchor; interaction stays put.
+  // Two successive 40% reductions (36% of original size) about the console's ground anchor; interaction stays put.
   const project=(x,y,z)=>{
-   const p=actors.project(r,player,7.5+(x-7.5)*.6,5.5+(y-5.5)*.6,z*.6);
-   return p?{...p,scale:p.scale*.6}:null;
+   const p=actors.project(r,player,7.5+(x-7.5)*.36,5.5+(y-5.5)*.36,z*.36);
+   return p?{...p,scale:p.scale*.36}:null;
   };
   const poly=(points,fill,stroke='#77939e')=>{
    const p=points.map(v=>project(...v));if(p.some(v=>!v))return;

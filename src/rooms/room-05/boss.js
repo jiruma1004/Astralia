@@ -78,7 +78,7 @@ window.EricEncounter=class {
   c.setLineDash([7,7]);line(pt(-6,this.puzzle.support.line(-6)),pt(6,this.puzzle.support.line(6)),'#6eaab4',2);c.setLineDash([]);
   for(const x of [-6,-4,-2,0,2,4,6]){const p=pt(x,0);if(p){c.fillStyle='#d9e5e8';c.font='12px Georgia';c.textAlign='center';c.fillText(String(x),p.x,p.y+14);}}
   for(const y of [2,4,6,8,10,12,14,16]){const p=pt(0,y);if(p){c.fillStyle='#d9e5e8';c.font='12px Georgia';c.fillText(String(y),p.x+8,p.y);}}
-  if(this.eric.complete&&this.eric.naturalWidth&&this.fall<1.5)WorldBillboard(renderer,player,actors,this.eric,20.9,7.5,.20*this.puzzle.support.parabola(0)-this.fall*.7,1.7,1.7);
+  if(this.eric.complete&&this.eric.naturalWidth&&this.fall<1.5)WorldBillboard(renderer,player,actors,this.eric,20.9,7.5,.20*this.puzzle.support.parabola(0)-this.fall*.7,2.55,2.55);
   for(let i=0;i<2;i++){const l=this.lasers[i];WorldBillboard(renderer,player,actors,this.texture(i===0?'left':'right'),l.x,l.y,0,1,1);if(this.puzzle.cuts[i]){const root=this.puzzle.support.intersections[i];line(project(l.x,l.y,1),pt(...root),i===0?'#97f6d0':'#d8a6ff',4);}}
   this.potions.draw(renderer,player,actors,this.texture('potion'));
   if(!this.puzzle.solved)this.wave.draw(renderer,player,actors,this.elapsed);this.drawSpeech(renderer,player,actors);

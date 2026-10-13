@@ -37,8 +37,7 @@ window.InterceptionConsole = class {
     <button id="intercept-launch" class="primary" hidden>¡Despegar!</button>
    </div></div>
    <section class="intercept-equations" aria-label="Ecuaciones del movimiento">
-    <div><b>Tu cohete · tiro parabólico</b><p class="intercept-formula" data-no-translate>x = v₀ cos(θ) τ<br>y = v₀ sin(θ) τ − ½gτ²</p><p>τ es el tiempo desde tu salida. v₀ es la rapidez inicial y θ el ángulo sobre la horizontal. g = 0.00981 km/s².</p></div>
-    <div><b>Eric · velocidad constante</b><p class="intercept-formula" data-no-translate>xᴱ ≈ 120 + ${InterceptionPhysics.ericVelocity.x.toFixed(6)}t<br>yᴱ ≈ 60 + ${InterceptionPhysics.ericVelocity.y.toFixed(6)}t; t = t₀ + d + τ</p><p>t₀ es el instante al iniciar el ensayo; d, el retraso de salida. Eric parte de (120, 60) km y viaja con rapidez de 0.308 km/s. Su reloj nunca se reinicia entre ensayos.</p></div>
+    <div><b>Tu cohete · tiro parabólico</b><p class="intercept-formula" data-no-translate>x(t) = v₀ cos(θ) t<br>y(t) = v₀ sin(θ) t − ½gt²</p><p>t es el tiempo desde tu salida (el tiempo de vuelo τ del control). v₀ es la rapidez inicial y θ el ángulo sobre la horizontal. g = 0.00981 km/s².</p></div>
    </section><p class="intercept-model">Modelo balístico 2D, sin motor ni aire, con gravedad uniforme; Luna fuera de escala. Encuentro a ≤ 3 km. Llegada lunar: t ≈ ${InterceptionPhysics.moonTime.toFixed(2)} s. Reloj ×1 al planear, ×20 al ensayar; sigue al cerrar el panel.</p>`;
   this.canvas=panel.querySelector('canvas');this.ctx=this.canvas.getContext('2d');
   this.clock=panel.querySelector('#intercept-clock');this.feedback=panel.querySelector('#rocket-feedback');

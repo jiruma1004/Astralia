@@ -1,4 +1,9 @@
 window.ENGLISH={
+  "Predice qué cambiará con la masa, la rapidez y la elevación.": "Predict what changes with mass, speed and elevation.",
+  "Escribe valores dentro de los límites: rapidez 1–30 m/s y elevación 0–89°.": "Enter values within the limits: speed 1–30 m/s and elevation 0–89°.",
+  "Observa la trayectoria de tu disparo.": "Watch your shot's trajectory.",
+  "t es el tiempo desde tu salida (el tiempo de vuelo τ del control). v₀ es la rapidez inicial y θ el ángulo sobre la horizontal. g = 0.00981 km/s².": "t is time since launch (flight time τ on the control). v₀ is initial speed and θ is the angle above horizontal. g = 0.00981 km/s².",
+
  "IGNITIA · RUMBO A LA LUNA":"IGNITIA · TO THE MOON",
  "A por Eric":"After Eric!",
  "Eric no piensa esperarnos. Alcanza su cohete antes de que llegue a la Luna.":"Eric won’t wait for us. Catch his rocket before he reaches the Moon.",
