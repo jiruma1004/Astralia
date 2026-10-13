@@ -1,4 +1,9 @@
 window.ENGLISH={
+ "IGNITIA · RUMBO A LA LUNA":"IGNITIA · TO THE MOON",
+ "A por Eric":"After Eric!",
+ "Eric no piensa esperarnos. Alcanza su cohete antes de que llegue a la Luna.":"Eric won’t wait for us. Catch his rocket before he reaches the Moon.",
+ "Probar mi rumbo":"Try my course",
+ "¡Despegar!":"Lift off!",
 "Revelar la solución limita esta sala a una estrella":"Revealing the solution limits this room to one star",
 "Cruzar en tirolesa limita esta sala a una estrella":"Using the zipline limits this room to one star",
 "Máximo 1 estrella":"Maximum 1 star",

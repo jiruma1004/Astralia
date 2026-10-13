@@ -24,7 +24,7 @@ window.InterceptionConsole = class {
  constructor(panel,ericArt,rocketArt,onReady){
   this.panel=panel;this.ericArt=ericArt;this.rocketArt=rocketArt;this.onReady=onReady;
   panel.innerHTML=`<button id="rocket-close" class="bubble-fold" aria-label="Cerrar panel">×</button>
-   <header><p class="eyebrow">IGNITIA · NAVEGACIÓN TÁCTICA</p><h2>Intercepta a Eric</h2><p class="intercept-intro">Eric avanza hacia la Luna. Intercéptalo antes de que llegue o será game over.</p></header>
+   <header><p class="eyebrow">IGNITIA · RUMBO A LA LUNA</p><h2>A por Eric</h2><p class="intercept-intro">Eric no piensa esperarnos. Alcanza su cohete antes de que llegue a la Luna.</p></header>
    <div class="intercept-workspace"><div class="intercept-map">
     <div class="intercept-map-top"><span>RADAR · EN DIRECTO</span><output id="intercept-clock" aria-label="Tiempo hasta la llegada lunar" aria-live="off">${Math.ceil(InterceptionPhysics.moonTime)} s</output></div>
     <canvas id="intercept-canvas" width="1000" height="480" aria-label="Trayectorias de Ignitia y Eric. Arrastra el punto verde para ajustar rapidez y ángulo; también puedes usar los controles deslizantes."></canvas>
@@ -32,9 +32,9 @@ window.InterceptionConsole = class {
     <p class="intercept-drag">Arrastra el punto verde de la trayectoria o usa los controles.</p>
    </div><div class="intercept-controls">
     <div id="intercept-sliders"></div>
-    <div class="intercept-actions"><button id="intercept-trial" class="primary">Ensayar trayectoria</button><button id="intercept-reset" aria-label="Restablecer parámetros">↺</button></div>
+    <div class="intercept-actions"><button id="intercept-trial" class="primary">Probar mi rumbo</button><button id="intercept-reset" aria-label="Restablecer parámetros">↺</button></div>
     <p id="rocket-feedback" role="status" aria-live="polite"></p>
-    <button id="intercept-launch" class="primary" hidden>Confirmar y despegar</button>
+    <button id="intercept-launch" class="primary" hidden>¡Despegar!</button>
    </div></div>
    <section class="intercept-equations" aria-label="Ecuaciones del movimiento">
     <div><b>Tu cohete · tiro parabólico</b><p class="intercept-formula" data-no-translate>x = v₀ cos(θ) τ<br>y = v₀ sin(θ) τ − ½gτ²</p><p>τ es el tiempo desde tu salida. v₀ es la rapidez inicial y θ el ángulo sobre la horizontal. g = 0.00981 km/s².</p></div>
@@ -79,7 +79,7 @@ window.InterceptionConsole = class {
    const input=this.panel.querySelector('#intercept-'+key);input.value=this.params[key];input.disabled=this.running;
    this.panel.querySelector('#intercept-'+key+'-value').textContent=`${this.params[key].toFixed(key==='speed'?2:key==='angle'?1:0)} ${input.dataset.unit}`;
   }
-  this.trialButton.disabled=this.running;this.trialButton.textContent=this.running?'Simulando…':'Ensayar trayectoria';this.launchButton.hidden=true;
+  this.trialButton.disabled=this.running;this.trialButton.textContent=this.running?'Simulando…':'Probar mi rumbo';this.launchButton.hidden=true;
  }
  startTrial(){
   if(this.running||!this.canRun?.()||!InterceptionPhysics.valid(this.params))return;
