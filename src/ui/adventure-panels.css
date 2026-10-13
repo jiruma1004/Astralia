@@ -1,10 +1,11 @@
 /* RPG menu lettering; calculation glyphs retain the unambiguous numeric face. */
-@font-face{font-family:'EPIK Adventure';src:url('../../assets/fonts/PixelifySans.ttf') format('truetype');font-style:normal;font-weight:400 700;font-display:swap}
-:root{--adventure-lettering:'EPIK Adventure','Trebuchet MS',sans-serif;--calculation-lettering:'Astralia RPG','Trebuchet MS',sans-serif}
+@font-face{font-family:'EPIK Text';src:url('../../assets/fonts/EPIKText-Regular.woff') format('woff');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:'EPIK Text';src:url('../../assets/fonts/EPIKText-Semibold.woff') format('woff');font-style:normal;font-weight:600 800;font-display:swap}
+:root{--adventure-lettering:'EPIK Text','Trebuchet MS',sans-serif;--calculation-lettering:'EPIK Text','Trebuchet MS',sans-serif;--rpg-font:var(--adventure-lettering);--adventure-title:Georgia,'Palatino Linotype',serif}
 body{font-family:var(--adventure-lettering)}
 h1,h2,h3,.brand,.world-bubble,.paola-dialog,#ignitia-dialog,.prologue,button{font-family:var(--adventure-lettering)}
 .world-console,#station.cannon-console{font-family:var(--adventure-lettering);font-size:20px;border:3px double #c3c6cb;border-radius:5px;background:linear-gradient(125deg,#162660f7,#0c1638fc);box-shadow:inset 0 0 0 2px #485575,3px 4px 0 #030817aa;color:#fff6dc}
-.world-console h2,#rocket-console h2,.cannon-heading h2{font:500 29px/1.15 var(--adventure-lettering)!important;color:#ffe4a1;letter-spacing:0;margin:5px 30px 12px 0}
+.world-console h2,#rocket-console h2,.cannon-heading h2{font:400 29px/1.15 var(--adventure-title)!important;color:#ffe4a1;letter-spacing:0;margin:5px 30px 12px 0}
 .world-console .eyebrow,#rocket-console header .eyebrow,.cannon-heading .eyebrow{font:16px/1.25 var(--adventure-lettering);color:#b6d3ee;letter-spacing:.4px}
 .world-console label,#boss-panel form label,.world-console #answer-fields label,#station.cannon-console .numeric-settings label{font:19px/1.25 var(--adventure-lettering)}
 .world-console button,#station.cannon-console button{font-family:var(--adventure-lettering);font-size:20px}
@@ -35,3 +36,15 @@ h1,h2,h3,.brand,.world-bubble,.paola-dialog,#ignitia-dialog,.prologue,button{fon
  #rocket-console .intercept-legend{font-size:16px}
  .world-console h2,#rocket-console h2,.cannon-heading h2{font-size:26px!important}
 }
+
+/* Modern HD-2D-inspired reading: smooth dialogue, restrained serif headings. */
+h1,h2,h3,.brand{font-family:var(--adventure-title);font-weight:400;letter-spacing:.2px}
+.prologue #story-text,.paola-dialog #paola-text,#ignitia-dialog #ignitia-text,#question-bubble p,#maze-notice p{font-family:var(--adventure-lettering);font-size:20px;line-height:1.5;text-shadow:none}
+.world-console,#station.cannon-console{border:1px solid #b4aa8c;border-radius:3px;background:linear-gradient(135deg,#202b3df5,#101a2af9);box-shadow:inset 0 0 0 3px #b4aa8c18,0 8px 30px #0008}
+#rocket-console{border-color:#b4aa8c;background:linear-gradient(135deg,#202b3df9,#101a2afc)}
+.world-console .eyebrow,#rocket-console header .eyebrow,.cannon-heading .eyebrow{font-size:12px;font-weight:600;letter-spacing:1.3px;color:#cec5a6}
+.world-console button.primary,#station.cannon-console .cannon-action-buttons button,#rocket-console #intercept-trial{font-size:18px;background:linear-gradient(#405068,#253349);border:1px solid #b7ae92;box-shadow:inset 0 0 0 2px #ffffff0c;color:#f5e8c9}
+#intercept-sliders label{font-size:17px;background:#07122044;border-left:1px solid #a49a7b}
+#rocket-console .intercept-equations b{font-family:var(--adventure-title);font-weight:400}
+#rocket-console .intercept-intro{font-size:18px}
+@media(max-width:600px){.prologue #story-text,.paola-dialog #paola-text,#ignitia-dialog #ignitia-text{font-size:18px}}

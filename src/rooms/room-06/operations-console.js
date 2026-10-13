@@ -17,7 +17,12 @@ window.IgnitiaOperationsConsole={
   return a;
  },
  draw(r,player,actors,time){
-  const c=r.ctx,project=(x,y,z)=>actors.project(r,player,x,y,z);
+  const c=r.ctx;
+  // Uniform 40% reduction about the console's ground anchor; interaction stays put.
+  const project=(x,y,z)=>{
+   const p=actors.project(r,player,7.5+(x-7.5)*.6,5.5+(y-5.5)*.6,z*.6);
+   return p?{...p,scale:p.scale*.6}:null;
+  };
   const poly=(points,fill,stroke='#77939e')=>{
    const p=points.map(v=>project(...v));if(p.some(v=>!v))return;
    c.beginPath();p.forEach((v,i)=>i?c.lineTo(v.x,v.y):c.moveTo(v.x,v.y));c.closePath();c.fillStyle=fill;c.fill();c.strokeStyle=stroke;c.lineWidth=2;c.stroke();
